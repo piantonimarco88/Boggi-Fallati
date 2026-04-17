@@ -38,6 +38,8 @@ body{font-family:var(--font);font-size:14px;color:var(--tx);background:var(--bg3
 .user-role{font-size:11px;color:var(--tx2)}
 .user-name{font-size:13px;font-weight:500;margin-top:2px}
 .btn-logout{margin-top:8px;font-size:11px;color:var(--tx2);cursor:pointer;background:none;border:none;padding:0;font-family:var(--font);text-decoration:underline}
+.btn-logout-full{margin-top:10px;width:100%;font-size:12px;color:var(--tx2);cursor:pointer;background:var(--bg2);border:0.5px solid var(--br);border-radius:var(--r);padding:7px 10px;font-family:var(--font);text-align:center;display:block}
+.btn-logout-full:hover{background:var(--red-bg);color:var(--red-tx);border-color:var(--red-br)}
 
 /* MAIN */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
@@ -167,7 +169,8 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const DAMAGE_TYPES = ['Tessuto rovinato / pellame','Problemi cuciture','Problema scarpe','Problemi colore','Pilling','Problema accessori','Filo tirato','Problema lavaggio','Problema zip','Errore sartoria','Problema imbottiture'];
-const PROPOSAL_TYPES = ['FL – Fallato lite','FB – Fallato base','FF – Fallato full'];
+const PROPOSAL_TYPES = ['FL','FB','FF'];
+const PROVENIENZA_TYPES = ['Cliente','Negozio','Fornitore','Ecommerce'];
 
 let currentUser = null;
 let allAccounts = [];
@@ -278,7 +281,7 @@ function renderApp() {
       <div class="user-area">
         <div class="user-role">${currentUser.role === 'sede' ? 'Sede · '+currentUser.region : 'Negozio · '+currentUser.region}</div>
         <div class="user-name">${currentUser.name}</div>
-        <button class="btn-logout" onclick="logout()">Cambia account</button>
+        <button class="btn-logout-full" onclick="logout()">Esci</button>
       </div>
     </div>
     <div class="main">
@@ -529,36 +532,45 @@ function renderNewForm() {
     <div style="font-weight:500;font-size:15px;margin-bottom:4px">Nuova richiesta fallato</div>
     <div style="font-size:12px;color:var(--tx2);margin-bottom:20px">Negozio: ${currentUser.name}</div>
     <div class="form-grid">
-      <div class="ff"><label>Provenienza</label>
-        <select id="f-prov"><option>Cliente</option><option>Magazzino</option><option>Online</option></select></div>
+      <div class="ff"><label>Provenienza *</label>
+        <select id="f-prov" onchange="onProvenienzaChange()">
+          ${PROVENIENZA_TYPES.map(p=>`<option>${p}</option>`).join('')}
+        </select>
+      </div>
       <div class="ff"><label>Negozio di acquisto</label>
         <select id="f-storepurch">${storeOptions}</select></div>
-      <div class="ff"><label>Nome cliente *</label>
+
+      <div class="ff" id="row-name"><label>Nome cliente *</label>
         <input id="f-name" type="text" placeholder="Nome e cognome"></div>
       <div class="ff"><label>Email cliente</label>
         <input id="f-email" type="email" placeholder="email@example.com"></div>
       <div class="ff"><label>Privilege Card</label>
         <input id="f-card" type="text" placeholder="400000XXXXX"></div>
-      <div class="ff"><label>Data acquisto cliente</label>
+
+      <div class="ff" id="row-pdate"><label>Data acquisto cliente *</label>
         <input id="f-pdate" type="date"></div>
-      <div class="ff"><label>Data consegna in negozio</label>
+      <div class="ff"><label>Data consegna in negozio *</label>
         <input id="f-ddate" type="date"></div>
-      <div class="ff"><label>Articolo usato</label>
+
+      <div class="ff" id="row-used"><label>Articolo usato *</label>
         <select id="f-used"><option value="SI">Sì</option><option value="NO">No</option></select></div>
-      <div class="ff"><label>Grado usura (1–5)</label>
+      <div class="ff"><label>Grado usura (1–5) *</label>
         <select id="f-wear"><option value="1">1 – Nuovo</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5 – Molto usato</option></select></div>
+
       <div class="ff"><label>Codice articolo (BO) *</label>
         <input id="f-article" type="text" placeholder="BO25P000000"></div>
-      <div class="ff"><label>Taglia</label>
+      <div class="ff"><label>Taglia *</label>
         <input id="f-size" type="text" placeholder="M, 42, XL..."></div>
+
       <div class="ff"><label>Tipo danno *</label>
         <select id="f-damage">${DAMAGE_TYPES.map(d=>`<option>${d}</option>`).join('')}</select></div>
-      <div class="ff"><label>Proposta tipo</label>
+      <div class="ff"><label>Tipo ricodifica suggerita *</label>
         <select id="f-proposal">${PROPOSAL_TYPES.map(p=>`<option>${p}</option>`).join('')}</select></div>
+
       <div class="ff full"><label>Note danno</label>
         <textarea id="f-note" placeholder="Descrivi il danno in dettaglio..."></textarea></div>
       <div class="ff full">
-        <label>Foto articolo</label>
+        <label>Foto articolo * <span id="photo-count-label" style="font-weight:400;color:var(--tx2)">(almeno 1 richiesta)</span></label>
         <div class="upload-area">
           <input type="file" id="f-photos" accept="image/*" multiple onchange="previewPhotos(this)">
           Tocca per scattare o selezionare foto · JPG, PNG – max 5 foto
@@ -566,16 +578,41 @@ function renderNewForm() {
         <div class="photo-preview" id="photo-preview"></div>
       </div>
     </div>
-    <div style="margin-top:20px;display:flex;gap:8px;flex-wrap:wrap">
+    <div id="form-err" style="color:var(--red-tx);font-size:12px;margin-top:12px;display:none"></div>
+    <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn btn-primary" id="submit-btn" onclick="submitRequest()">Invia richiesta</button>
       <button class="btn" onclick="setTab('pending')">Annulla</button>
     </div>
   </div>`;
 }
 
+function onProvenienzaChange() {
+  const prov = document.getElementById('f-prov')?.value;
+  const isCliente = prov === 'Cliente';
+  const rowName = document.getElementById('row-name');
+  const rowPdate = document.getElementById('row-pdate');
+  const rowUsed = document.getElementById('row-used');
+  if (rowName) {
+    rowName.querySelector('label').textContent = isCliente ? 'Nome cliente *' : 'Nome cliente';
+  }
+  if (rowPdate) {
+    rowPdate.querySelector('label').textContent = isCliente ? 'Data acquisto cliente *' : 'Data acquisto cliente';
+  }
+  if (rowUsed) {
+    rowUsed.querySelector('label').textContent = isCliente ? 'Articolo usato *' : 'Articolo usato';
+  }
+}
+
+function showFormErr(msg) {
+  const el = document.getElementById('form-err');
+  if (el) { el.textContent = msg; el.style.display = msg ? 'block' : 'none'; }
+}
+
 function previewPhotos(input) {
   uploadedFiles = Array.from(input.files).slice(0, 5);
   const preview = document.getElementById('photo-preview');
+  const countLabel = document.getElementById('photo-count-label');
+  if (countLabel) countLabel.textContent = uploadedFiles.length ? `(${uploadedFiles.length} foto selezionate)` : '(almeno 1 richiesta)';
   if (!preview) return;
   preview.innerHTML = uploadedFiles.map((f, i) => {
     const url = URL.createObjectURL(f);
@@ -596,9 +633,33 @@ function removePhoto(idx) {
 }
 
 async function submitRequest() {
-  const name = document.getElementById('f-name')?.value?.trim();
+  showFormErr('');
+  const prov = document.getElementById('f-prov')?.value;
+  const isCliente = prov === 'Cliente';
   const article = document.getElementById('f-article')?.value?.trim();
-  if (!name || !article) { showToast('Compila i campi obbligatori (*)'); return; }
+  const size = document.getElementById('f-size')?.value?.trim();
+  const ddate = document.getElementById('f-ddate')?.value;
+  const wear = document.getElementById('f-wear')?.value;
+  const damage = document.getElementById('f-damage')?.value;
+  const proposal = document.getElementById('f-proposal')?.value;
+  const name = document.getElementById('f-name')?.value?.trim();
+  const pdate = document.getElementById('f-pdate')?.value;
+
+  // Campi sempre obbligatori
+  if (!prov) return showFormErr('Seleziona la provenienza.');
+  if (!ddate) return showFormErr('Inserisci la data di consegna in negozio.');
+  if (!wear) return showFormErr('Seleziona il grado di usura.');
+  if (!article) return showFormErr('Inserisci il codice articolo (BO).');
+  if (!size) return showFormErr('Inserisci la taglia.');
+  if (!damage) return showFormErr('Seleziona il tipo di danno.');
+  if (!proposal) return showFormErr('Seleziona il tipo di ricodifica.');
+  if (!uploadedFiles.length) return showFormErr('Carica almeno una foto del danno.');
+
+  // Campi obbligatori solo per Cliente
+  if (isCliente) {
+    if (!name) return showFormErr('Inserisci il nome del cliente.');
+    if (!pdate) return showFormErr('Inserisci la data di acquisto del cliente.');
+  }
 
   const btn = document.getElementById('submit-btn');
   btn.disabled = true;
@@ -620,19 +681,19 @@ async function submitRequest() {
     id: genId(),
     store_id: currentUser.id,
     date: today(),
-    provenienza: document.getElementById('f-prov').value,
+    provenienza: prov,
     store_purchase: document.getElementById('f-storepurch').value,
-    customer_name: name,
+    customer_name: name || '—',
     customer_email: document.getElementById('f-email').value,
     card: document.getElementById('f-card').value,
-    purchase_date: document.getElementById('f-pdate').value,
-    dropoff_date: document.getElementById('f-ddate').value,
+    purchase_date: pdate || null,
+    dropoff_date: ddate,
     used: document.getElementById('f-used').value,
-    wear: document.getElementById('f-wear').value,
+    wear,
     article_code: article,
-    size: document.getElementById('f-size').value,
-    damage_type: document.getElementById('f-damage').value,
-    proposal: document.getElementById('f-proposal').value,
+    size,
+    damage_type: damage,
+    proposal,
     note: document.getElementById('f-note').value,
     photo_urls: photoUrls,
     status: 'pending'
@@ -640,7 +701,7 @@ async function submitRequest() {
 
   const { error } = await sb.from('requests').insert(req);
   if (error) {
-    showToast('Errore invio: '+error.message);
+    showFormErr('Errore invio: '+error.message);
     btn.disabled = false; btn.textContent = 'Invia richiesta';
     return;
   }
