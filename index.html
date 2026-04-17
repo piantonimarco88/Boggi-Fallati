@@ -7,6 +7,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -170,6 +171,9 @@ tr.clickable:hover td{background:var(--bg2);cursor:pointer}
 .stats-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
 .btn-excel{background:var(--green-bg);color:var(--green-tx);border-color:var(--green-br);padding:7px 14px;border-radius:var(--r);border:0.5px solid;cursor:pointer;font-size:13px;font-family:var(--font);font-weight:500}
 .btn-excel:hover{opacity:.85}
+.btn-zip{background:var(--blue-bg);color:var(--blue-tx);border-color:var(--blue-br);padding:7px 14px;border-radius:var(--r);border:0.5px solid;cursor:pointer;font-size:13px;font-family:var(--font);font-weight:500}
+.btn-zip:hover{opacity:.85}
+.btn-zip:disabled{opacity:.5;cursor:not-allowed}
 
 /* TABLE COLUMN FILTERS */
 .th-filter{display:flex;flex-direction:column;gap:3px;cursor:default}
@@ -189,9 +193,9 @@ tr.clickable:hover td{background:var(--bg2);cursor:pointer}
 /* MOBILE BOTTOM NAV */
 .mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:0.5px solid var(--br);z-index:90;padding:0 0 env(safe-area-inset-bottom,0)}
 .mobile-nav-inner{display:flex;align-items:stretch}
-.mob-nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px 8px;border:none;background:none;cursor:pointer;font-family:var(--font);font-size:10px;color:var(--tx2);gap:3px;border-top:2px solid transparent;min-height:56px}
+.mob-nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 2px 6px;border:none;background:none;cursor:pointer;font-family:var(--font);font-size:9px;color:var(--tx2);gap:2px;border-top:2px solid transparent;min-height:52px}
 .mob-nav-btn.active{color:var(--tx);border-top-color:var(--tx)}
-.mob-nav-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.mob-nav-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 .mob-nav-badge{background:var(--amber-bg);color:var(--amber-tx);font-size:10px;padding:1px 5px;border-radius:8px;font-weight:500;line-height:1.4}
 @media(max-width:600px){
   .sidebar{display:none}
@@ -245,7 +249,7 @@ const TRANSLATIONS = {
     roleStore:'Negozio',roleSede:'Sede',logout:'Esci',
     titlePendingSede:'Da approvare',titlePendingStore:'Richieste in attesa',
     titleAll:'Storico richieste',titleNew:'Nuova richiesta fallato',titleStats:'Statistiche',
-    downloadExcel:'Scarica Excel',newRequest:'+ Nuova richiesta',
+    downloadExcel:'Scarica Excel',downloadZip:'Scarica foto (ZIP)',toastZipPrep:'Preparazione ZIP foto...',toastZipDone:'ZIP scaricato: ',toastZipEmpty:'Nessuna foto da scaricare.',newRequest:'+ Nuova richiesta',
     metricPending:'In attesa',metricRegion:'Regione',metricToday:'Oggi',metricStores:'negozi',
     colDate:'Data',colStore:'Negozio',colCustomer:'Cliente',colArticle:'Articolo',
     colDamage:'Tipo danno',colProv:'Provenienza',colProposal:'Ricodifica',colStatus:'Stato',
@@ -309,7 +313,7 @@ const TRANSLATIONS = {
     roleStore:'Store',roleSede:'Head Office',logout:'Logout',
     titlePendingSede:'To approve',titlePendingStore:'Pending requests',
     titleAll:'Request history',titleNew:'New flawed item request',titleStats:'Statistics',
-    downloadExcel:'Download Excel',newRequest:'+ New request',
+    downloadExcel:'Download Excel',downloadZip:'Download photos (ZIP)',toastZipPrep:'Preparing photos ZIP...',toastZipDone:'ZIP downloaded: ',toastZipEmpty:'No photos to download.',newRequest:'+ New request',
     metricPending:'Pending',metricRegion:'Region',metricToday:'Today',metricStores:'stores',
     colDate:'Date',colStore:'Store',colCustomer:'Customer',colArticle:'Article',
     colDamage:'Damage type',colProv:'Source',colProposal:'Reclass.',colStatus:'Status',
@@ -373,7 +377,7 @@ const TRANSLATIONS = {
     roleStore:'Boutique',roleSede:'Siège',logout:'Déconnexion',
     titlePendingSede:'À approuver',titlePendingStore:'Demandes en attente',
     titleAll:'Historique des demandes',titleNew:'Nouvelle demande article défectueux',titleStats:'Statistiques',
-    downloadExcel:'Télécharger Excel',newRequest:'+ Nouvelle demande',
+    downloadExcel:'Télécharger Excel',downloadZip:'Télécharger photos (ZIP)',toastZipPrep:'Préparation ZIP photos...',toastZipDone:'ZIP téléchargé : ',toastZipEmpty:'Aucune photo à télécharger.',newRequest:'+ Nouvelle demande',
     metricPending:'En attente',metricRegion:'Région',metricToday:"Aujourd'hui",metricStores:'boutiques',
     colDate:'Date',colStore:'Boutique',colCustomer:'Client',colArticle:'Article',
     colDamage:'Type de défaut',colProv:'Provenance',colProposal:'Reclassif.',colStatus:'Statut',
@@ -437,7 +441,7 @@ const TRANSLATIONS = {
     roleStore:'Filiale',roleSede:'Zentrale',logout:'Abmelden',
     titlePendingSede:'Zu genehmigen',titlePendingStore:'Ausstehende Anfragen',
     titleAll:'Anfrageverlauf',titleNew:'Neue Fehlartikel-Anfrage',titleStats:'Statistiken',
-    downloadExcel:'Excel herunterladen',newRequest:'+ Neue Anfrage',
+    downloadExcel:'Excel herunterladen',downloadZip:'Fotos herunterladen (ZIP)',toastZipPrep:'ZIP wird vorbereitet...',toastZipDone:'ZIP heruntergeladen: ',toastZipEmpty:'Keine Fotos zum Herunterladen.',newRequest:'+ Neue Anfrage',
     metricPending:'Ausstehend',metricRegion:'Region',metricToday:'Heute',metricStores:'Filialen',
     colDate:'Datum',colStore:'Filiale',colCustomer:'Kunde',colArticle:'Artikel',
     colDamage:'Schadensart',colProv:'Herkunft',colProposal:'Umklass.',colStatus:'Status',
@@ -501,7 +505,7 @@ const TRANSLATIONS = {
     roleStore:'Tienda',roleSede:'Sede',logout:'Salir',
     titlePendingSede:'Por aprobar',titlePendingStore:'Solicitudes pendientes',
     titleAll:'Historial de solicitudes',titleNew:'Nueva solicitud artículo defectuoso',titleStats:'Estadísticas',
-    downloadExcel:'Descargar Excel',newRequest:'+ Nueva solicitud',
+    downloadExcel:'Descargar Excel',downloadZip:'Descargar fotos (ZIP)',toastZipPrep:'Preparando ZIP de fotos...',toastZipDone:'ZIP descargado: ',toastZipEmpty:'No hay fotos para descargar.',newRequest:'+ Nueva solicitud',
     metricPending:'Pendiente',metricRegion:'Región',metricToday:'Hoy',metricStores:'tiendas',
     colDate:'Fecha',colStore:'Tienda',colCustomer:'Cliente',colArticle:'Artículo',
     colDamage:'Tipo de daño',colProv:'Origen',colProposal:'Reclas.',colStatus:'Estado',
@@ -565,7 +569,7 @@ const TRANSLATIONS = {
     roleStore:'Üzlet',roleSede:'Központ',logout:'Kilépés',
     titlePendingSede:'Jóváhagyásra vár',titlePendingStore:'Függő kérések',
     titleAll:'Kérések előzményei',titleNew:'Új hibás cikk kérés',titleStats:'Statisztikák',
-    downloadExcel:'Excel letöltése',newRequest:'+ Új kérés',
+    downloadExcel:'Excel letöltése',downloadZip:'Fotók letöltése (ZIP)',toastZipPrep:'ZIP előkészítése...',toastZipDone:'ZIP letöltve: ',toastZipEmpty:'Nincsenek letölthető fotók.',newRequest:'+ Új kérés',
     metricPending:'Függőben',metricRegion:'Régió',metricToday:'Ma',metricStores:'üzlet',
     colDate:'Dátum',colStore:'Üzlet',colCustomer:'Ügyfél',colArticle:'Cikk',
     colDamage:'Hibatípus',colProv:'Forrás',colProposal:'Átoszt.',colStatus:'Állapot',
@@ -629,7 +633,7 @@ const TRANSLATIONS = {
     roleStore:'Butik',roleSede:'Huvudkontor',logout:'Logga ut',
     titlePendingSede:'Att godkänna',titlePendingStore:'Väntande ärenden',
     titleAll:'Ärendehistorik',titleNew:'Nytt ärende felaktig artikel',titleStats:'Statistik',
-    downloadExcel:'Ladda ner Excel',newRequest:'+ Nytt ärende',
+    downloadExcel:'Ladda ner Excel',downloadZip:'Ladda ner foton (ZIP)',toastZipPrep:'Förbereder foton ZIP...',toastZipDone:'ZIP nedladdad: ',toastZipEmpty:'Inga foton att ladda ner.',newRequest:'+ Nytt ärende',
     metricPending:'Väntande',metricRegion:'Region',metricToday:'Idag',metricStores:'butiker',
     colDate:'Datum',colStore:'Butik',colCustomer:'Kund',colArticle:'Artikel',
     colDamage:'Feltyp',colProv:'Källa',colProposal:'Omkl.',colStatus:'Status',
@@ -693,7 +697,7 @@ const TRANSLATIONS = {
     roleStore:'Κατάστημα',roleSede:'Κεντρικά',logout:'Αποσύνδεση',
     titlePendingSede:'Προς έγκριση',titlePendingStore:'Αναμένοντα αιτήματα',
     titleAll:'Ιστορικό αιτημάτων',titleNew:'Νέο αίτημα ελαττωματικού',titleStats:'Στατιστικά',
-    downloadExcel:'Λήψη Excel',newRequest:'+ Νέο αίτημα',
+    downloadExcel:'Λήψη Excel',downloadZip:'Λήψη φωτογραφιών (ZIP)',toastZipPrep:'Προετοιμασία ZIP...',toastZipDone:'ZIP ολοκληρώθηκε: ',toastZipEmpty:'Δεν υπάρχουν φωτογραφίες.',newRequest:'+ Νέο αίτημα',
     metricPending:'Σε αναμονή',metricRegion:'Περιοχή',metricToday:'Σήμερα',metricStores:'καταστήματα',
     colDate:'Ημερομηνία',colStore:'Κατάστημα',colCustomer:'Πελάτης',colArticle:'Είδος',
     colDamage:'Τύπος βλάβης',colProv:'Προέλευση',colProposal:'Επαν.',colStatus:'Κατάσταση',
@@ -757,7 +761,7 @@ const TRANSLATIONS = {
     roleStore:'Loja',roleSede:'Sede',logout:'Sair',
     titlePendingSede:'Para aprovar',titlePendingStore:'Pedidos pendentes',
     titleAll:'Histórico de pedidos',titleNew:'Novo pedido artigo com defeito',titleStats:'Estatísticas',
-    downloadExcel:'Transferir Excel',newRequest:'+ Novo pedido',
+    downloadExcel:'Transferir Excel',downloadZip:'Transferir fotos (ZIP)',toastZipPrep:'A preparar ZIP de fotos...',toastZipDone:'ZIP transferido: ',toastZipEmpty:'Sem fotos para transferir.',newRequest:'+ Novo pedido',
     metricPending:'Pendente',metricRegion:'Região',metricToday:'Hoje',metricStores:'lojas',
     colDate:'Data',colStore:'Loja',colCustomer:'Cliente',colArticle:'Artigo',
     colDamage:'Tipo de defeito',colProv:'Origem',colProposal:'Reclas.',colStatus:'Estado',
@@ -961,7 +965,7 @@ function renderApp() {
       <div class="topbar">
         <span class="topbar-title" id="page-title">${isStore ? t('titlePendingStore') : t('titlePendingSede')}</span>
         <div style="display:flex;gap:8px;align-items:center">
-          ${isStore ? `<button class="btn btn-primary" onclick="setTab('new')">${t('newRequest')}</button>` : `<button class="btn-excel" onclick="exportExcel()">${t('downloadExcel')}</button>`}
+          ${isStore ? `<button class="btn btn-primary" onclick="setTab('new')">${t('newRequest')}</button>` : `<div style="display:flex;gap:6px"><button class="btn-excel" onclick="exportExcel()">${t('downloadExcel')}</button><button class="btn-zip" id="zip-btn" onclick="exportPhotosZip()">${t('downloadZip')}</button></div>`}
         </div>
       </div>
       <div class="content" id="content-area">
@@ -1005,6 +1009,10 @@ function renderApp() {
         <button class="mob-nav-btn" id="mob-stats" onclick="setTab('stats')">
           <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
           <span>${t('navStats')}</span>
+        </button>
+        <button class="mob-nav-btn" id="mob-registry" onclick="setTab('registry')">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span>${t('navRegistry')}</span>
         </button>
         <button class="mob-nav-btn" id="mob-logout" onclick="logout()">
           <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -2113,6 +2121,101 @@ async function exportExcel() {
   showToast(t('toastExportReady') + fname);
 }
 
+// ── PHOTOS ZIP EXPORT ──────────────────────────────────────
+async function exportPhotosZip() {
+  const btn = document.getElementById('zip-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '...'; }
+
+  showToast(t('toastZipPrep'), 60000);
+
+  const data = await fetchRequests(null);
+  // Collect all requests that have photos
+  const withPhotos = data.filter(r => r.photo_urls && r.photo_urls.length > 0);
+
+  if (!withPhotos.length) {
+    showToast(t('toastZipEmpty'));
+    if (btn) { btn.disabled = false; btn.textContent = t('downloadZip'); }
+    return;
+  }
+
+  const zip = new JSZip();
+
+  // Group by article_code — sanitize folder name
+  const sanitize = str => (str || 'senza_codice').replace(/[^a-zA-Z0-9_\-\.]/g, '_').slice(0, 40);
+
+  let totalPhotos = 0;
+  let failedPhotos = 0;
+
+  // Process each request
+  for (const r of withPhotos) {
+    const folderName = sanitize(r.article_code);
+    // Sub-folder: articleCode / requestId_date
+    const subFolder = `${folderName}/${sanitize(r.date)}_${r.id.slice(0,6)}`;
+    const folder = zip.folder(subFolder);
+
+    // Add a small metadata txt file per request
+    const store = allAccounts.find(a => a.id === r.store_id);
+    const meta = [
+      `${t('fArticleLabel')}: ${r.article_code}`,
+      `${t('fStore')}: ${store?.name || r.store_id}`,
+      `${t('colDate')}: ${r.date}`,
+      `${t('fDamageLabel')}: ${r.damage_type || '—'}`,
+      `${t('fProposalLabel')}: ${r.proposal || '—'}`,
+      `${t('fCust')}: ${r.customer_name || '—'}`,
+      `${t('colStatus')}: ${statusLabel(r.status)}`,
+      r.approval_note ? `${t('panelHqReply')}: ${r.approval_note}` : '',
+    ].filter(Boolean).join('\n');
+    folder.file('info.txt', meta);
+
+    // Download each photo
+    for (let i = 0; i < r.photo_urls.length; i++) {
+      const url = r.photo_urls[i];
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const blob = await response.blob();
+        const ext = url.split('?')[0].split('.').pop().toLowerCase() || 'jpg';
+        folder.file(`foto_${i + 1}.${ext}`, blob);
+        totalPhotos++;
+      } catch (e) {
+        failedPhotos++;
+      }
+    }
+  }
+
+  if (totalPhotos === 0) {
+    showToast(t('toastZipEmpty'));
+    if (btn) { btn.disabled = false; btn.textContent = t('downloadZip'); }
+    return;
+  }
+
+  // Generate zip
+  const zipBlob = await zip.generateAsync({
+    type: 'blob',
+    compression: 'DEFLATE',
+    compressionOptions: { level: 6 },
+    streamFiles: true
+  }, metadata => {
+    // Update button with progress
+    if (btn) btn.textContent = `${Math.round(metadata.percent)}%`;
+  });
+
+  const region = currentUser.region.toLowerCase();
+  const fname = `fallati_foto_${region}_${new Date().toISOString().slice(0,10)}.zip`;
+
+  // Trigger download
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(zipBlob);
+  a.download = fname;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); document.body.removeChild(a); }, 2000);
+
+  const msg = `${t('toastZipDone')}${fname}${failedPhotos > 0 ? ` (${failedPhotos} foto non scaricate)` : ''}`;
+  showToast(msg, 5000);
+  if (btn) { btn.disabled = false; btn.textContent = t('downloadZip'); }
+}
+
 // ── STORE REGISTRY ─────────────────────────────────────────
 async function renderRegistry() {
   const tc = document.getElementById('tab-content');
@@ -2122,12 +2225,11 @@ async function renderRegistry() {
 
   const rows = (stores||[]).map(s => `
     <tr>
-      <td style="font-family:var(--mono);font-size:12px">${s.id}</td>
+      <td style="font-family:var(--mono);font-size:12px;white-space:nowrap">${s.id}</td>
       <td style="font-weight:500">${s.name}</td>
       <td><span class="badge" style="background:var(--bg2);color:var(--tx2)">${s.region}</span></td>
-      <td style="font-size:12px;color:var(--tx2)">${s.email||'—'}</td>
       <td><span class="badge ${s.active?'b-approved':'b-rejected'}">${s.active?t('regActive'):'—'}</span></td>
-      <td>
+      <td style="white-space:nowrap">
         <button class="btn" style="font-size:11px;padding:4px 10px;margin-right:4px" onclick="openStoreForm('${s.id}')">${t('regEditStore')}</button>
         <button class="btn btn-reject" style="font-size:11px;padding:4px 8px" onclick="deleteStore('${s.id}','${s.name.replace(/'/g,'')}')">${t('regDeleteStore')}</button>
       </td>
@@ -2141,11 +2243,10 @@ async function renderRegistry() {
       <div class="table-scroll">
         <table>
           <thead><tr>
-            <th style="width:100px">${t('regStoreId')}</th>
+            <th style="width:90px">${t('regStoreId')}</th>
             <th>${t('regStoreName')}</th>
-            <th style="width:80px">${t('regRegion')}</th>
-            <th>${t('regEmail')}</th>
-            <th style="width:70px">${t('regActive')}</th>
+            <th style="width:70px">${t('regRegion')}</th>
+            <th style="width:80px">${t('regActive')}</th>
             <th style="width:180px"></th>
           </tr></thead>
           <tbody>${rows}</tbody>
@@ -2178,8 +2279,6 @@ async function openStoreForm(storeId) {
             <option value="ITA" ${store.region==='ITA'?'selected':''}>ITA</option>
             <option value="INT" ${store.region==='INT'?'selected':''}>INT</option>
           </select></div>
-        <div class="ff"><label>${t('regEmail')}</label>
-          <input id="reg-email" type="email" value="${store.email||''}" placeholder="mag.negozio@boggi.it"></div>
         <div class="ff"><label>${t('regPassword')} ${isNew?'*':''}</label>
           <input id="reg-pwd" type="text" value="${store.password||''}" placeholder="${isNew?'store1001':'lascia vuoto per non cambiare'}"></div>
         <div class="ff"><label>${t('regActive')}</label>
@@ -2201,7 +2300,6 @@ async function saveStore(isNew, oldId) {
   const id = document.getElementById('reg-id')?.value?.trim();
   const name = document.getElementById('reg-name')?.value?.trim();
   const region = document.getElementById('reg-region')?.value;
-  const email = document.getElementById('reg-email')?.value?.trim();
   const pwd = document.getElementById('reg-pwd')?.value?.trim();
   const active = document.getElementById('reg-active')?.value === 'true';
   const errEl = document.getElementById('reg-err');
@@ -2216,11 +2314,11 @@ async function saveStore(isNew, oldId) {
     const { data: existing } = await sb.from('accounts').select('id').eq('id',id).single();
     if (existing) return showErr(t('regErrIdExists'));
     const { error } = await sb.from('accounts').insert({
-      id, name, role:'store', region, email, password: pwd, active
+      id, name, role:'store', region, email: '', password: pwd, active
     });
     if (error) return showErr(t('errSend')+error.message);
   } else {
-    const updates = { name, region, email, active };
+    const updates = { name, region, active };
     if (pwd) updates.password = pwd;
     const { error } = await sb.from('accounts').update(updates).eq('id', oldId || id);
     if (error) return showErr(t('errSend')+error.message);
