@@ -223,9 +223,13 @@ const SUPABASE_URL = 'https://mcjxhhdgadajlmsiyvdq.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1janhoaGRnYWRhamxtc2l5dmRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNjk4MDQsImV4cCI6MjA5MTk0NTgwNH0.7yMOc2o23eg4YYnlhKupyAjslgRMDofLiCaOd2aWLFI';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+
+const LOGO_LOGIN = 'data:image/jpeg;base64,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';
+const LOGO_SIDEBAR = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAAgABwDASIAAhEBAxEB/8QAGwAAAQQDAAAAAAAAAAAAAAAABgIDBAgFBwn/xAAwEAACAQMCBAIIBwAAAAAAAAABAgMEBREAEgYTITEHCBUzQVFhdKGyFCIyQlKRov/EABYBAQEBAAAAAAAAAAAAAAAAAAABAv/EABYRAQEBAAAAAAAAAAAAAAAAAAABEf/aAAwDAQACEQMRAD8A6dU0VTcKitY3CohWOcxqkQjwAAvvQn2+/UC43y02iuNHXcXxUVYE5hp6iqpo5Av8tpUHHx1lrN6y4/NN9q6qz5iKaCr8yMJmASnbw3vdFJUtTGZI5JWTlocAhmYZITu2OgOjNuRaZbbMyhlu1WQRkEcrr/jSrLLLJTzrNM07RzyRh3ABIB6ZwAPpoK8uyVUPgTwHDW2Kr4aqobLSwvaa+ZpZ6bZGFCuzAMTgA9QD1wQCNGdk9XWfNy/dosC3F924gsvD9xqeGqFLhcvSSryZI945Z272xuXsOvfQ9T8b+I7zIajhWGOArI8xgZZJIiPxHLRBzAsm8JTZfIC8456DK7BiM9JLXxSW2epilmZwyGMqylQOxcH2HuNL5w27fQc+3G3G2HGMAY/X8B/Q0QIUfFnGc94t9PNYVp4Zbk0VUwCukNKDUBWVhJlmwlOWbbtUyle/Y1snq6z5uX7tNrVsj71s1Sr9fzAQg9Tk/v8AaeunrLFLHTztNC0DSTySBHIJAJ6ZwSPror//2Q==';
+
 const DAMAGE_TYPES_KEYS = ['damage_fabric','damage_stitching','damage_shoes','damage_color','damage_pilling','damage_accessories','damage_thread','damage_washing','damage_zip','damage_tailoring','damage_padding'];
 const PROPOSAL_TYPES = ['FL','FB','FF'];
-const PROVENIENZA_KEYS = ['prov_customer','prov_store','prov_supplier','prov_ecommerce'];
+const PROVENIENZA_KEYS = ['prov_store','prov_customer','prov_supplier','prov_ecommerce'];
 
 // ── i18n ────────────────────────────────────────────────────
 const LANGS = {
@@ -887,7 +891,7 @@ function renderLogin() {
   ).join('');
 
   return `<div class="login-wrap"><div class="login-card">
-    <div class="lang-bar">${langBtns}</div>
+    <div style="text-align:center;margin-bottom:20px"><img src="${LOGO_LOGIN}" alt="Boggi Milano" style="height:100px;width:auto;display:inline-block"></div><div class="lang-bar">${langBtns}</div>
     <div class="login-title">${t('loginTitle')}</div>
     <div class="login-sub">${t('loginSub')}</div>
     <div style="font-size:11px;color:var(--tx2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">${t('hqLabel')}</div>
@@ -953,7 +957,7 @@ function renderApp() {
   return `
   <div class="app">
     <div class="sidebar">
-      <div class="logo"><div class="logo-title">${t('appTitle')}</div><div class="logo-sub">${t('appSub')}</div></div>
+      <div class="logo"><div style="display:flex;align-items:center;gap:8px"><img src="${LOGO_SIDEBAR}" alt="Boggi" style="height:28px;width:auto;flex-shrink:0"><div><div class="logo-title">${t('appTitle')}</div><div class="logo-sub">${t('appSub')}</div></div></div></div>
       <div class="nav">${nav}</div>
       <div class="user-area">
         <div class="user-role">${currentUser.role === 'sede' ? t('roleSede')+' · '+currentUser.region : t('roleStore')+' · '+currentUser.region}</div>
@@ -1680,19 +1684,19 @@ function renderNewForm() {
       <div class="ff"><label>${t('fStorePurch')}</label>
         <select id="f-storepurch">${storeOptions}</select></div>
 
-      <div class="ff" id="row-name"><label>${t('fNameReq')}</label>
+      <div class="ff" id="row-name"><label>${t('fName')}</label>
         <input id="f-name" type="text" placeholder=""></div>
       <div class="ff"><label>${t('fEmail')}</label>
         <input id="f-email" type="email" placeholder="email@example.com"></div>
       <div class="ff"><label>${t('fCard')}</label>
         <input id="f-card" type="text" placeholder="400000XXXXX"></div>
 
-      <div class="ff" id="row-pdate"><label>${t('fPurchDateReq')}</label>
+      <div class="ff" id="row-pdate"><label>${t('fPurchDate')}</label>
         <input id="f-pdate" type="date"></div>
       <div class="ff"><label>${t('fDropoff')}</label>
         <input id="f-ddate" type="date"></div>
 
-      <div class="ff" id="row-used"><label>${t('fUsedReq')}</label>
+      <div class="ff" id="row-used"><label>${t('fUsed')}</label>
         <select id="f-used"><option value="SI">${t('usedYes')}</option><option value="NO">${t('usedNo')}</option></select></div>
       <div class="ff"><label>${t('fWear')}</label>
         <select id="f-wear"><option value="1">${t('wear1')}</option><option value="2">${t('wear2')}</option><option value="3">${t('wear3')}</option><option value="4">${t('wear4')}</option><option value="5">${t('wear5')}</option></select></div>
