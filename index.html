@@ -170,7 +170,16 @@ tr.clickable:hover td{background:var(--bg2);cursor:pointer}
 .btn-excel{background:var(--green-bg);color:var(--green-tx);border-color:var(--green-br);padding:7px 14px;border-radius:var(--r);border:0.5px solid;cursor:pointer;font-size:13px;font-family:var(--font);font-weight:500}
 .btn-excel:hover{opacity:.85}
 
-/* MOBILE */
+/* TABLE COLUMN FILTERS */
+.th-filter{display:flex;flex-direction:column;gap:3px;cursor:default}
+.th-label{display:flex;align-items:center;gap:4px;white-space:nowrap}
+.th-sort{font-size:9px;opacity:.5;cursor:pointer;user-select:none}
+.th-sort:hover{opacity:1}
+.col-filter{font-size:11px;padding:3px 6px;border:0.5px solid var(--br2);border-radius:4px;background:var(--bg);color:var(--tx);font-family:var(--font);width:100%;margin-top:2px}
+.col-filter:focus{outline:none;border-color:var(--br2)}
+.filter-active{border-color:#378ADD !important;background:var(--blue-bg) !important}
+.filter-clear-btn{font-size:10px;color:var(--tx2);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;margin-top:2px;font-family:var(--font)}
+.filter-count{font-size:11px;color:var(--tx2);margin-left:auto}
 @media(max-width:600px){
   .sidebar{display:none}
   .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -421,55 +430,162 @@ function renderPendingTab(data) {
     html += renderTableWrap(data, false, false);
   }
   tc.innerHTML = html;
+  renderTableRows(data, currentUser.role === 'sede');
 }
 
 function renderAllTab(data) {
   const tc = document.getElementById('tab-content');
   if (!tc) return;
   tc.innerHTML = renderTableWrap(data, currentUser.role === 'sede', false);
+  renderTableRows(data, currentUser.role === 'sede');
 }
 
-function renderTableWrap(data, showStore, showFilters) {
-  if (!data.length) return `<div class="table-wrap"><div class="empty">Nessuna richiesta da mostrare</div></div>`;
-  const storeOptions = showFilters
-    ? allAccounts.filter(a=>a.role==='store'&&a.region===currentUser.region)
-        .map(a=>`<option value="${a.id}">${a.name}</option>`).join('')
-    : '';
-  const filterBar = showFilters ? `
-    <div class="table-head">
-      <span style="font-weight:500;font-size:13px">Richieste (${data.length})</span>
-      <select class="filter-sel" id="store-filter" onchange="applyFilter()">
-        <option value="">Tutti i negozi</option>${storeOptions}
-      </select>
-    </div>` : `<div class="table-head"><span style="font-weight:500;font-size:13px">Richieste (${data.length})</span></div>`;
+// ── TABLE WITH COLUMN FILTERS ──────────────────────────────
+let tableData = [];
+let tableFilters = {};
+let tableSortCol = null;
+let tableSortDir = 1;
 
-  const rows = data.map(r => {
+function renderTableWrap(data, showStore, showFilters) {
+  tableData = data;
+  tableFilters = {};
+  tableSortCol = null;
+  tableSortDir = 1;
+  if (!data.length) return `<div class="table-wrap"><div class="empty">Nessuna richiesta da mostrare</div></div>`;
+
+  const cols = getTableCols(showStore);
+  return `<div class="table-wrap">
+    <div class="table-head">
+      <span style="font-weight:500;font-size:13px">Richieste</span>
+      <span class="filter-count" id="filter-count">${data.length} righe</span>
+      <button class="btn" style="font-size:11px;padding:4px 10px" onclick="clearAllFilters()">Rimuovi filtri</button>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr id="th-row">${cols.map(c=>renderTh(c)).join('')}<th></th></tr>
+        </thead>
+        <tbody id="table-rows"></tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+function getTableCols(showStore) {
+  const base = [
+    {key:'date', label:'Data', type:'text'},
+    ...(showStore ? [{key:'store_name', label:'Negozio', type:'select'}] : []),
+    {key:'customer_name', label:'Cliente', type:'text'},
+    {key:'article_code', label:'Articolo', type:'text'},
+    {key:'damage_type', label:'Tipo danno', type:'select'},
+    {key:'provenienza', label:'Provenienza', type:'select'},
+    {key:'proposal', label:'Ricodifica', type:'select'},
+    {key:'status', label:'Stato', type:'select'},
+  ];
+  return base;
+}
+
+function renderTh(col) {
+  const sortInd = tableSortCol === col.key ? (tableSortDir===1 ? ' ▲' : ' ▼') : '';
+  return `<th style="min-width:${col.type==='text'?'110px':'120px'}">
+    <div class="th-filter">
+      <div class="th-label">
+        <span style="cursor:pointer" onclick="sortTable('${col.key}')">${col.label}${sortInd}</span>
+      </div>
+      ${col.type==='text'
+        ? `<input class="col-filter" id="cf-${col.key}" placeholder="Cerca..." oninput="applyFilters()" onkeydown="if(event.key==='Escape'){this.value='';applyFilters()}">`
+        : `<select class="col-filter" id="cf-${col.key}" onchange="applyFilters()">
+            <option value="">Tutti</option>
+            ${getSelectOptions(col.key)}
+           </select>`}
+    </div>
+  </th>`;
+}
+
+function getSelectOptions(key) {
+  const vals = [...new Set(tableData.map(r => getRowVal(r, key)).filter(Boolean))].sort();
+  return vals.map(v => `<option value="${v}">${key==='status'?statusLabel(v):v}</option>`).join('');
+}
+
+function getRowVal(r, key) {
+  if (key === 'store_name') { const s = allAccounts.find(a=>a.id===r.store_id); return s?.name||r.store_id; }
+  if (key === 'status') return r.status;
+  return r[key] || '';
+}
+
+function applyFilters() {
+  const cols = getTableCols(document.getElementById('cf-store_name') !== null);
+  const filters = {};
+  cols.forEach(c => {
+    const el = document.getElementById('cf-'+c.key);
+    if (el && el.value) { filters[c.key] = el.value.toLowerCase(); el.classList.add('filter-active'); }
+    else if (el) el.classList.remove('filter-active');
+  });
+
+  let filtered = tableData.filter(r =>
+    Object.entries(filters).every(([key, val]) => {
+      const rv = getRowVal(r, key).toLowerCase();
+      return rv.includes(val);
+    })
+  );
+
+  if (tableSortCol) {
+    filtered = filtered.slice().sort((a,b)=>{
+      const av = getRowVal(a, tableSortCol).toLowerCase();
+      const bv = getRowVal(b, tableSortCol).toLowerCase();
+      return av < bv ? -tableSortDir : av > bv ? tableSortDir : 0;
+    });
+  }
+
+  renderTableRows(filtered, document.getElementById('cf-store_name') !== null);
+  const cnt = document.getElementById('filter-count');
+  if (cnt) cnt.textContent = `${filtered.length} di ${tableData.length} righe`;
+}
+
+function sortTable(key) {
+  if (tableSortCol === key) { tableSortDir *= -1; }
+  else { tableSortCol = key; tableSortDir = 1; }
+  // Re-render headers with sort indicator
+  const showStore = document.getElementById('cf-store_name') !== null;
+  const cols = getTableCols(showStore);
+  const thRow = document.getElementById('th-row');
+  if (thRow) thRow.innerHTML = cols.map(c=>renderTh(c)).join('') + '<th></th>';
+  // Restore filter values
+  Object.entries(tableFilters).forEach(([k,v])=>{
+    const el = document.getElementById('cf-'+k);
+    if (el) el.value = v;
+  });
+  applyFilters();
+}
+
+function clearAllFilters() {
+  document.querySelectorAll('.col-filter').forEach(el => { el.value = ''; el.classList.remove('filter-active'); });
+  tableSortCol = null; tableSortDir = 1;
+  applyFilters();
+}
+
+function renderTableRows(data, showStore) {
+  const tbody = document.getElementById('table-rows');
+  if (!tbody) return;
+  if (!data.length) { tbody.innerHTML = `<tr><td colspan="20" class="empty">Nessun risultato con i filtri applicati</td></tr>`; return; }
+  tbody.innerHTML = data.map(r => {
     const store = allAccounts.find(a => a.id === r.store_id);
     const storeCols = showStore ? `<td title="${store?.name||r.store_id}" style="font-size:12px;max-width:130px">${store?.name||r.store_id}</td>` : '';
-    return `<tr class="clickable" data-id="${r.id}" data-store="${r.store_id}" onclick="openPanel('${r.id}')">
-      <td style="color:var(--tx2);font-size:12px;white-space:nowrap">${r.date}</td>
+    return `<tr class="clickable" data-id="${r.id}" onclick="openPanel('${r.id}')">
+      <td style="color:var(--tx2);font-size:12px;white-space:nowrap">${r.date||''}</td>
       ${storeCols}
-      <td><div style="font-weight:500">${r.customer_name}</div><div style="font-size:11px;color:var(--tx2)">${r.customer_email||''}</div></td>
-      <td style="font-size:12px;font-family:var(--mono)">${r.article_code}</td>
-      <td style="font-size:12px;max-width:150px">${r.damage_type||''}</td>
+      <td><div style="font-weight:500;overflow:hidden;text-overflow:ellipsis">${r.customer_name||''}</div><div style="font-size:11px;color:var(--tx2)">${r.customer_email||''}</div></td>
+      <td style="font-size:12px;font-family:var(--mono)">${r.article_code||''}</td>
+      <td style="font-size:12px">${r.damage_type||''}</td>
+      <td style="font-size:12px">${r.provenienza||''}</td>
+      <td style="font-size:12px">${r.proposal||''}</td>
       <td><span class="badge ${statusClass(r.status)}">${statusLabel(r.status)}</span></td>
       <td><button class="btn" style="font-size:11px;padding:4px 10px;white-space:nowrap" onclick="event.stopPropagation();openPanel('${r.id}')">Apri</button></td>
     </tr>`;
   }).join('');
-
-  const thStore = showStore ? '<th>Negozio</th>' : '';
-  return `<div class="table-wrap">${filterBar}<div class="table-scroll">
-    <table><thead><tr><th>Data</th>${thStore}<th>Cliente</th><th>Articolo</th><th>Tipo danno</th><th>Stato</th><th></th></tr></thead>
-    <tbody id="table-rows">${rows}</tbody></table></div></div>`;
 }
 
-function applyFilter() {
-  const val = document.getElementById('store-filter')?.value || '';
-  const rows = document.querySelectorAll('#table-rows tr');
-  rows.forEach(r => {
-    r.style.display = (!val || r.dataset.store === val) ? '' : 'none';
-  });
-}
+function applyFilter() {} // legacy stub, kept for safety
 
 // ── DETAIL PANEL ───────────────────────────────────────────
 async function openPanel(id) {
@@ -908,41 +1024,81 @@ async function exportExcel() {
   const data = await fetchRequests(null);
   if (!data.length) { showToast('Nessun dato da esportare'); return; }
 
-  const rows = data.map(r => {
+  const MAX_PHOTOS = 5;
+
+  // Build header row
+  const photoHeaders = Array.from({length: MAX_PHOTOS}, (_,i) => `Foto ${i+1}`);
+  const headers = [
+    'Data','Negozio','Provenienza','Nome cliente','Email cliente',
+    'Privilege Card','Data acquisto','Data consegna','Articolo usato',
+    'Grado usura','Codice articolo','Taglia','Tipo danno',
+    'Ricodifica suggerita','Note danno','Stato','Nota risposta sede',
+    'Valutato da','Data valutazione','Foto (n.)',
+    ...photoHeaders
+  ];
+
+  const ws = XLSX.utils.aoa_to_sheet([headers]);
+
+  data.forEach((r, rowIdx) => {
     const store = allAccounts.find(a => a.id === r.store_id);
-    return {
-      'Data': r.date || '',
-      'Negozio': store?.name || r.store_id,
-      'Provenienza': r.provenienza || '',
-      'Nome cliente': r.customer_name || '',
-      'Email cliente': r.customer_email || '',
-      'Privilege Card': r.card || '',
-      'Data acquisto': r.purchase_date || '',
-      'Data consegna': r.dropoff_date || '',
-      'Articolo usato': r.used === 'SI' ? 'Sì' : (r.used === 'NO' ? 'No' : ''),
-      'Grado usura': r.wear || '',
-      'Codice articolo': r.article_code || '',
-      'Taglia': r.size || '',
-      'Tipo danno': r.damage_type || '',
-      'Ricodifica suggerita': r.proposal || '',
-      'Note danno': r.note || '',
-      'Stato': statusLabel(r.status),
-      'Nota risposta sede': r.approval_note || '',
-      'Valutato da': r.decided_by || '',
-      'Data valutazione': r.decided_at ? new Date(r.decided_at).toLocaleDateString('it-IT') : '',
-      'Foto (n.)': (r.photo_urls || []).length,
-    };
+    const photos = r.photo_urls || [];
+    const baseRow = [
+      r.date || '',
+      store?.name || r.store_id,
+      r.provenienza || '',
+      r.customer_name || '',
+      r.customer_email || '',
+      r.card || '',
+      r.purchase_date || '',
+      r.dropoff_date || '',
+      r.used === 'SI' ? 'Sì' : (r.used === 'NO' ? 'No' : ''),
+      r.wear || '',
+      r.article_code || '',
+      r.size || '',
+      r.damage_type || '',
+      r.proposal || '',
+      r.note || '',
+      statusLabel(r.status),
+      r.approval_note || '',
+      r.decided_by || '',
+      r.decided_at ? new Date(r.decided_at).toLocaleDateString('it-IT') : '',
+      photos.length,
+    ];
+
+    // Add photo values (as plain text first)
+    for (let i = 0; i < MAX_PHOTOS; i++) {
+      baseRow.push(photos[i] || '');
+    }
+
+    XLSX.utils.sheet_add_aoa(ws, [baseRow], {origin: rowIdx + 1});
+
+    // Convert photo cells to hyperlinks
+    photos.forEach((url, pIdx) => {
+      if (!url) return;
+      const colIdx = headers.length - MAX_PHOTOS + pIdx; // column index of this photo
+      const cellAddr = XLSX.utils.encode_cell({r: rowIdx + 1, c: colIdx});
+      ws[cellAddr] = {
+        v: `Foto ${pIdx + 1}`,
+        t: 's',
+        l: { Target: url, Tooltip: url }
+      };
+    });
   });
 
-  const ws = XLSX.utils.json_to_sheet(rows);
-  // Larghezze colonne
-  ws['!cols'] = [10,22,12,20,24,16,12,12,10,8,16,8,24,10,30,12,30,18,14,8].map(w=>({wch:w}));
+  // Column widths
+  const colWidths = [10,22,12,20,24,16,12,12,10,8,16,8,24,10,30,12,30,18,14,8, ...Array(MAX_PHOTOS).fill(14)];
+  ws['!cols'] = colWidths.map(w => ({wch: w}));
+
+  // Style header row bold (basic)
+  ws['!rows'] = [{hpt: 16}]; // header row height
+
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Fallati');
+
   const region = currentUser.region;
   const fname = `fallati_${region.toLowerCase()}_${new Date().toISOString().slice(0,10)}.xlsx`;
   XLSX.writeFile(wb, fname);
-  showToast('Export completato: '+fname);
+  showToast('Export completato: ' + fname);
 }
 
 // ── INIT ───────────────────────────────────────────────────
