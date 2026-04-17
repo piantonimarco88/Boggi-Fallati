@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestione Fallati – Boggi Milano</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#ffffff;--bg2:#f5f5f3;--bg3:#eeede9;
+  --tx:#1a1a18;--tx2:#6b6b67;--tx3:#9b9b96;
+  --br:rgba(0,0,0,0.10);--br2:rgba(0,0,0,0.18);
+  --green-bg:#eaf3de;--green-tx:#27500a;--green-br:#97c459;
+  --red-bg:#fcebeb;--red-tx:#791f1f;--red-br:#f09595;
+  --amber-bg:#faeeda;--amber-tx:#854f0b;--amber-br:#ef9f27;
+  --blue-bg:#e6f1fb;--blue-tx:#0c447c;--blue-br:#85b7eb;
+  --r:8px;--rl:12px;
+  --font:'Segoe UI',system-ui,sans-serif;
+  --mono:'SF Mono','Fira Mono',monospace;
+}
+body{font-family:var(--font);font-size:14px;color:var(--tx);background:var(--bg3)}
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* SIDEBAR */
+.sidebar{width:220px;background:var(--bg);border-right:0.5px solid var(--br);display:flex;flex-direction:column;flex-shrink:0}
+.logo{padding:18px 16px 14px;border-bottom:0.5px solid var(--br)}
+.logo-title{font-size:15px;font-weight:500}
+.logo-sub{font-size:11px;color:var(--tx2);margin-top:2px}
+.nav{flex:1;padding:8px 0;overflow-y:auto}
+.nav-item{padding:9px 16px;cursor:pointer;font-size:13px;color:var(--tx2);display:flex;align-items:center;gap:8px;border:none;background:none;width:100%;text-align:left;font-family:var(--font)}
+.nav-item.active{background:var(--bg2);color:var(--tx);font-weight:500}
+.nav-item:hover:not(.active){background:var(--bg2)}
+.nav-dot{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.35;flex-shrink:0}
+.nav-dot.warn{background:#BA7517;opacity:1}
+.nav-badge{margin-left:auto;background:var(--amber-bg);color:var(--amber-tx);font-size:11px;padding:1px 7px;border-radius:10px;font-weight:500}
+.user-area{padding:12px 16px;border-top:0.5px solid var(--br)}
+.user-role{font-size:11px;color:var(--tx2)}
+.user-name{font-size:13px;font-weight:500;margin-top:2px}
+.btn-logout{margin-top:8px;font-size:11px;color:var(--tx2);cursor:pointer;background:none;border:none;padding:0;font-family:var(--font);text-decoration:underline}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:var(--bg);border-bottom:0.5px solid var(--br);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:52px;flex-shrink:0}
+.topbar-title{font-weight:500;font-size:15px}
+.content{flex:1;overflow-y:auto;padding:20px}
+
+/* BUTTONS */
+.btn{padding:7px 14px;border-radius:var(--r);border:0.5px solid var(--br2);background:var(--bg);color:var(--tx);cursor:pointer;font-size:13px;font-family:var(--font)}
+.btn:hover{background:var(--bg2)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-primary{background:var(--tx);color:var(--bg);border-color:var(--tx)}
+.btn-primary:hover{opacity:.85}
+.btn-approve{background:var(--green-bg);color:var(--green-tx);border-color:var(--green-br)}
+.btn-approve:hover{opacity:.85}
+.btn-reject{background:var(--red-bg);color:var(--red-tx);border-color:var(--red-br)}
+.btn-reject:hover{opacity:.85}
+.btn-suspend{background:var(--blue-bg);color:var(--blue-tx);border-color:var(--blue-br)}
+.btn-suspend:hover{opacity:.85}
+
+/* METRICS */
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:20px}
+.metric-card{background:var(--bg2);border-radius:var(--r);padding:14px}
+.metric-label{font-size:11px;color:var(--tx2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.metric-value{font-size:22px;font-weight:500}
+
+/* TABLE */
+.table-wrap{background:var(--bg);border:0.5px solid var(--br);border-radius:var(--rl);overflow:hidden}
+.table-head{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--br);gap:8px;flex-wrap:wrap}
+.filter-sel{font-size:12px;padding:5px 8px;border:0.5px solid var(--br2);border-radius:var(--r);background:var(--bg2);color:var(--tx);font-family:var(--font)}
+.table-scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{padding:9px 14px;text-align:left;font-size:11px;font-weight:500;color:var(--tx2);text-transform:uppercase;letter-spacing:.4px;border-bottom:0.5px solid var(--br);background:var(--bg2);white-space:nowrap}
+td{padding:10px 14px;border-bottom:0.5px solid var(--br);vertical-align:middle;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tr.clickable:hover td{background:var(--bg2);cursor:pointer}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:500;white-space:nowrap}
+.b-pending{background:var(--amber-bg);color:var(--amber-tx)}
+.b-approved{background:var(--green-bg);color:var(--green-tx)}
+.b-rejected{background:var(--red-bg);color:var(--red-tx)}
+.b-suspended{background:var(--blue-bg);color:var(--blue-tx)}
+
+/* PANEL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:100}
+.overlay.open{display:flex;justify-content:flex-end}
+.panel{width:480px;max-width:100vw;height:100%;background:var(--bg);display:flex;flex-direction:column;border-left:0.5px solid var(--br)}
+.panel-hdr{padding:16px 20px;border-bottom:0.5px solid var(--br);display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0}
+.panel-body{flex:1;overflow-y:auto;padding:20px}
+.panel-foot{padding:14px 20px;border-top:0.5px solid var(--br);display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap}
+.close-x{background:none;border:none;cursor:pointer;font-size:22px;color:var(--tx2);line-height:1;padding:0 4px;flex-shrink:0}
+.fg{margin-bottom:14px}
+.fl{font-size:11px;color:var(--tx2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+.fv{font-size:13px;line-height:1.5}
+.divider{height:0.5px;background:var(--br);margin:14px 0}
+.note-ta{width:100%;font-family:var(--font);font-size:13px;padding:9px;border:0.5px solid var(--br2);border-radius:var(--r);background:var(--bg2);color:var(--tx);resize:none;min-height:68px}
+.note-ta:focus{outline:none;border-color:var(--br2)}
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
+.photo-thumb{aspect-ratio:1;border-radius:var(--r);border:0.5px solid var(--br);overflow:hidden;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--tx2)}
+.photo-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* LOGIN */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg3)}
+.login-card{background:var(--bg);border:0.5px solid var(--br);border-radius:var(--rl);padding:32px;width:380px;max-width:calc(100vw - 32px)}
+.login-title{font-size:18px;font-weight:500;margin-bottom:4px}
+.login-sub{font-size:13px;color:var(--tx2);margin-bottom:24px}
+.acc-btn{width:100%;text-align:left;padding:11px 14px;border-radius:var(--r);border:0.5px solid var(--br2);background:var(--bg);cursor:pointer;font-family:var(--font);margin-bottom:6px;display:block}
+.acc-btn:hover{background:var(--bg2)}
+.acc-btn.sede{border-color:var(--blue-br);background:var(--blue-bg)}
+.acc-btn.sede:hover{opacity:.85}
+.acc-name{font-size:14px;font-weight:500;color:var(--tx)}
+.acc-btn.sede .acc-name{color:var(--blue-tx)}
+.acc-role{font-size:11px;color:var(--tx2);margin-top:2px}
+.acc-btn.sede .acc-role{color:var(--blue-tx);opacity:.8}
+.sep{font-size:11px;color:var(--tx2);text-align:center;margin:10px 0 8px}
+.stores-list{max-height:260px;overflow-y:auto;padding-right:2px}
+.pw-row{margin-top:10px;display:flex;gap:8px;align-items:center}
+.pw-input{flex:1;font-family:var(--font);font-size:13px;padding:8px 10px;border:0.5px solid var(--br2);border-radius:var(--r);background:var(--bg2);color:var(--tx)}
+.pw-input:focus{outline:none}
+.pw-err{color:var(--red-tx);font-size:12px;margin-top:6px}
+
+/* FORM */
+.form-card{background:var(--bg);border:0.5px solid var(--br);border-radius:var(--rl);padding:24px;max-width:660px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ff{display:flex;flex-direction:column;gap:4px}
+.ff.full{grid-column:1/-1}
+.ff label{font-size:12px;color:var(--tx2);font-weight:500}
+.ff input,.ff select,.ff textarea{font-family:var(--font);font-size:13px;padding:8px 10px;border:0.5px solid var(--br2);border-radius:var(--r);background:var(--bg2);color:var(--tx)}
+.ff textarea{resize:none;height:66px}
+.ff input:focus,.ff select:focus,.ff textarea:focus{outline:none;border-color:#888}
+.upload-area{border:1px dashed var(--br2);border-radius:var(--r);padding:16px;text-align:center;color:var(--tx2);font-size:12px;cursor:pointer;position:relative}
+.upload-area:hover{background:var(--bg2)}
+.upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.photo-preview{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.photo-preview-item{aspect-ratio:1;border-radius:var(--r);overflow:hidden;border:0.5px solid var(--br);position:relative}
+.photo-preview-item img{width:100%;height:100%;object-fit:cover}
+.photo-preview-item .rm{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.5);color:#fff;border:none;border-radius:50%;width:18px;height:18px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+
+/* NOTIFICATION BANNER */
+.notif-banner{background:var(--amber-bg);border:0.5px solid var(--amber-br);border-radius:var(--r);padding:12px 16px;margin-bottom:16px;display:flex;align-items:flex-start;gap:10px}
+.notif-close{margin-left:auto;background:none;border:none;cursor:pointer;font-size:18px;color:var(--amber-tx);padding:0 4px;flex-shrink:0}
+
+/* UTILS */
+.empty{text-align:center;padding:40px;color:var(--tx2);font-size:13px}
+.loading{text-align:center;padding:40px;color:var(--tx2);font-size:13px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:10px 20px;border-radius:20px;font-size:13px;z-index:999;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+.field-note{background:var(--bg2);padding:10px;border-radius:var(--r);font-size:13px;line-height:1.5;color:var(--tx)}
+
+/* MOBILE */
+@media(max-width:600px){
+  .sidebar{display:none}
+  .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .panel{width:100vw}
+  .form-grid{grid-template-columns:1fr}
+  .ff.full{grid-column:1}
+}
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://mcjxhhdgadajlmsiyvdq.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1janhoaGRnYWRhamxtc2l5dmRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNjk4MDQsImV4cCI6MjA5MTk0NTgwNH0.7yMOc2o23eg4YYnlhKupyAjslgRMDofLiCaOd2aWLFI';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const DAMAGE_TYPES = ['Tessuto rovinato / pellame','Problemi cuciture','Problema scarpe','Problemi colore','Pilling','Problema accessori','Filo tirato','Problema lavaggio','Problema zip','Errore sartoria','Problema imbottiture'];
+const PROPOSAL_TYPES = ['FL – Fallato lite','FB – Fallato base','FF – Fallato full'];
+
+let currentUser = null;
+let allAccounts = [];
+let currentTab = 'pending';
+let pendingLogin = null;
+let uploadedFiles = [];
+
+// ── UTILS ──────────────────────────────────────────────────
+function today() {
+  return new Date().toLocaleDateString('it-IT');
+}
+function showToast(msg, duration = 3000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+function genId() {
+  return crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2);
+}
+function statusLabel(s) {
+  return {pending:'In attesa',approved:'Approvata',rejected:'Negata',suspended:'Sospesa'}[s] || s;
+}
+function statusClass(s) {
+  return {pending:'b-pending',approved:'b-approved',rejected:'b-rejected',suspended:'b-suspended'}[s] || '';
+}
+
+// ── RENDER ROOT ────────────────────────────────────────────
+function render() {
+  const root = document.getElementById('root');
+  if (!currentUser) { root.innerHTML = renderLogin(); return; }
+  root.innerHTML = renderApp();
+  loadTab(currentTab);
+}
+
+// ── LOGIN ──────────────────────────────────────────────────
+function renderLogin() {
+  const stores = allAccounts.filter(a => a.role === 'store');
+  const storeItems = stores.map(s => `
+    <button class="acc-btn" onclick="selectAccount('${s.id}')">
+      <div class="acc-name">${s.name}</div>
+      <div class="acc-role">Negozio · ${s.region}</div>
+    </button>`).join('');
+
+  return `<div class="login-wrap"><div class="login-card">
+    <div class="login-title">Gestione Fallati</div>
+    <div class="login-sub">Seleziona il tuo account</div>
+    <div style="font-size:11px;color:var(--tx2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Sede</div>
+    <button class="acc-btn sede" onclick="selectAccount('sede_ita')">
+      <div class="acc-name">Sede Italia</div><div class="acc-role">Approvazioni negozi ITA</div>
+    </button>
+    <button class="acc-btn sede" onclick="selectAccount('sede_int')">
+      <div class="acc-name">Sede International</div><div class="acc-role">Approvazioni negozi INT</div>
+    </button>
+    <div class="sep">— Negozi —</div>
+    <div class="stores-list">${storeItems}</div>
+    <div id="pw-area" style="display:none">
+      <div class="pw-row">
+        <input class="pw-input" type="password" id="pw-input" placeholder="Password..." onkeydown="if(event.key==='Enter')doLogin()">
+        <button class="btn btn-primary" onclick="doLogin()">Accedi</button>
+      </div>
+      <div class="pw-err" id="pw-err"></div>
+    </div>
+  </div></div>`;
+}
+
+function selectAccount(id) {
+  pendingLogin = id;
+  const pwArea = document.getElementById('pw-area');
+  if (pwArea) { pwArea.style.display = 'block'; document.getElementById('pw-input').focus(); }
+  document.getElementById('pw-err').textContent = '';
+}
+
+async function doLogin() {
+  const pw = document.getElementById('pw-input').value;
+  const acc = allAccounts.find(a => a.id === pendingLogin);
+  if (!acc) return;
+  if (acc.password !== pw) {
+    document.getElementById('pw-err').textContent = 'Password errata.';
+    return;
+  }
+  currentUser = acc;
+  currentTab = 'pending';
+  render();
+}
+
+function logout() {
+  currentUser = null;
+  pendingLogin = null;
+  render();
+}
+
+// ── APP SHELL ──────────────────────────────────────────────
+function renderApp() {
+  const isStore = currentUser.role === 'store';
+  const nav = isStore ? `
+    <button class="nav-item active" id="nav-pending" onclick="setTab('pending')"><div class="nav-dot warn"></div>In attesa<span class="nav-badge" id="nb-pending" style="display:none">0</span></button>
+    <button class="nav-item" id="nav-all" onclick="setTab('all')"><div class="nav-dot"></div>Tutte le richieste</button>
+    <button class="nav-item" id="nav-new" onclick="setTab('new')"><div class="nav-dot"></div>Nuova richiesta</button>
+  ` : `
+    <button class="nav-item active" id="nav-pending" onclick="setTab('pending')"><div class="nav-dot warn"></div>Da approvare<span class="nav-badge" id="nb-pending" style="display:none">0</span></button>
+    <button class="nav-item" id="nav-all" onclick="setTab('all')"><div class="nav-dot"></div>Storico richieste</button>
+  `;
+  return `
+  <div class="app">
+    <div class="sidebar">
+      <div class="logo"><div class="logo-title">Fallati</div><div class="logo-sub">Boggi Milano</div></div>
+      <div class="nav">${nav}</div>
+      <div class="user-area">
+        <div class="user-role">${currentUser.role === 'sede' ? 'Sede · '+currentUser.region : 'Negozio · '+currentUser.region}</div>
+        <div class="user-name">${currentUser.name}</div>
+        <button class="btn-logout" onclick="logout()">Cambia account</button>
+      </div>
+    </div>
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title" id="page-title">Da approvare</span>
+        ${isStore ? '<button class="btn btn-primary" onclick="setTab(\'new\')">+ Nuova richiesta</button>' : ''}
+      </div>
+      <div class="content" id="content-area">
+        <div id="notif-banner-area"></div>
+        <div id="tab-content"><div class="loading">Caricamento...</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="overlay" id="overlay" onclick="closePanelOutside(event)">
+    <div class="panel" id="side-panel"></div>
+  </div>`;
+}
+
+// ── TABS ───────────────────────────────────────────────────
+function setTab(tab) {
+  currentTab = tab;
+  ['pending','all','new'].forEach(t => {
+    const el = document.getElementById('nav-'+t);
+    if (el) el.classList.toggle('active', t === tab);
+  });
+  const titles = {pending: currentUser.role==='sede' ? 'Da approvare' : 'Richieste in attesa', all:'Storico richieste', new:'Nuova richiesta fallato'};
+  const titleEl = document.getElementById('page-title');
+  if (titleEl) titleEl.textContent = titles[tab] || '';
+  closePanel();
+  loadTab(tab);
+}
+
+async function loadTab(tab) {
+  const tc = document.getElementById('tab-content');
+  if (!tc) return;
+  if (tab === 'new' && currentUser.role === 'store') {
+    uploadedFiles = [];
+    tc.innerHTML = renderNewForm();
+    return;
+  }
+  tc.innerHTML = '<div class="loading">Caricamento...</div>';
+  await loadNotifications();
+  const data = await fetchRequests(tab === 'pending' ? 'pending' : null);
+  if (tab === 'pending') {
+    renderPendingTab(data);
+  } else {
+    renderAllTab(data);
+  }
+}
+
+// ── SUPABASE FETCH ─────────────────────────────────────────
+async function fetchRequests(statusFilter) {
+  let q = sb.from('requests').select('*').order('created_at', {ascending: false});
+  if (currentUser.role === 'store') {
+    q = q.eq('store_id', currentUser.id);
+  } else {
+    const storeIds = allAccounts.filter(a => a.role === 'store' && a.region === currentUser.region).map(a => a.id);
+    q = q.in('store_id', storeIds);
+  }
+  if (statusFilter) q = q.eq('status', statusFilter);
+  const { data, error } = await q;
+  if (error) { showToast('Errore caricamento: '+error.message); return []; }
+  return data || [];
+}
+
+async function loadNotifications() {
+  if (currentUser.role !== 'store') return;
+  const { data } = await sb.from('notifications')
+    .select('*').eq('store_id', currentUser.id).eq('read', false)
+    .order('created_at', {ascending: false});
+  const area = document.getElementById('notif-banner-area');
+  if (!area) return;
+  if (!data || !data.length) { area.innerHTML = ''; return; }
+  area.innerHTML = `<div class="notif-banner">
+    <div style="flex:1">
+      <div style="font-size:13px;font-weight:500;color:var(--amber-tx);margin-bottom:4px">${data.length} nuov${data.length===1?'a':'e'} risposta dalla sede</div>
+      ${data.map(n=>`<div style="font-size:12px;color:var(--amber-tx);margin-top:3px">${n.message}</div>`).join('')}
+    </div>
+    <button class="notif-close" onclick="dismissNotifs()">×</button>
+  </div>`;
+}
+
+async function dismissNotifs() {
+  await sb.from('notifications').update({read: true}).eq('store_id', currentUser.id).eq('read', false);
+  const area = document.getElementById('notif-banner-area');
+  if (area) area.innerHTML = '';
+}
+
+// ── RENDER TABS ────────────────────────────────────────────
+function renderPendingTab(data) {
+  const tc = document.getElementById('tab-content');
+  if (!tc) return;
+  const nb = document.getElementById('nb-pending');
+  if (nb) { nb.textContent = data.length; nb.style.display = data.length ? 'inline' : 'none'; }
+
+  let html = '';
+  if (currentUser.role === 'sede') {
+    html += `<div class="metrics">
+      <div class="metric-card"><div class="metric-label">In attesa</div><div class="metric-value" style="color:var(--amber-tx)">${data.length}</div></div>
+      <div class="metric-card"><div class="metric-label">Regione</div><div class="metric-value" style="font-size:16px">${currentUser.region}</div></div>
+      <div class="metric-card"><div class="metric-label">Oggi</div><div class="metric-value">${data.filter(r=>r.date===today()).length}</div></div>
+      <div class="metric-card"><div class="metric-label">Account</div><div class="metric-value" style="font-size:16px">${allAccounts.filter(a=>a.role==='store'&&a.region===currentUser.region).length} negozi</div></div>
+    </div>`;
+    html += renderTableWrap(data, true, true);
+  } else {
+    html += renderTableWrap(data, false, false);
+  }
+  tc.innerHTML = html;
+}
+
+function renderAllTab(data) {
+  const tc = document.getElementById('tab-content');
+  if (!tc) return;
+  tc.innerHTML = renderTableWrap(data, currentUser.role === 'sede', false);
+}
+
+function renderTableWrap(data, showStore, showFilters) {
+  if (!data.length) return `<div class="table-wrap"><div class="empty">Nessuna richiesta da mostrare</div></div>`;
+  const storeOptions = showFilters
+    ? allAccounts.filter(a=>a.role==='store'&&a.region===currentUser.region)
+        .map(a=>`<option value="${a.id}">${a.name}</option>`).join('')
+    : '';
+  const filterBar = showFilters ? `
+    <div class="table-head">
+      <span style="font-weight:500;font-size:13px">Richieste (${data.length})</span>
+      <select class="filter-sel" id="store-filter" onchange="applyFilter()">
+        <option value="">Tutti i negozi</option>${storeOptions}
+      </select>
+    </div>` : `<div class="table-head"><span style="font-weight:500;font-size:13px">Richieste (${data.length})</span></div>`;
+
+  const rows = data.map(r => {
+    const store = allAccounts.find(a => a.id === r.store_id);
+    const storeCols = showStore ? `<td title="${store?.name||r.store_id}" style="font-size:12px;max-width:130px">${store?.name||r.store_id}</td>` : '';
+    return `<tr class="clickable" data-id="${r.id}" data-store="${r.store_id}" onclick="openPanel('${r.id}')">
+      <td style="color:var(--tx2);font-size:12px;white-space:nowrap">${r.date}</td>
+      ${storeCols}
+      <td><div style="font-weight:500">${r.customer_name}</div><div style="font-size:11px;color:var(--tx2)">${r.customer_email||''}</div></td>
+      <td style="font-size:12px;font-family:var(--mono)">${r.article_code}</td>
+      <td style="font-size:12px;max-width:150px">${r.damage_type||''}</td>
+      <td><span class="badge ${statusClass(r.status)}">${statusLabel(r.status)}</span></td>
+      <td><button class="btn" style="font-size:11px;padding:4px 10px;white-space:nowrap" onclick="event.stopPropagation();openPanel('${r.id}')">Apri</button></td>
+    </tr>`;
+  }).join('');
+
+  const thStore = showStore ? '<th>Negozio</th>' : '';
+  return `<div class="table-wrap">${filterBar}<div class="table-scroll">
+    <table><thead><tr><th>Data</th>${thStore}<th>Cliente</th><th>Articolo</th><th>Tipo danno</th><th>Stato</th><th></th></tr></thead>
+    <tbody id="table-rows">${rows}</tbody></table></div></div>`;
+}
+
+function applyFilter() {
+  const val = document.getElementById('store-filter')?.value || '';
+  const rows = document.querySelectorAll('#table-rows tr');
+  rows.forEach(r => {
+    r.style.display = (!val || r.dataset.store === val) ? '' : 'none';
+  });
+}
+
+// ── DETAIL PANEL ───────────────────────────────────────────
+async function openPanel(id) {
+  const { data: r, error } = await sb.from('requests').select('*').eq('id', id).single();
+  if (error || !r) { showToast('Errore apertura richiesta'); return; }
+  const store = allAccounts.find(a => a.id === r.store_id);
+  const canDecide = currentUser.role === 'sede' && r.status === 'pending';
+
+  const fields = [
+    ['Negozio', store?.name || r.store_id],
+    ['Provenienza', r.provenienza || '—'],
+    ['Cliente', r.customer_name],
+    ['Email cliente', r.customer_email || '—'],
+    ['Privilege Card', r.card || '—'],
+    ['Data acquisto', r.purchase_date || '—'],
+    ['Data consegna', r.dropoff_date || '—'],
+    ['Articolo usato', r.used === 'SI' ? 'Sì' : (r.used === 'NO' ? 'No' : '—')],
+    ['Grado usura', r.wear ? r.wear+'/5' : '—'],
+    ['Codice articolo', r.article_code],
+    ['Taglia', r.size || '—'],
+  ];
+
+  const photosHtml = (r.photo_urls && r.photo_urls.length)
+    ? `<div class="photo-grid">${r.photo_urls.map(url=>`
+        <div class="photo-thumb"><a href="${url}" target="_blank"><img src="${url}" alt="foto" onerror="this.parentElement.parentElement.innerHTML='Foto non disponibile'"></a></div>`).join('')}</div>`
+    : '<div style="font-size:12px;color:var(--tx2)">Nessuna foto allegata</div>';
+
+  const panel = document.getElementById('side-panel');
+  panel.innerHTML = `
+    <div class="panel-hdr">
+      <div>
+        <div style="font-weight:500;font-size:14px">${r.customer_name}</div>
+        <div style="font-size:12px;color:var(--tx2)">${store?.name||r.store_id} · ${r.date}</div>
+      </div>
+      <button class="close-x" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-body">
+      <div style="margin-bottom:12px"><span class="badge ${statusClass(r.status)}" style="font-size:12px;padding:3px 10px">${statusLabel(r.status)}</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+        ${fields.map(([l,v])=>`<div class="fg"><div class="fl">${l}</div><div class="fv">${v}</div></div>`).join('')}
+      </div>
+      <div class="fg"><div class="fl">Tipo danno</div><div class="fv" style="font-weight:500">${r.damage_type||'—'}</div></div>
+      <div class="fg"><div class="fl">Proposta</div><div class="fv">${r.proposal||'—'}</div></div>
+      ${r.note ? `<div class="fg"><div class="fl">Note dal negozio</div><div class="field-note">${r.note}</div></div>` : ''}
+      <div class="divider"></div>
+      <div class="fl" style="margin-bottom:6px">Foto allegate</div>
+      ${photosHtml}
+      ${r.approval_note ? `<div class="divider"></div><div class="fl">Risposta sede</div><div class="field-note" style="margin-top:6px">${r.approval_note}</div><div style="font-size:11px;color:var(--tx2);margin-top:4px">— ${r.decided_by||'Sede'}</div>` : ''}
+      ${canDecide ? `<div class="divider"></div><div class="fl" style="margin-bottom:6px">Nota di risposta (visibile al negozio)</div><textarea class="note-ta" id="resp-note" placeholder="Aggiungi una nota..."></textarea>` : ''}
+    </div>
+    <div class="panel-foot">
+      ${canDecide ? `
+        <button class="btn btn-approve" style="flex:1" onclick="decide('${r.id}','${r.store_id}','approved')">Approva</button>
+        <button class="btn btn-reject" style="flex:1" onclick="decide('${r.id}','${r.store_id}','rejected')">Nega</button>
+        <button class="btn btn-suspend" onclick="decide('${r.id}','${r.store_id}','suspended')">Sospendi</button>
+      ` : `<button class="btn" style="flex:1" onclick="closePanel()">Chiudi</button>`}
+    </div>`;
+  document.getElementById('overlay').classList.add('open');
+}
+
+async function decide(requestId, storeId, status) {
+  const note = document.getElementById('resp-note')?.value || '';
+  const btn = event.target;
+  btn.disabled = true;
+
+  const { error } = await sb.from('requests').update({
+    status, approval_note: note, decided_by: currentUser.name, decided_at: new Date().toISOString()
+  }).eq('id', requestId);
+
+  if (error) { showToast('Errore: '+error.message); btn.disabled = false; return; }
+
+  // Crea notifica per il negozio
+  const labels = {approved:'APPROVATA',rejected:'NEGATA',suspended:'SOSPESA'};
+  const { data: req } = await sb.from('requests').select('article_code,damage_type').eq('id', requestId).single();
+  const msg = `Richiesta ${req?.article_code||''} (${req?.damage_type||''}) — ${labels[status]}${note ? ' · '+note : ''}`;
+  await sb.from('notifications').insert({id: genId(), store_id: storeId, request_id: requestId, message: msg});
+
+  closePanel();
+  showToast(`Richiesta ${labels[status].toLowerCase()} · Notifica inviata al negozio`);
+  loadTab('pending');
+}
+
+function closePanel() { document.getElementById('overlay')?.classList.remove('open'); }
+function closePanelOutside(e) { if (e.target === document.getElementById('overlay')) closePanel(); }
+
+// ── NEW REQUEST FORM ───────────────────────────────────────
+function renderNewForm() {
+  const storeOptions = allAccounts.filter(a => a.role === 'store')
+    .map(a => `<option value="${a.id}"${a.id===currentUser.id?' selected':''}>${a.name}</option>`).join('');
+  return `<div class="form-card">
+    <div style="font-weight:500;font-size:15px;margin-bottom:4px">Nuova richiesta fallato</div>
+    <div style="font-size:12px;color:var(--tx2);margin-bottom:20px">Negozio: ${currentUser.name}</div>
+    <div class="form-grid">
+      <div class="ff"><label>Provenienza</label>
+        <select id="f-prov"><option>Cliente</option><option>Magazzino</option><option>Online</option></select></div>
+      <div class="ff"><label>Negozio di acquisto</label>
+        <select id="f-storepurch">${storeOptions}</select></div>
+      <div class="ff"><label>Nome cliente *</label>
+        <input id="f-name" type="text" placeholder="Nome e cognome"></div>
+      <div class="ff"><label>Email cliente</label>
+        <input id="f-email" type="email" placeholder="email@example.com"></div>
+      <div class="ff"><label>Privilege Card</label>
+        <input id="f-card" type="text" placeholder="400000XXXXX"></div>
+      <div class="ff"><label>Data acquisto cliente</label>
+        <input id="f-pdate" type="date"></div>
+      <div class="ff"><label>Data consegna in negozio</label>
+        <input id="f-ddate" type="date"></div>
+      <div class="ff"><label>Articolo usato</label>
+        <select id="f-used"><option value="SI">Sì</option><option value="NO">No</option></select></div>
+      <div class="ff"><label>Grado usura (1–5)</label>
+        <select id="f-wear"><option value="1">1 – Nuovo</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5 – Molto usato</option></select></div>
+      <div class="ff"><label>Codice articolo (BO) *</label>
+        <input id="f-article" type="text" placeholder="BO25P000000"></div>
+      <div class="ff"><label>Taglia</label>
+        <input id="f-size" type="text" placeholder="M, 42, XL..."></div>
+      <div class="ff"><label>Tipo danno *</label>
+        <select id="f-damage">${DAMAGE_TYPES.map(d=>`<option>${d}</option>`).join('')}</select></div>
+      <div class="ff"><label>Proposta tipo</label>
+        <select id="f-proposal">${PROPOSAL_TYPES.map(p=>`<option>${p}</option>`).join('')}</select></div>
+      <div class="ff full"><label>Note danno</label>
+        <textarea id="f-note" placeholder="Descrivi il danno in dettaglio..."></textarea></div>
+      <div class="ff full">
+        <label>Foto articolo</label>
+        <div class="upload-area">
+          <input type="file" id="f-photos" accept="image/*" multiple onchange="previewPhotos(this)">
+          Tocca per scattare o selezionare foto · JPG, PNG – max 5 foto
+        </div>
+        <div class="photo-preview" id="photo-preview"></div>
+      </div>
+    </div>
+    <div style="margin-top:20px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-primary" id="submit-btn" onclick="submitRequest()">Invia richiesta</button>
+      <button class="btn" onclick="setTab('pending')">Annulla</button>
+    </div>
+  </div>`;
+}
+
+function previewPhotos(input) {
+  uploadedFiles = Array.from(input.files).slice(0, 5);
+  const preview = document.getElementById('photo-preview');
+  if (!preview) return;
+  preview.innerHTML = uploadedFiles.map((f, i) => {
+    const url = URL.createObjectURL(f);
+    return `<div class="photo-preview-item">
+      <img src="${url}" alt="foto ${i+1}">
+      <button class="rm" onclick="removePhoto(${i})">×</button>
+    </div>`;
+  }).join('');
+}
+
+function removePhoto(idx) {
+  uploadedFiles.splice(idx, 1);
+  const dt = new DataTransfer();
+  uploadedFiles.forEach(f => dt.items.add(f));
+  const input = document.getElementById('f-photos');
+  if (input) input.files = dt.files;
+  previewPhotos({ files: dt.files });
+}
+
+async function submitRequest() {
+  const name = document.getElementById('f-name')?.value?.trim();
+  const article = document.getElementById('f-article')?.value?.trim();
+  if (!name || !article) { showToast('Compila i campi obbligatori (*)'); return; }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Invio in corso...';
+
+  // Upload foto
+  const photoUrls = [];
+  for (const file of uploadedFiles) {
+    const ext = file.name.split('.').pop();
+    const path = `${currentUser.id}/${genId()}.${ext}`;
+    const { data: upData, error: upErr } = await sb.storage.from('fallati-photos').upload(path, file);
+    if (!upErr && upData) {
+      const { data: urlData } = sb.storage.from('fallati-photos').getPublicUrl(path);
+      if (urlData?.publicUrl) photoUrls.push(urlData.publicUrl);
+    }
+  }
+
+  const req = {
+    id: genId(),
+    store_id: currentUser.id,
+    date: today(),
+    provenienza: document.getElementById('f-prov').value,
+    store_purchase: document.getElementById('f-storepurch').value,
+    customer_name: name,
+    customer_email: document.getElementById('f-email').value,
+    card: document.getElementById('f-card').value,
+    purchase_date: document.getElementById('f-pdate').value,
+    dropoff_date: document.getElementById('f-ddate').value,
+    used: document.getElementById('f-used').value,
+    wear: document.getElementById('f-wear').value,
+    article_code: article,
+    size: document.getElementById('f-size').value,
+    damage_type: document.getElementById('f-damage').value,
+    proposal: document.getElementById('f-proposal').value,
+    note: document.getElementById('f-note').value,
+    photo_urls: photoUrls,
+    status: 'pending'
+  };
+
+  const { error } = await sb.from('requests').insert(req);
+  if (error) {
+    showToast('Errore invio: '+error.message);
+    btn.disabled = false; btn.textContent = 'Invia richiesta';
+    return;
+  }
+
+  showToast('Richiesta inviata. La sede riceverà notifica.');
+  setTab('pending');
+}
+
+// ── INIT ───────────────────────────────────────────────────
+async function init() {
+  const { data, error } = await sb.from('accounts').select('*').eq('active', true);
+  if (error) {
+    document.getElementById('root').innerHTML = `<div style="padding:40px;text-align:center;color:red">Errore connessione Supabase: ${error.message}</div>`;
+    return;
+  }
+  allAccounts = data || [];
+  render();
+}
+
+init();
+</script>
+</body>
+</html>
