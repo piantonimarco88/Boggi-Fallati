@@ -241,7 +241,7 @@ const TRANSLATIONS = {
     hqIntName:'Sede International',hqIntRole:'Approvazioni negozi INT',
     storeRole:'Negozio',pwPlaceholder:'Password...',loginBtn:'Accedi',pwError:'Password errata.',
     navPending:'In attesa',navAll:'Tutte le richieste',navNew:'Nuova richiesta',
-    navPendingSede:'Da approvare',navAllSede:'Storico richieste',navStats:'Statistiche',
+    navPendingSede:'Da approvare',navAllSede:'Storico richieste',navStats:'Statistiche',navSuspended:'Sospese',titleSuspended:'Richieste sospese',errArticleLen:'Il codice articolo deve essere di 11 caratteri.',
     roleStore:'Negozio',roleSede:'Sede',logout:'Esci',
     titlePendingSede:'Da approvare',titlePendingStore:'Richieste in attesa',
     titleAll:'Storico richieste',titleNew:'Nuova richiesta fallato',titleStats:'Statistiche',
@@ -305,7 +305,7 @@ const TRANSLATIONS = {
     hqIntName:'Head Office International',hqIntRole:'International store approvals',
     storeRole:'Store',pwPlaceholder:'Password...',loginBtn:'Login',pwError:'Wrong password.',
     navPending:'Pending',navAll:'All requests',navNew:'New request',
-    navPendingSede:'To approve',navAllSede:'Request history',navStats:'Statistics',
+    navPendingSede:'To approve',navAllSede:'Request history',navStats:'Statistics',navSuspended:'Suspended',titleSuspended:'Suspended requests',errArticleLen:'Article code must be exactly 11 characters.',
     roleStore:'Store',roleSede:'Head Office',logout:'Logout',
     titlePendingSede:'To approve',titlePendingStore:'Pending requests',
     titleAll:'Request history',titleNew:'New flawed item request',titleStats:'Statistics',
@@ -369,7 +369,7 @@ const TRANSLATIONS = {
     hqIntName:'Siège International',hqIntRole:'Approbations boutiques INT',
     storeRole:'Boutique',pwPlaceholder:'Mot de passe...',loginBtn:'Connexion',pwError:'Mot de passe incorrect.',
     navPending:'En attente',navAll:'Toutes les demandes',navNew:'Nouvelle demande',
-    navPendingSede:'À approuver',navAllSede:'Historique',navStats:'Statistiques',
+    navPendingSede:'À approuver',navAllSede:'Historique',navStats:'Statistiques',navSuspended:'Suspendues',titleSuspended:'Demandes suspendues',errArticleLen:'Le code article doit comporter exactement 11 caractères.',
     roleStore:'Boutique',roleSede:'Siège',logout:'Déconnexion',
     titlePendingSede:'À approuver',titlePendingStore:'Demandes en attente',
     titleAll:'Historique des demandes',titleNew:'Nouvelle demande article défectueux',titleStats:'Statistiques',
@@ -433,7 +433,7 @@ const TRANSLATIONS = {
     hqIntName:'Zentrale International',hqIntRole:'Genehmigungen INT-Filialen',
     storeRole:'Filiale',pwPlaceholder:'Passwort...',loginBtn:'Anmelden',pwError:'Falsches Passwort.',
     navPending:'Ausstehend',navAll:'Alle Anfragen',navNew:'Neue Anfrage',
-    navPendingSede:'Zu genehmigen',navAllSede:'Verlauf',navStats:'Statistiken',
+    navPendingSede:'Zu genehmigen',navAllSede:'Verlauf',navStats:'Statistiken',navSuspended:'Ausgesetzt',titleSuspended:'Ausgesetzte Anfragen',errArticleLen:'Der Artikelcode muss genau 11 Zeichen lang sein.',
     roleStore:'Filiale',roleSede:'Zentrale',logout:'Abmelden',
     titlePendingSede:'Zu genehmigen',titlePendingStore:'Ausstehende Anfragen',
     titleAll:'Anfrageverlauf',titleNew:'Neue Fehlartikel-Anfrage',titleStats:'Statistiken',
@@ -497,7 +497,7 @@ const TRANSLATIONS = {
     hqIntName:'Sede Internacional',hqIntRole:'Aprobaciones tiendas INT',
     storeRole:'Tienda',pwPlaceholder:'Contraseña...',loginBtn:'Acceder',pwError:'Contraseña incorrecta.',
     navPending:'Pendiente',navAll:'Todas las solicitudes',navNew:'Nueva solicitud',
-    navPendingSede:'Por aprobar',navAllSede:'Historial',navStats:'Estadísticas',
+    navPendingSede:'Por aprobar',navAllSede:'Historial',navStats:'Estadísticas',navSuspended:'Suspendidas',titleSuspended:'Solicitudes suspendidas',errArticleLen:'El código de artículo debe tener exactamente 11 caracteres.',
     roleStore:'Tienda',roleSede:'Sede',logout:'Salir',
     titlePendingSede:'Por aprobar',titlePendingStore:'Solicitudes pendientes',
     titleAll:'Historial de solicitudes',titleNew:'Nueva solicitud artículo defectuoso',titleStats:'Estadísticas',
@@ -561,7 +561,7 @@ const TRANSLATIONS = {
     hqIntName:'Nemzetközi Központ',hqIntRole:'INT üzlet jóváhagyások',
     storeRole:'Üzlet',pwPlaceholder:'Jelszó...',loginBtn:'Bejelentkezés',pwError:'Hibás jelszó.',
     navPending:'Függőben',navAll:'Összes kérés',navNew:'Új kérés',
-    navPendingSede:'Jóváhagyásra vár',navAllSede:'Előzmények',navStats:'Statisztikák',
+    navPendingSede:'Jóváhagyásra vár',navAllSede:'Előzmények',navStats:'Statisztikák',navSuspended:'Felfüggesztett',titleSuspended:'Felfüggesztett kérések',errArticleLen:'A cikkszámnak pontosan 11 karakter hosszúnak kell lennie.',
     roleStore:'Üzlet',roleSede:'Központ',logout:'Kilépés',
     titlePendingSede:'Jóváhagyásra vár',titlePendingStore:'Függő kérések',
     titleAll:'Kérések előzményei',titleNew:'Új hibás cikk kérés',titleStats:'Statisztikák',
@@ -625,7 +625,7 @@ const TRANSLATIONS = {
     hqIntName:'Internationellt HK',hqIntRole:'Godkännanden INT-butiker',
     storeRole:'Butik',pwPlaceholder:'Lösenord...',loginBtn:'Logga in',pwError:'Fel lösenord.',
     navPending:'Väntande',navAll:'Alla ärenden',navNew:'Nytt ärende',
-    navPendingSede:'Att godkänna',navAllSede:'Ärendehistorik',navStats:'Statistik',
+    navPendingSede:'Att godkänna',navAllSede:'Ärendehistorik',navStats:'Statistik',navSuspended:'Pausade',titleSuspended:'Pausade ärenden',errArticleLen:'Artikelkoden måste vara exakt 11 tecken lång.',
     roleStore:'Butik',roleSede:'Huvudkontor',logout:'Logga ut',
     titlePendingSede:'Att godkänna',titlePendingStore:'Väntande ärenden',
     titleAll:'Ärendehistorik',titleNew:'Nytt ärende felaktig artikel',titleStats:'Statistik',
@@ -689,7 +689,7 @@ const TRANSLATIONS = {
     hqIntName:'Διεθνή Κεντρικά',hqIntRole:'Εγκρίσεις INT καταστημάτων',
     storeRole:'Κατάστημα',pwPlaceholder:'Κωδικός...',loginBtn:'Σύνδεση',pwError:'Λάθος κωδικός.',
     navPending:'Σε αναμονή',navAll:'Όλα τα αιτήματα',navNew:'Νέο αίτημα',
-    navPendingSede:'Προς έγκριση',navAllSede:'Ιστορικό',navStats:'Στατιστικά',
+    navPendingSede:'Προς έγκριση',navAllSede:'Ιστορικό',navStats:'Στατιστικά',navSuspended:'Ανεσταλμένα',titleSuspended:'Ανεσταλμένα αιτήματα',errArticleLen:'Ο κωδικός πρέπει να είναι ακριβώς 11 χαρακτήρες.',
     roleStore:'Κατάστημα',roleSede:'Κεντρικά',logout:'Αποσύνδεση',
     titlePendingSede:'Προς έγκριση',titlePendingStore:'Αναμένοντα αιτήματα',
     titleAll:'Ιστορικό αιτημάτων',titleNew:'Νέο αίτημα ελαττωματικού',titleStats:'Στατιστικά',
@@ -753,7 +753,7 @@ const TRANSLATIONS = {
     hqIntName:'Sede Internacional',hqIntRole:'Aprovações lojas INT',
     storeRole:'Loja',pwPlaceholder:'Palavra-passe...',loginBtn:'Entrar',pwError:'Palavra-passe incorreta.',
     navPending:'Pendente',navAll:'Todos os pedidos',navNew:'Novo pedido',
-    navPendingSede:'Para aprovar',navAllSede:'Histórico',navStats:'Estatísticas',
+    navPendingSede:'Para aprovar',navAllSede:'Histórico',navStats:'Estatísticas',navSuspended:'Suspensas',titleSuspended:'Pedidos suspensos',errArticleLen:'O código do artigo deve ter exatamente 11 caracteres.',
     roleStore:'Loja',roleSede:'Sede',logout:'Sair',
     titlePendingSede:'Para aprovar',titlePendingStore:'Pedidos pendentes',
     titleAll:'Histórico de pedidos',titleNew:'Novo pedido artigo com defeito',titleStats:'Estatísticas',
@@ -940,6 +940,7 @@ function renderApp() {
     <button class="nav-item" id="nav-new" onclick="setTab('new')"><div class="nav-dot"></div>${t('navNew')}</button>
   ` : `
     <button class="nav-item active" id="nav-pending" onclick="setTab('pending')"><div class="nav-dot warn"></div>${t('navPendingSede')}<span class="nav-badge" id="nb-pending" style="display:none">0</span></button>
+    <button class="nav-item" id="nav-suspended" onclick="setTab('suspended')"><div class="nav-dot" style="background:#185FA5;opacity:1"></div>${t('navSuspended')}<span class="nav-badge" id="nb-suspended" style="display:none;background:var(--blue-bg);color:var(--blue-tx)">0</span></button>
     <button class="nav-item" id="nav-all" onclick="setTab('all')"><div class="nav-dot"></div>${t('navAllSede')}</button>
     <button class="nav-item" id="nav-stats" onclick="setTab('stats')"><div class="nav-dot"></div>${t('navStats')}</button>
   `;
@@ -991,6 +992,10 @@ function renderApp() {
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           <span>${t('navPendingSede')}</span><span class="mob-nav-badge" id="mob-badge" style="display:none">0</span>
         </button>
+        <button class="mob-nav-btn" id="mob-suspended" onclick="setTab('suspended')">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="10" y1="15" x2="10" y2="9"/><line x1="14" y1="15" x2="14" y2="9"/></svg>
+          <span>${t('navSuspended')}</span><span class="mob-nav-badge" id="mob-susp-badge" style="display:none;background:var(--blue-bg);color:var(--blue-tx)">0</span>
+        </button>
         <button class="mob-nav-btn" id="mob-all" onclick="setTab('all')">
           <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
           <span>${t('navAllSede')}</span>
@@ -1014,17 +1019,17 @@ function renderApp() {
 // ── TABS ───────────────────────────────────────────────────
 function setTab(tab) {
   currentTab = tab;
-  ['pending','all','new','stats'].forEach(k => {
+  ['pending','suspended','all','new','stats'].forEach(k => {
     const el = document.getElementById('nav-'+k);
     if (el) el.classList.toggle('active', k === tab);
     const mob = document.getElementById('mob-'+k);
     if (mob) mob.classList.toggle('active', k === tab);
   });
-  // logout button never active
   const mobLogout = document.getElementById('mob-logout');
   if (mobLogout) mobLogout.classList.remove('active');
   const titles = {
     pending: currentUser.role==='sede' ? t('titlePendingSede') : t('titlePendingStore'),
+    suspended: t('titleSuspended'),
     all: t('titleAll'), new: t('titleNew'), stats: t('titleStats')
   };
   const titleEl = document.getElementById('page-title');
@@ -1045,6 +1050,13 @@ async function loadTab(tab) {
     tc.innerHTML = `<div class="loading">${t('loading')}</div>`;
     const data = await fetchRequests(null);
     renderStats(data);
+    return;
+  }
+  if (tab === 'suspended' && currentUser.role === 'sede') {
+    tc.innerHTML = `<div class="loading">${t('loading')}</div>`;
+    await loadNotifications();
+    const data = await fetchRequests('suspended');
+    renderSuspendedTab(data);
     return;
   }
   tc.innerHTML = `<div class="loading">${t('loading')}</div>`;
@@ -1115,6 +1127,16 @@ function renderPendingTab(data) {
   const mob = document.getElementById('mob-badge');
   if (mob) { mob.textContent = data.length; mob.style.display = data.length ? 'inline' : 'none'; }
 
+  // Also update suspended badge asynchronously
+  if (currentUser.role === 'sede') {
+    fetchRequests('suspended').then(susp => {
+      const ns = document.getElementById('nb-suspended');
+      if (ns) { ns.textContent = susp.length; ns.style.display = susp.length ? 'inline' : 'none'; }
+      const ms = document.getElementById('mob-susp-badge');
+      if (ms) { ms.textContent = susp.length; ms.style.display = susp.length ? 'inline' : 'none'; }
+    });
+  }
+
   let html = '';
   if (currentUser.role === 'sede') {
     html += `<div class="metrics">
@@ -1129,6 +1151,25 @@ function renderPendingTab(data) {
   }
   tc.innerHTML = html;
   renderTableRows(data, currentUser.role === 'sede');
+}
+
+function renderSuspendedTab(data) {
+  const tc = document.getElementById('tab-content');
+  if (!tc) return;
+  const ns = document.getElementById('nb-suspended');
+  if (ns) { ns.textContent = data.length; ns.style.display = data.length ? 'inline' : 'none'; }
+  const ms = document.getElementById('mob-susp-badge');
+  if (ms) { ms.textContent = data.length; ms.style.display = data.length ? 'inline' : 'none'; }
+
+  if (!data.length) {
+    tc.innerHTML = `<div class="table-wrap"><div class="empty">${t('noData')}</div></div>`;
+    return;
+  }
+
+  // Render table — same cols as pending but canDecide=true from here
+  const html = renderTableWrap(data, true, true);
+  tc.innerHTML = html;
+  renderTableRows(data, true);
 }
 
 function renderAllTab(data) {
@@ -1290,7 +1331,7 @@ async function openPanel(id) {
   const { data: r, error } = await sb.from('requests').select('*').eq('id', id).single();
   if (error || !r) { showToast(t('errOpen')); return; }
   const store = allAccounts.find(a => a.id === r.store_id);
-  const canDecide = currentUser.role === 'sede' && r.status === 'pending';
+  const canDecide = currentUser.role === 'sede' && (r.status === 'pending' || r.status === 'suspended');
 
   const fields = [
     [t('fStore'), store?.name || r.store_id],
@@ -1641,7 +1682,7 @@ function renderNewForm() {
         <select id="f-wear"><option value="1">${t('wear1')}</option><option value="2">${t('wear2')}</option><option value="3">${t('wear3')}</option><option value="4">${t('wear4')}</option><option value="5">${t('wear5')}</option></select></div>
 
       <div class="ff"><label>${t('fArticle')}</label>
-        <input id="f-article" type="text" placeholder="BO25P000000"></div>
+        <input id="f-article" type="text" placeholder="BO25P000000" maxlength="11"></div>
       <div class="ff"><label>${t('fSize')}</label>
         <input id="f-size" type="text" placeholder="M, 42, XL..."></div>
 
@@ -1738,6 +1779,7 @@ async function submitRequest() {
   if (!ddate) return showFormErr(t('errDropoff'));
   if (!wear) return showFormErr(t('errWear'));
   if (!article) return showFormErr(t('errArticle'));
+  if (article.length !== 11) return showFormErr(t('errArticleLen'));
   if (!size) return showFormErr(t('errSize'));
   if (!damage) return showFormErr(t('errDamage'));
   if (!proposal) return showFormErr(t('errProposal'));
@@ -1980,6 +2022,8 @@ async function exportExcel() {
     t('fProposalLabel'), t('fNoteLabel'), t('colStatus'), t('panelHqReply'),
     t('panelApprove').charAt(0).toUpperCase()+t('panelApprove').slice(1).toLowerCase().split('/')[0].trim()+' by',
     t('colDate')+' decision', 'n. photos',
+    t('pdfEmailCustomer'), t('pdfEmailStore'),
+    t('pdfBtn'),
     ...photoHeaders
   ];
 
@@ -1997,7 +2041,7 @@ async function exportExcel() {
       r.card || '',
       r.purchase_date || '',
       r.dropoff_date || '',
-      r.used === 'SI' ? 'Sì' : (r.used === 'NO' ? 'No' : ''),
+      r.used === 'SI' ? t('usedYes') : (r.used === 'NO' ? t('usedNo') : ''),
       r.wear || '',
       r.article_code || '',
       r.size || '',
@@ -2009,6 +2053,9 @@ async function exportExcel() {
       r.decided_by || '',
       r.decided_at ? new Date(r.decided_at).toLocaleDateString('it-IT') : '',
       photos.length,
+      r.email_cliente || '',
+      r.email_negozio || '',
+      '', // PDF link placeholder
     ];
 
     // Add photo values (as plain text first)
@@ -2018,10 +2065,15 @@ async function exportExcel() {
 
     XLSX.utils.sheet_add_aoa(ws, [baseRow], {origin: rowIdx + 1});
 
+    // PDF "link" cell — note pointing to the request ID so it's easy to find
+    const pdfColIdx = headers.indexOf(t('pdfBtn'));
+    const pdfCellAddr = XLSX.utils.encode_cell({r: rowIdx + 1, c: pdfColIdx});
+    ws[pdfCellAddr] = { v: `ID: ${r.id.slice(0,8).toUpperCase()} — ${r.article_code||''}`, t: 's' };
+
     // Convert photo cells to hyperlinks
     photos.forEach((url, pIdx) => {
       if (!url) return;
-      const colIdx = headers.length - MAX_PHOTOS + pIdx; // column index of this photo
+      const colIdx = headers.length - MAX_PHOTOS + pIdx;
       const cellAddr = XLSX.utils.encode_cell({r: rowIdx + 1, c: colIdx});
       ws[cellAddr] = {
         v: `${t("fPhotos").replace(" *","")} ${pIdx + 1}`,
@@ -2031,8 +2083,8 @@ async function exportExcel() {
     });
   });
 
-  // Column widths
-  const colWidths = [10,22,12,20,24,16,12,12,10,8,16,8,24,10,30,12,30,18,14,8, ...Array(MAX_PHOTOS).fill(14)];
+  // Column widths — added 3 new cols: email_cliente, email_negozio, pdf ref
+  const colWidths = [10,22,12,20,24,16,12,12,10,8,16,8,24,10,30,12,30,18,14,8, 26,26,28, ...Array(MAX_PHOTOS).fill(14)];
   ws['!cols'] = colWidths.map(w => ({wch: w}));
 
   // Style header row bold (basic)
