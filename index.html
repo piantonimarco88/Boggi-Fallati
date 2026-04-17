@@ -869,6 +869,16 @@ function statusClass(s) {
   return {pending:'b-pending',approved:'b-approved',rejected:'b-rejected',suspended:'b-suspended'}[s] || '';
 }
 
+// ── ROLE HELPERS ───────────────────────────────────────────
+function isAdmin() { return currentUser?.role === 'admin'; }
+function isSede()  { return currentUser?.role === 'sede' || isAdmin(); }
+function isStore() { return currentUser?.role === 'store'; }
+// Admin sees all regions; sede sees its own region
+function userRegions() {
+  if (isAdmin()) return ['ITA','INT'];
+  return [currentUser.region];
+}
+
 // ── RENDER ROOT ────────────────────────────────────────────
 function render() {
   const root = document.getElementById('root');
@@ -885,7 +895,7 @@ function renderLogin() {
     `<button class="lang-btn${currentLang===code?' active':''}" onclick="setLang('${code}')" title="${l.name}">${l.flag} ${l.name}</button>`
   ).join('');
 
-  return `<div class="login-wrap"><div class="login-card">
+  return `<div class="login-wrap"><div style="position:relative"><button onclick="selectAccount('admin')" title="Admin" style="position:absolute;top:12px;left:12px;background:none;border:none;cursor:pointer;opacity:.35;padding:4px;border-radius:4px;z-index:10" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.35'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/><circle cx="12" cy="12" r="7" stroke-dasharray="2 3"/></svg></button><div class="login-card">
     <div style="text-align:center;margin-bottom:20px"><img src="${LOGO_LOGIN}" alt="Boggi Milano" style="height:100px;width:auto;display:inline-block"></div><div class="lang-bar">${langBtns}</div>
     <div class="login-title">${t('loginTitle')}</div>
     <div class="login-sub">${t('loginSub')}</div>
@@ -916,7 +926,7 @@ function renderLogin() {
       </div>
       <div class="pw-err" id="pw-err"></div>
     </div>
-  </div></div>`;
+  </div></div></div>`;
 }
 
 function renderStoreItems(stores, query) {
@@ -971,6 +981,7 @@ function logout() {
 // ── APP SHELL ──────────────────────────────────────────────
 function renderApp() {
   const isStore = currentUser.role === 'store';
+  const isAdminOrSede = isSede();
   const nav = isStore ? `
     <button class="nav-item active" id="nav-pending" onclick="setTab('pending')"><div class="nav-dot warn"></div>${t('navPending')}<span class="nav-badge" id="nb-pending" style="display:none">0</span></button>
     <button class="nav-item" id="nav-all" onclick="setTab('all')"><div class="nav-dot"></div>${t('navAll')}</button>
@@ -988,7 +999,7 @@ function renderApp() {
       <div class="logo"><div style="display:flex;align-items:center;gap:8px"><img src="${LOGO_SIDEBAR}" alt="Boggi" style="height:28px;width:auto;flex-shrink:0"><div><div class="logo-title">${t('appTitle')}</div><div class="logo-sub">${t('appSub')}</div></div></div></div>
       <div class="nav">${nav}</div>
       <div class="user-area">
-        <div class="user-role">${currentUser.role === 'sede' ? t('roleSede')+' · '+currentUser.region : t('roleStore')+' · '+currentUser.region}</div>
+        <div class="user-role">${isAdmin() ? 'Admin · ITA + INT' : isSede() ? t('roleSede')+' · '+currentUser.region : t('roleStore')+' · '+currentUser.region}</div>
         <div class="user-name">${currentUser.name}</div>
         <button class="btn-logout-full" onclick="logout()">${t('logout')}</button>
       </div>
@@ -1089,20 +1100,20 @@ async function loadTab(tab) {
     tc.innerHTML = renderNewForm();
     return;
   }
-  if (tab === 'stats' && currentUser.role === 'sede') {
+  if (tab === 'stats' && isSede()) {
     tc.innerHTML = `<div class="loading">${t('loading')}</div>`;
     const data = await fetchRequests(null);
     renderStats(data);
     return;
   }
-  if (tab === 'suspended' && currentUser.role === 'sede') {
+  if (tab === 'suspended' && isSede()) {
     tc.innerHTML = `<div class="loading">${t('loading')}</div>`;
     await loadNotifications();
     const data = await fetchRequests('suspended');
     renderSuspendedTab(data);
     return;
   }
-  if (tab === 'registry' && currentUser.role === 'sede') {
+  if (tab === 'registry' && isSede()) {
     tc.innerHTML = `<div class="loading">${t('loading')}</div>`;
     await renderRegistry();
     return;
@@ -1116,10 +1127,10 @@ async function loadTab(tab) {
 // ── SUPABASE FETCH ─────────────────────────────────────────
 async function fetchRequests(statusFilter) {
   let q = sb.from('requests').select('*').order('created_at', {ascending: false});
-  if (currentUser.role === 'store') {
+  if (isStore()) {
     q = q.eq('store_id', currentUser.id);
   } else {
-    const storeIds = allAccounts.filter(a => a.role === 'store' && a.region === currentUser.region).map(a => a.id);
+    const storeIds = allAccounts.filter(a => a.role === 'store' && userRegions().includes(a.region)).map(a => a.id);
     q = q.in('store_id', storeIds);
   }
   if (statusFilter) q = q.eq('status', statusFilter);
@@ -1129,7 +1140,7 @@ async function fetchRequests(statusFilter) {
 }
 
 async function loadNotifications() {
-  if (currentUser.role !== 'store') return;
+  if (!isStore()) return;
   const { data } = await sb.from('notifications')
     .select('*').eq('store_id', currentUser.id).eq('read', false)
     .order('created_at', {ascending: false});
@@ -1186,19 +1197,19 @@ function renderPendingTab(data) {
   }
 
   let html = '';
-  if (currentUser.role === 'sede') {
+  if (isSede()) {
     html += `<div class="metrics">
       <div class="metric-card"><div class="metric-label">${t('metricPending')}</div><div class="metric-value" style="color:var(--amber-tx)">${data.length}</div></div>
       <div class="metric-card"><div class="metric-label">${t('metricRegion')}</div><div class="metric-value" style="font-size:16px">${currentUser.region}</div></div>
       <div class="metric-card"><div class="metric-label">${t('metricToday')}</div><div class="metric-value">${data.filter(r=>r.date===today()).length}</div></div>
-      <div class="metric-card"><div class="metric-label">Account</div><div class="metric-value" style="font-size:16px">${allAccounts.filter(a=>a.role==='store'&&a.region===currentUser.region).length} ${t('metricStores')}</div></div>
+      <div class="metric-card"><div class="metric-label">Account</div><div class="metric-value" style="font-size:16px">${allAccounts.filter(a=>a.role==='store'&&userRegions().includes(a.region)).length} ${t('metricStores')}</div></div>
     </div>`;
     html += renderTableWrap(data, true, true);
   } else {
     html += renderTableWrap(data, false, false);
   }
   tc.innerHTML = html;
-  renderTableRows(data, currentUser.role === 'sede');
+  renderTableRows(data, isSede());
 }
 
 function renderSuspendedTab(data) {
@@ -1223,8 +1234,8 @@ function renderSuspendedTab(data) {
 function renderAllTab(data) {
   const tc = document.getElementById('tab-content');
   if (!tc) return;
-  tc.innerHTML = renderTableWrap(data, currentUser.role === 'sede', false);
-  renderTableRows(data, currentUser.role === 'sede');
+  tc.innerHTML = renderTableWrap(data, isSede(), false);
+  renderTableRows(data, isSede());
 }
 
 // ── TABLE WITH COLUMN FILTERS ──────────────────────────────
@@ -1379,7 +1390,7 @@ async function openPanel(id) {
   const { data: r, error } = await sb.from('requests').select('*').eq('id', id).single();
   if (error || !r) { showToast(t('errOpen')); return; }
   const store = allAccounts.find(a => a.id === r.store_id);
-  const canDecide = currentUser.role === 'sede' && (r.status === 'pending' || r.status === 'suspended');
+  const canDecide = isSede() && (r.status === 'pending' || r.status === 'suspended');
 
   const fields = [
     [t('fStore'), store?.name || r.store_id],
@@ -1964,7 +1975,7 @@ function renderStats(data) {
 
   // Negozio con tasso approvazione più alto
   const storeStats = {};
-  allAccounts.filter(a=>a.role==='store'&&a.region===currentUser.region).forEach(s=>{
+  allAccounts.filter(a=>a.role==='store'&&userRegions().includes(a.region)).forEach(s=>{
     const sr = data.filter(r=>r.store_id===s.id);
     const sdec = sr.filter(r=>r.status!=='pending');
     storeStats[s.name] = {
@@ -2147,7 +2158,7 @@ async function exportExcel() {
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Fallati');
 
-  const region = currentUser.region;
+  const region = isAdmin() ? 'all' : currentUser.region;
   const fname = `fallati_${region.toLowerCase()}_${new Date().toISOString().slice(0,10)}.xlsx`;
   XLSX.writeFile(wb, fname);
   showToast(t('toastExportReady') + fname);
@@ -2232,7 +2243,7 @@ async function exportPhotosZip() {
     if (btn) btn.textContent = `${Math.round(metadata.percent)}%`;
   });
 
-  const region = currentUser.region.toLowerCase();
+  const region = isAdmin() ? 'all' : currentUser.region.toLowerCase();
   const fname = `fallati_foto_${region}_${new Date().toISOString().slice(0,10)}.zip`;
 
   // Trigger download
