@@ -6,6 +6,7 @@
 <title>Gestione Fallati – Boggi Milano</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -294,7 +295,7 @@ const TRANSLATIONS = {
     damage_tailoring:'Errore sartoria',damage_padding:'Problema imbottiture',
     wear1:'1 – Nuovo',wear2:'2',wear3:'3',wear4:'4',wear5:'5 – Molto usato',
     errConn:'Errore connessione Supabase: ',errLoad:'Errore caricamento: ',errSend:'Errore invio: ',errOpen:'Errore apertura richiesta',errDecide:'Errore: ',
-    langLabel:'Lingua'
+    langLabel:'Lingua',fEmailCliente:'Email cliente (per conferma)',fEmailNegozio:'Email negozio (per conferma)',pdfBtn:'Scarica PDF riepilogo',pdfTitle:'Riepilogo richiesta fallato',pdfSubtitle:'Boggi Milano – Gestione Fallati',pdfGenerated:'Generato il',pdfEmails:'Email di riepilogo',pdfEmailCustomer:'Email cliente',pdfEmailStore:'Email negozio',pdfPhotosNote:'Foto allegate:',pdfNoPhotos:'Nessuna foto allegata',errEmailCliente:'Inserisci un email valida per il cliente.',errEmailNegozio:"Inserisci un'email valida per il negozio."
   },
   en:{
     appTitle:'Flawed Items',appSub:'Boggi Milano',
@@ -358,7 +359,7 @@ const TRANSLATIONS = {
     damage_tailoring:'Tailoring error',damage_padding:'Padding problem',
     wear1:'1 – New',wear2:'2',wear3:'3',wear4:'4',wear5:'5 – Very used',
     errConn:'Supabase connection error: ',errLoad:'Load error: ',errSend:'Submit error: ',errOpen:'Error opening request',errDecide:'Error: ',
-    langLabel:'Language'
+    langLabel:'Language',fEmailCliente:'Customer email (for confirmation)',fEmailNegozio:'Store email (for confirmation)',pdfBtn:'Download summary PDF',pdfTitle:'Flawed item request summary',pdfSubtitle:'Boggi Milano – Flawed Items',pdfGenerated:'Generated on',pdfEmails:'Summary emails',pdfEmailCustomer:'Customer email',pdfEmailStore:'Store email',pdfPhotosNote:'Attached photos:',pdfNoPhotos:'No photos attached',errEmailCliente:'Enter a valid customer email.',errEmailNegozio:'Enter a valid store email.'
   },
   fr:{
     appTitle:'Articles Défectueux',appSub:'Boggi Milano',
@@ -422,7 +423,7 @@ const TRANSLATIONS = {
     damage_tailoring:'Erreur de coupe',damage_padding:'Problème rembourrage',
     wear1:'1 – Neuf',wear2:'2',wear3:'3',wear4:'4',wear5:'5 – Très usé',
     errConn:'Erreur connexion Supabase : ',errLoad:'Erreur chargement : ',errSend:'Erreur envoi : ',errOpen:'Erreur ouverture demande',errDecide:'Erreur : ',
-    langLabel:'Langue'
+    langLabel:'Langue',fEmailCliente:'Email client (pour confirmation)',fEmailNegozio:'Email boutique (pour confirmation)',pdfBtn:'Télécharger PDF récapitulatif',pdfTitle:'Récapitulatif demande article défectueux',pdfSubtitle:'Boggi Milano – Articles Défectueux',pdfGenerated:'Généré le',pdfEmails:'Emails de récapitulatif',pdfEmailCustomer:'Email client',pdfEmailStore:'Email boutique',pdfPhotosNote:'Photos jointes :',pdfNoPhotos:'Aucune photo jointe',errEmailCliente:'Indiquez un email valide pour le client.',errEmailNegozio:'Indiquez un email valide pour la boutique.'
   },
   de:{
     appTitle:'Fehlartikel',appSub:'Boggi Milano',
@@ -486,7 +487,7 @@ const TRANSLATIONS = {
     damage_tailoring:'Schneiderfehler',damage_padding:'Polsterungsproblem',
     wear1:'1 – Neu',wear2:'2',wear3:'3',wear4:'4',wear5:'5 – Stark gebraucht',
     errConn:'Supabase-Verbindungsfehler: ',errLoad:'Ladefehler: ',errSend:'Sendefehler: ',errOpen:'Fehler beim Öffnen',errDecide:'Fehler: ',
-    langLabel:'Sprache'
+    langLabel:'Sprache',fEmailCliente:'Kunden-E-Mail (zur Bestätigung)',fEmailNegozio:'Filial-E-Mail (zur Bestätigung)',pdfBtn:'Zusammenfassung PDF herunterladen',pdfTitle:'Fehlartikel-Anfrage Zusammenfassung',pdfSubtitle:'Boggi Milano – Fehlartikel',pdfGenerated:'Erstellt am',pdfEmails:'Zusammenfassungs-E-Mails',pdfEmailCustomer:'Kunden-E-Mail',pdfEmailStore:'Filial-E-Mail',pdfPhotosNote:'Angehängte Fotos:',pdfNoPhotos:'Keine Fotos angehängt',errEmailCliente:'Gültige Kunden-E-Mail eingeben.',errEmailNegozio:'Gültige Filial-E-Mail eingeben.'
   },
   es:{
     appTitle:'Artículos Defectuosos',appSub:'Boggi Milano',
@@ -550,7 +551,7 @@ const TRANSLATIONS = {
     damage_tailoring:'Error de sastrería',damage_padding:'Problema relleno',
     wear1:'1 – Nuevo',wear2:'2',wear3:'3',wear4:'4',wear5:'5 – Muy usado',
     errConn:'Error conexión Supabase: ',errLoad:'Error carga: ',errSend:'Error envío: ',errOpen:'Error al abrir solicitud',errDecide:'Error: ',
-    langLabel:'Idioma'
+    langLabel:'Idioma',fEmailCliente:'Email do cliente (para confirmação)',fEmailNegozio:'Email da loja (para confirmação)',pdfBtn:'Descarregar PDF resumo',pdfTitle:'Resumo do pedido artigo com defeito',pdfSubtitle:'Boggi Milano – Artigos com Defeito',pdfGenerated:'Gerado em',pdfEmails:'Emails de resumo',pdfEmailCustomer:'Email do cliente',pdfEmailStore:'Email da loja',pdfPhotosNote:'Fotos anexadas:',pdfNoPhotos:'Sem fotos anexadas',errEmailCliente:'Introduza um email válido para o cliente.',errEmailNegozio:'Introduza um email válido para a loja.',fEmailCliente:'Email cliente (para confirmación)',fEmailNegozio:'Email tienda (para confirmación)',pdfBtn:'Descargar PDF resumen',pdfTitle:'Resumen solicitud artículo defectuoso',pdfSubtitle:'Boggi Milano – Artículos Defectuosos',pdfGenerated:'Generado el',pdfEmails:'Emails de resumen',pdfEmailCustomer:'Email cliente',pdfEmailStore:'Email tienda',pdfPhotosNote:'Fotos adjuntas:',pdfNoPhotos:'Sin fotos adjuntas',errEmailCliente:'Introduce un email válido para el cliente.',errEmailNegozio:'Introduce un email válido para la tienda.'
   },
   hu:{
     appTitle:'Hibás Cikkek',appSub:'Boggi Milano',
@@ -614,7 +615,7 @@ const TRANSLATIONS = {
     damage_tailoring:'Szabászati hiba',damage_padding:'Bélés probléma',
     wear1:'1 – Új',wear2:'2',wear3:'3',wear4:'4',wear5:'5 – Erősen kopott',
     errConn:'Supabase kapcsolati hiba: ',errLoad:'Betöltési hiba: ',errSend:'Küldési hiba: ',errOpen:'Hiba a megnyitásnál',errDecide:'Hiba: ',
-    langLabel:'Nyelv'
+    langLabel:'Nyelv',fEmailCliente:'Ügyfél email (visszaigazoláshoz)',fEmailNegozio:'Üzlet email (visszaigazoláshoz)',pdfBtn:'Összefoglaló PDF letöltése',pdfTitle:'Hibás cikk kérés összefoglalója',pdfSubtitle:'Boggi Milano – Hibás Cikkek',pdfGenerated:'Generálva',pdfEmails:'Összefoglaló emailek',pdfEmailCustomer:'Ügyfél email',pdfEmailStore:'Üzlet email',pdfPhotosNote:'Csatolt fotók:',pdfNoPhotos:'Nincs csatolt fotó',errEmailCliente:'Adjon meg érvényes ügyfél emailt.',errEmailNegozio:'Adjon meg érvényes üzlet emailt.'
   },
   sv:{
     appTitle:'Felaktiga artiklar',appSub:'Boggi Milano',
@@ -678,7 +679,7 @@ const TRANSLATIONS = {
     damage_tailoring:'Skrädderifel',damage_padding:'Vadderingsproblem',
     wear1:'1 – Ny',wear2:'2',wear3:'3',wear4:'4',wear5:'5 – Mycket sliten',
     errConn:'Supabase anslutningsfel: ',errLoad:'Laddningsfel: ',errSend:'Sändningsfel: ',errOpen:'Fel vid öppning',errDecide:'Fel: ',
-    langLabel:'Språk'
+    langLabel:'Språk',fEmailCliente:'Kund-e-post (för bekräftelse)',fEmailNegozio:'Butiks-e-post (för bekräftelse)',pdfBtn:'Ladda ner sammanfattning PDF',pdfTitle:'Sammanfattning av ärende felaktig artikel',pdfSubtitle:'Boggi Milano – Felaktiga artiklar',pdfGenerated:'Genererad',pdfEmails:'Sammanfattnings-e-post',pdfEmailCustomer:'Kund-e-post',pdfEmailStore:'Butiks-e-post',pdfPhotosNote:'Bifogade foton:',pdfNoPhotos:'Inga foton bifogade',errEmailCliente:'Ange en giltig kund-e-post.',errEmailNegozio:'Ange en giltig butiks-e-post.'
   },
   el:{
     appTitle:'Ελαττωματικά Είδη',appSub:'Boggi Milano',
@@ -742,7 +743,7 @@ const TRANSLATIONS = {
     damage_tailoring:'Λάθος ραφής',damage_padding:'Πρόβλημα επένδυσης',
     wear1:'1 – Νέο',wear2:'2',wear3:'3',wear4:'4',wear5:'5 – Πολύ φθαρμένο',
     errConn:'Σφάλμα σύνδεσης Supabase: ',errLoad:'Σφάλμα φόρτωσης: ',errSend:'Σφάλμα αποστολής: ',errOpen:'Σφάλμα ανοίγματος',errDecide:'Σφάλμα: ',
-    langLabel:'Γλώσσα'
+    langLabel:'Γλώσσα',fEmailCliente:'Email πελάτη (για επιβεβαίωση)',fEmailNegozio:'Email καταστήματος (για επιβεβαίωση)',pdfBtn:'Λήψη PDF περίληψης',pdfTitle:'Περίληψη αιτήματος ελαττωματικού',pdfSubtitle:'Boggi Milano – Ελαττωματικά Είδη',pdfGenerated:'Δημιουργήθηκε',pdfEmails:'Email περίληψης',pdfEmailCustomer:'Email πελάτη',pdfEmailStore:'Email καταστήματος',pdfPhotosNote:'Συνημμένες φωτογραφίες:',pdfNoPhotos:'Καμία φωτογραφία',errEmailCliente:'Εισάγετε έγκυρο email πελάτη.',errEmailNegozio:'Εισάγετε έγκυρο email καταστήματος.'
   },
   pt:{
     appTitle:'Artigos com Defeito',appSub:'Boggi Milano',
@@ -1320,13 +1321,22 @@ async function openPanel(id) {
       <button class="close-x" onclick="closePanel()">×</button>
     </div>
     <div class="panel-body">
-      <div style="margin-bottom:12px"><span class="badge ${statusClass(r.status)}" style="font-size:12px;padding:3px 10px">${statusLabel(r.status)}</span></div>
+      <div style="margin-bottom:12px;display:flex;align-items:center;gap:8px">
+        <span class="badge ${statusClass(r.status)}" style="font-size:12px;padding:3px 10px">${statusLabel(r.status)}</span>
+        <button class="btn" style="margin-left:auto;font-size:11px;padding:4px 12px;background:var(--bg2)" onclick="generatePDF('${r.id}')">⬇ ${t('pdfBtn')}</button>
+      </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
         ${fields.map(([l,v])=>`<div class="fg"><div class="fl">${l}</div><div class="fv">${v}</div></div>`).join('')}
       </div>
       <div class="fg"><div class="fl">${t('fDamageLabel')}</div><div class="fv" style="font-weight:500">${r.damage_type||'—'}</div></div>
       <div class="fg"><div class="fl">${t('fProposalLabel')}</div><div class="fv">${r.proposal||'—'}</div></div>
       ${r.note ? `<div class="fg"><div class="fl">${t('fNoteLabel')}</div><div class="field-note">${r.note}</div></div>` : ''}
+      ${(r.email_cliente || r.email_negozio) ? `
+      <div class="divider"></div>
+      <div style="font-size:11px;color:var(--tx2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">${t('pdfEmails')}</div>
+      ${r.email_cliente ? `<div class="fg"><div class="fl">${t('pdfEmailCustomer')}</div><div class="fv">${r.email_cliente}</div></div>` : ''}
+      ${r.email_negozio ? `<div class="fg"><div class="fl">${t('pdfEmailStore')}</div><div class="fv">${r.email_negozio}</div></div>` : ''}
+      ` : ''}
       <div class="divider"></div>
       <div class="fl" style="margin-bottom:6px">${t('panelPhotos')}</div>
       ${photosHtml}
@@ -1341,6 +1351,235 @@ async function openPanel(id) {
       ` : `<button class="btn" style="flex:1" onclick="closePanel()">${t('panelClose')}</button>`}
     </div>`;
   document.getElementById('overlay').classList.add('open');
+  // store request data for PDF generation
+  window._panelRequest = r;
+  window._panelStore = store;
+}
+
+// ── PDF GENERATION ─────────────────────────────────────────
+async function generatePDF(id) {
+  // fetch fresh data if needed
+  let r = window._panelRequest;
+  if (!r || r.id !== id) {
+    const { data, error } = await sb.from('requests').select('*').eq('id', id).single();
+    if (error || !data) { showToast(t('errOpen')); return; }
+    r = data;
+  }
+  const store = window._panelStore || allAccounts.find(a => a.id === r.store_id);
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const W = 210, margin = 18, colW = (W - margin*2) / 2;
+
+  // ── Colors ──
+  const BLACK = [26, 26, 24];
+  const GRAY  = [107, 107, 103];
+  const LIGHT = [238, 237, 233];
+  const WHITE = [255, 255, 255];
+
+  // ── Header band ──
+  doc.setFillColor(...BLACK);
+  doc.rect(0, 0, W, 32, 'F');
+
+  // Logo text (Boggi Milano)
+  doc.setTextColor(...WHITE);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(18);
+  doc.text('BOGGI MILANO', W/2, 13, { align: 'center' });
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(200, 200, 196);
+  doc.text(t('pdfSubtitle').replace('Boggi Milano – ', '').toUpperCase(), W/2, 20, { align: 'center' });
+
+  // Status badge
+  const statusColors = {
+    pending:  [186, 117, 23],
+    approved: [59, 109, 17],
+    rejected: [163, 45, 45],
+    suspended:[12, 68, 124],
+  };
+  const sc = statusColors[r.status] || BLACK;
+  doc.setFillColor(...sc);
+  doc.roundedRect(W/2 - 22, 23, 44, 7, 2, 2, 'F');
+  doc.setTextColor(...WHITE);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7);
+  doc.text(statusLabel(r.status).toUpperCase(), W/2, 27.8, { align: 'center' });
+
+  // ── Request ID + date ──
+  let y = 42;
+  doc.setTextColor(...GRAY);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
+  doc.text(`${t('pdfGenerated')} ${r.date}  ·  ID: ${r.id.slice(0,8).toUpperCase()}`, margin, y);
+  y += 8;
+
+  // ── Section renderer ──
+  function sectionTitle(label, yPos) {
+    doc.setFillColor(...LIGHT);
+    doc.rect(margin, yPos, W - margin*2, 6, 'F');
+    doc.setTextColor(...BLACK);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7);
+    doc.text(label.toUpperCase(), margin + 3, yPos + 4.2);
+    return yPos + 10;
+  }
+
+  function field(label, value, x, yPos, w) {
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    doc.setTextColor(...GRAY);
+    doc.text(label.toUpperCase(), x, yPos);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(...BLACK);
+    const val = String(value || '—');
+    const lines = doc.splitTextToSize(val, w - 4);
+    doc.text(lines, x, yPos + 4.5);
+    return yPos + 5 + lines.length * 4;
+  }
+
+  function fieldRow(pairs, yPos) {
+    let maxY = yPos;
+    pairs.forEach(([label, value, col]) => {
+      const x = margin + col * colW;
+      const ny = field(label, value, x, yPos, colW);
+      if (ny > maxY) maxY = ny;
+    });
+    return maxY + 3;
+  }
+
+  // ── Article info ──
+  y = sectionTitle(t('fArticleLabel'), y);
+  y = fieldRow([
+    [t('fArticleLabel'), r.article_code, 0],
+    [t('fSizeLabel'), r.size, 1],
+  ], y);
+  y = fieldRow([
+    [t('fDamageLabel'), r.damage_type, 0],
+    [t('fProposalLabel'), r.proposal, 1],
+  ], y);
+  y = fieldRow([
+    [t('fUsedLabel'), r.used === 'SI' ? t('usedYes') : r.used === 'NO' ? t('usedNo') : '—', 0],
+    [t('fWearLabel'), r.wear ? r.wear+'/5' : '—', 1],
+  ], y);
+  if (r.note) {
+    y = field(t('fNoteLabel'), r.note, margin, y, W - margin*2);
+    y += 3;
+  }
+
+  // ── Store & dates ──
+  y += 2;
+  y = sectionTitle(t('fStore'), y);
+  y = fieldRow([
+    [t('fStore'), store?.name || r.store_id, 0],
+    [t('fProv2'), r.provenienza, 1],
+  ], y);
+  y = fieldRow([
+    [t('fPurchLabel'), r.purchase_date || '—', 0],
+    [t('fDropLabel'), r.dropoff_date || '—', 1],
+  ], y);
+
+  // ── Customer (only if Cliente) ──
+  if (r.provenienza === t('prov_customer') || r.customer_name !== '—') {
+    y += 2;
+    y = sectionTitle(t('fCust'), y);
+    y = fieldRow([
+      [t('fCust'), r.customer_name, 0],
+      [t('fCardLabel'), r.card || '—', 1],
+    ], y);
+    y = fieldRow([
+      [t('fCustEmail'), r.customer_email || '—', 0],
+      [t('fPurchLabel'), r.purchase_date || '—', 1],
+    ], y);
+  }
+
+  // ── Emails section ──
+  if (r.email_cliente || r.email_negozio) {
+    y += 2;
+    y = sectionTitle(t('pdfEmails'), y);
+    if (r.email_cliente && r.email_negozio) {
+      y = fieldRow([
+        [t('pdfEmailCustomer'), r.email_cliente, 0],
+        [t('pdfEmailStore'), r.email_negozio, 1],
+      ], y);
+    } else {
+      if (r.email_cliente) y = field(t('pdfEmailCustomer'), r.email_cliente, margin, y, W - margin*2);
+      if (r.email_negozio) y = field(t('pdfEmailStore'), r.email_negozio, margin, y, W - margin*2);
+      y += 3;
+    }
+  }
+
+  // ── Approval note ──
+  if (r.approval_note) {
+    y += 2;
+    y = sectionTitle(t('panelHqReply'), y);
+    y = field(r.decided_by || t('roleSede'), r.approval_note, margin, y, W - margin*2);
+    y += 3;
+  }
+
+  // ── Photos section ──
+  y += 2;
+  y = sectionTitle(t('panelPhotos'), y);
+  if (r.photo_urls && r.photo_urls.length) {
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(...GRAY);
+    doc.text(t('pdfPhotosNote'), margin, y);
+    y += 5;
+    // Try to embed up to 3 photos
+    let photoX = margin;
+    const photoSize = 45;
+    const photoGap = 6;
+    const loadImg = (url) => new Promise(resolve => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width; canvas.height = img.height;
+        canvas.getContext('2d').drawImage(img, 0, 0);
+        resolve(canvas.toDataURL('image/jpeg', 0.7));
+      };
+      img.onerror = () => resolve(null);
+      img.src = url;
+    });
+
+    const photosToShow = r.photo_urls.slice(0, 4);
+    const dataUrls = await Promise.all(photosToShow.map(loadImg));
+    let addedPhotos = 0;
+    for (const dataUrl of dataUrls) {
+      if (dataUrl) {
+        if (y + photoSize > 280) { doc.addPage(); y = 20; photoX = margin; }
+        doc.addImage(dataUrl, 'JPEG', photoX, y, photoSize, photoSize);
+        photoX += photoSize + photoGap;
+        addedPhotos++;
+        if (photoX + photoSize > W - margin) { photoX = margin; y += photoSize + photoGap; }
+      }
+    }
+    if (addedPhotos > 0) y += photoSize + photoGap;
+    if (r.photo_urls.length > 4) {
+      doc.setFontSize(7); doc.setTextColor(...GRAY);
+      doc.text(`+ ${r.photo_urls.length - 4} altre foto nel sistema`, margin, y);
+      y += 5;
+    }
+  } else {
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(...GRAY);
+    doc.text(t('pdfNoPhotos'), margin, y); y += 6;
+  }
+
+  // ── Footer ──
+  const pageCount = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= pageCount; i++) {
+    doc.setPage(i);
+    doc.setFillColor(...LIGHT);
+    doc.rect(0, 287, W, 10, 'F');
+    doc.setTextColor(...GRAY); doc.setFont('helvetica','normal'); doc.setFontSize(7);
+    doc.text('Boggi Milano — Gestione Fallati', margin, 293);
+    doc.text(`${i} / ${pageCount}`, W - margin, 293, { align: 'right' });
+  }
+
+  const fname = `fallato_${r.article_code}_${r.id.slice(0,6)}.pdf`;
+  doc.save(fname);
+  showToast(`PDF salvato: ${fname}`);
 }
 
 async function decide(requestId, storeId, status) {
@@ -1413,6 +1652,15 @@ function renderNewForm() {
 
       <div class="ff full"><label>${t('fNote')}</label>
         <textarea id="f-note" placeholder=""></textarea></div>
+      <div class="ff full" id="row-emails" style="display:none">
+        <div style="border-top:0.5px solid var(--br);margin:4px 0 12px;padding-top:12px;font-size:12px;color:var(--tx2);font-weight:500">${t('pdfEmails')}</div>
+        <div class="form-grid" style="margin-top:0">
+          <div class="ff"><label>${t('fEmailCliente')}</label>
+            <input id="f-email-cliente" type="email" placeholder="cliente@email.com"></div>
+          <div class="ff"><label>${t('fEmailNegozio')}</label>
+            <input id="f-email-negozio" type="email" placeholder="negozio@boggi.it"></div>
+        </div>
+      </div>
       <div class="ff full">
         <label>${t('fPhotos')} <span id="photo-count-label" style="font-weight:400;color:var(--tx2)">${t('fPhotosHint')}</span></label>
         <div class="upload-area">
@@ -1436,15 +1684,11 @@ function onProvenienzaChange() {
   const rowName = document.getElementById('row-name');
   const rowPdate = document.getElementById('row-pdate');
   const rowUsed = document.getElementById('row-used');
-  if (rowName) {
-    rowName.querySelector('label').textContent = isCliente ? t('fNameReq') : t('fName');
-  }
-  if (rowPdate) {
-    rowPdate.querySelector('label').textContent = isCliente ? t('fPurchDateReq') : t('fPurchDate');
-  }
-  if (rowUsed) {
-    rowUsed.querySelector('label').textContent = isCliente ? t('fUsedReq') : t('fUsed');
-  }
+  const rowEmails = document.getElementById('row-emails');
+  if (rowName) rowName.querySelector('label').textContent = isCliente ? t('fNameReq') : t('fName');
+  if (rowPdate) rowPdate.querySelector('label').textContent = isCliente ? t('fPurchDateReq') : t('fPurchDate');
+  if (rowUsed) rowUsed.querySelector('label').textContent = isCliente ? t('fUsedReq') : t('fUsed');
+  if (rowEmails) rowEmails.style.display = isCliente ? 'block' : 'none';
 }
 
 function showFormErr(msg) {
@@ -1531,6 +1775,8 @@ async function submitRequest() {
     store_purchase: document.getElementById('f-storepurch').value,
     customer_name: name || '—',
     customer_email: document.getElementById('f-email').value,
+    email_cliente: isCliente ? (document.getElementById('f-email-cliente')?.value || '') : '',
+    email_negozio: isCliente ? (document.getElementById('f-email-negozio')?.value || '') : '',
     card: document.getElementById('f-card').value,
     purchase_date: pdate || null,
     dropoff_date: ddate,
