@@ -257,8 +257,8 @@ const TRANSLATIONS = {
     fDropoff:'Data consegna in negozio *',fUsed:'Articolo usato',fUsedReq:'Articolo usato *',
     fWear:'Grado usura (1–5) *',fArticle:'Codice articolo (BO) *',fSize:'Taglia *',
     fDamage:'Tipo danno *',fProposal:'Tipo ricodifica suggerita *',fNote:'Note danno',
-    fPhotos:'Foto articolo *',fPhotosHint:'${t('fPhotosHint')}',fPhotosSelected:'${t('fPhotosSelected')}',
-    fPhotoUpload:'${t('fPhotoUpload')}',
+    fPhotos:'Foto articolo *',fPhotosHint:'(almeno 1 richiesta)',fPhotosSelected:'foto selezionate',
+    fPhotoUpload:'Tocca per scattare o selezionare foto · JPG, PNG – max 5 foto',
     fSubmit:'Invia richiesta',fCancel:'Annulla',fSending:'Invio in corso...',
     errProv:'Seleziona la provenienza.',errDropoff:'Inserisci la data di consegna.',
     errWear:'Seleziona il grado di usura.',errArticle:'Inserisci il codice articolo.',
@@ -392,7 +392,7 @@ const TRANSLATIONS = {
     errWear:"Sélectionnez le niveau d'usure.",errArticle:'Indiquez le code article.',
     errSize:'Indiquez la taille.',errDamage:'Sélectionnez le type de défaut.',
     errProposal:'Sélectionnez le type de reclassification.',errPhoto:'Ajoutez au moins une photo.',
-    errName:'Indiquez le nom du client.',errPurchDate:"Indiquez la date d'achat.",errDateOrder:'La date de dépôt ne peut pas être antérieure à la date d'achat.',
+    errName:'Indiquez le nom du client.',errPurchDate:"Indiquez la date d'achat.",errDateOrder:"La date de dépôt ne peut pas être antérieure à la date d'achat.",
     toastSent:'Demande envoyée. Le siège sera notifié.',
     toastApproved:'approuvée',toastRejected:'refusée',toastSuspended:'suspendue',
     toastNotified:'· Boutique notifiée',toastExportReady:'Export terminé : ',
@@ -1308,7 +1308,7 @@ async function openPanel(id) {
   const photosHtml = (r.photo_urls && r.photo_urls.length)
     ? `<div class="photo-grid">${r.photo_urls.map(url=>`
         <div class="photo-thumb"><a href="${url}" target="_blank"><img src="${url}" alt="foto" onerror="this.parentElement.parentElement.innerHTML='Foto non disponibile'"></a></div>`).join('')}</div>`
-    : '<div style="font-size:12px;color:var(--tx2)">${t('panelNoPhotos')}</div>`;
+    : `<div style="font-size:12px;color:var(--tx2)">${t('panelNoPhotos')}</div>`;
 
   const panel = document.getElementById('side-panel');
   panel.innerHTML = `
