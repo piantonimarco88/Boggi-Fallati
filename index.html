@@ -244,7 +244,7 @@ const TRANSLATIONS = {
   it:{
     appTitle:'Gestione Fallati',appSub:'Boggi Milano',
     loginTitle:'Gestione Fallati',loginSub:'Seleziona il tuo account',
-    hqLabel:'Sede',storesLabel:'Negozi',
+    hqLabel:'Sede',storesLabel:'Negozi',filterStores:'Cerca negozio...',
     hqItaName:'Sede Italia',hqItaRole:'Approvazioni negozi ITA',
     hqIntName:'Sede International',hqIntRole:'Approvazioni negozi INT',
     storeRole:'Negozio',pwPlaceholder:'Password...',loginBtn:'Accedi',pwError:'Password errata.',
@@ -308,7 +308,7 @@ const TRANSLATIONS = {
   en:{
     appTitle:'Flawed Items',appSub:'Boggi Milano',
     loginTitle:'Flawed Items',loginSub:'Select your account',
-    hqLabel:'Head Office',storesLabel:'Stores',
+    hqLabel:'Head Office',storesLabel:'Stores',filterStores:'Search store...',
     hqItaName:'Head Office Italy',hqItaRole:'Italy store approvals',
     hqIntName:'Head Office International',hqIntRole:'International store approvals',
     storeRole:'Store',pwPlaceholder:'Password...',loginBtn:'Login',pwError:'Wrong password.',
@@ -372,7 +372,7 @@ const TRANSLATIONS = {
   fr:{
     appTitle:'Articles Défectueux',appSub:'Boggi Milano',
     loginTitle:'Articles Défectueux',loginSub:'Sélectionnez votre compte',
-    hqLabel:'Siège',storesLabel:'Boutiques',
+    hqLabel:'Siège',storesLabel:'Boutiques',filterStores:'Rechercher boutique...',
     hqItaName:'Siège Italie',hqItaRole:'Approbations boutiques ITA',
     hqIntName:'Siège International',hqIntRole:'Approbations boutiques INT',
     storeRole:'Boutique',pwPlaceholder:'Mot de passe...',loginBtn:'Connexion',pwError:'Mot de passe incorrect.',
@@ -436,7 +436,7 @@ const TRANSLATIONS = {
   de:{
     appTitle:'Fehlartikel',appSub:'Boggi Milano',
     loginTitle:'Fehlartikel',loginSub:'Konto auswählen',
-    hqLabel:'Zentrale',storesLabel:'Filialen',
+    hqLabel:'Zentrale',storesLabel:'Filialen',filterStores:'Filiale suchen...',
     hqItaName:'Zentrale Italien',hqItaRole:'Genehmigungen ITA-Filialen',
     hqIntName:'Zentrale International',hqIntRole:'Genehmigungen INT-Filialen',
     storeRole:'Filiale',pwPlaceholder:'Passwort...',loginBtn:'Anmelden',pwError:'Falsches Passwort.',
@@ -500,7 +500,7 @@ const TRANSLATIONS = {
   es:{
     appTitle:'Artículos Defectuosos',appSub:'Boggi Milano',
     loginTitle:'Artículos Defectuosos',loginSub:'Selecciona tu cuenta',
-    hqLabel:'Sede',storesLabel:'Tiendas',
+    hqLabel:'Sede',storesLabel:'Tiendas',filterStores:'Buscar tienda...',
     hqItaName:'Sede Italia',hqItaRole:'Aprobaciones tiendas ITA',
     hqIntName:'Sede Internacional',hqIntRole:'Aprobaciones tiendas INT',
     storeRole:'Tienda',pwPlaceholder:'Contraseña...',loginBtn:'Acceder',pwError:'Contraseña incorrecta.',
@@ -564,7 +564,7 @@ const TRANSLATIONS = {
   hu:{
     appTitle:'Hibás Cikkek',appSub:'Boggi Milano',
     loginTitle:'Hibás Cikkek',loginSub:'Válassza ki fiókját',
-    hqLabel:'Központ',storesLabel:'Üzletek',
+    hqLabel:'Központ',storesLabel:'Üzletek',filterStores:'Üzlet keresése...',
     hqItaName:'Olasz Központ',hqItaRole:'ITA üzlet jóváhagyások',
     hqIntName:'Nemzetközi Központ',hqIntRole:'INT üzlet jóváhagyások',
     storeRole:'Üzlet',pwPlaceholder:'Jelszó...',loginBtn:'Bejelentkezés',pwError:'Hibás jelszó.',
@@ -628,7 +628,7 @@ const TRANSLATIONS = {
   sv:{
     appTitle:'Felaktiga artiklar',appSub:'Boggi Milano',
     loginTitle:'Felaktiga artiklar',loginSub:'Välj ditt konto',
-    hqLabel:'Huvudkontor',storesLabel:'Butiker',
+    hqLabel:'Huvudkontor',storesLabel:'Butiker',filterStores:'Sök butik...',
     hqItaName:'Huvudkontor Italien',hqItaRole:'Godkännanden ITA-butiker',
     hqIntName:'Internationellt HK',hqIntRole:'Godkännanden INT-butiker',
     storeRole:'Butik',pwPlaceholder:'Lösenord...',loginBtn:'Logga in',pwError:'Fel lösenord.',
@@ -692,7 +692,7 @@ const TRANSLATIONS = {
   el:{
     appTitle:'Ελαττωματικά Είδη',appSub:'Boggi Milano',
     loginTitle:'Ελαττωματικά Είδη',loginSub:'Επιλέξτε τον λογαριασμό σας',
-    hqLabel:'Κεντρικά',storesLabel:'Καταστήματα',
+    hqLabel:'Κεντρικά',storesLabel:'Καταστήματα',filterStores:'Αναζήτηση καταστήματος...',
     hqItaName:'Κεντρικά Ιταλία',hqItaRole:'Εγκρίσεις ITA καταστημάτων',
     hqIntName:'Διεθνή Κεντρικά',hqIntRole:'Εγκρίσεις INT καταστημάτων',
     storeRole:'Κατάστημα',pwPlaceholder:'Κωδικός...',loginBtn:'Σύνδεση',pwError:'Λάθος κωδικός.',
@@ -756,7 +756,7 @@ const TRANSLATIONS = {
   pt:{
     appTitle:'Artigos com Defeito',appSub:'Boggi Milano',
     loginTitle:'Artigos com Defeito',loginSub:'Selecione a sua conta',
-    hqLabel:'Sede',storesLabel:'Lojas',
+    hqLabel:'Sede',storesLabel:'Lojas',filterStores:'Pesquisar loja...',
     hqItaName:'Sede Itália',hqItaRole:'Aprovações lojas ITA',
     hqIntName:'Sede Internacional',hqIntRole:'Aprovações lojas INT',
     storeRole:'Loja',pwPlaceholder:'Palavra-passe...',loginBtn:'Entrar',pwError:'Palavra-passe incorreta.',
@@ -880,11 +880,6 @@ function render() {
 // ── LOGIN ──────────────────────────────────────────────────
 function renderLogin() {
   const stores = allAccounts.filter(a => a.role === 'store');
-  const storeItems = stores.map(s => `
-    <button class="acc-btn" onclick="selectAccount('${s.id}')">
-      <div class="acc-name">${s.name}</div>
-      <div class="acc-role">${t('storeRole')} · ${s.region}</div>
-    </button>`).join('');
 
   const langBtns = Object.entries(LANGS).map(([code,l]) =>
     `<button class="lang-btn${currentLang===code?' active':''}" onclick="setLang('${code}')" title="${l.name}">${l.flag} ${l.name}</button>`
@@ -902,7 +897,18 @@ function renderLogin() {
       <div class="acc-name">${t('hqIntName')}</div><div class="acc-role">${t('hqIntRole')}</div>
     </button>
     <div class="sep">— ${t('storesLabel')} —</div>
-    <div class="stores-list">${storeItems}</div>
+    <input
+      type="search"
+      id="store-search"
+      class="pw-input"
+      placeholder="${t('filterStores')}"
+      autocomplete="off"
+      style="width:100%;margin-bottom:8px"
+      oninput="filterStoresList(this.value)"
+    >
+    <div class="stores-list" id="stores-list">
+      ${renderStoreItems(stores, '')}
+    </div>
     <div id="pw-area" style="display:none">
       <div class="pw-row">
         <input class="pw-input" type="password" id="pw-input" placeholder="${t('pwPlaceholder')}" onkeydown="if(event.key==='Enter')doLogin()">
@@ -911,6 +917,28 @@ function renderLogin() {
       <div class="pw-err" id="pw-err"></div>
     </div>
   </div></div>`;
+}
+
+function renderStoreItems(stores, query) {
+  const q = query.trim().toLowerCase();
+  const filtered = q
+    ? stores.filter(s => s.name.toLowerCase().includes(q) || s.id.includes(q))
+    : stores;
+  if (!filtered.length) {
+    return `<div style="padding:12px;text-align:center;font-size:13px;color:var(--tx2)">—</div>`;
+  }
+  return filtered.map(s => `
+    <button class="acc-btn" onclick="selectAccount('${s.id}')">
+      <div class="acc-name">${s.name}</div>
+      <div class="acc-role">${s.id} · ${s.region}</div>
+    </button>`).join('');
+}
+
+function filterStoresList(query) {
+  const list = document.getElementById('stores-list');
+  if (!list) return;
+  const stores = allAccounts.filter(a => a.role === 'store');
+  list.innerHTML = renderStoreItems(stores, query);
 }
 
 function selectAccount(id) {
