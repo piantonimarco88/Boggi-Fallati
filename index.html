@@ -197,6 +197,24 @@ tr.clickable:hover td{background:var(--bg2);cursor:pointer}
 .mob-nav-btn.active{color:var(--tx);border-top-color:var(--tx)}
 .mob-nav-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 .mob-nav-badge{background:var(--amber-bg);color:var(--amber-tx);font-size:10px;padding:1px 5px;border-radius:8px;font-weight:500;line-height:1.4}
+/* MESSAGE THREAD */
+.thread-wrap{display:flex;flex-direction:column;gap:8px;margin-top:8px;max-height:260px;overflow-y:auto;padding-right:2px}
+.msg-bubble{max-width:85%;padding:9px 12px;border-radius:12px;font-size:13px;line-height:1.45}
+.msg-bubble.me{align-self:flex-end;background:var(--tx);color:var(--bg);border-bottom-right-radius:4px}
+.msg-bubble.other{align-self:flex-start;background:var(--bg2);color:var(--tx);border-bottom-left-radius:4px}
+.msg-meta{font-size:10px;opacity:.6;margin-top:3px}
+.msg-photos{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.msg-photos a{display:block;width:60px;height:60px;border-radius:6px;overflow:hidden;flex-shrink:0}
+.msg-photos img{width:100%;height:100%;object-fit:cover;display:block}
+.thread-input-row{display:flex;gap:6px;align-items:flex-end;margin-top:8px;border-top:0.5px solid var(--br);padding-top:10px}
+.thread-ta{flex:1;font-family:var(--font);font-size:13px;padding:8px 10px;border:0.5px solid var(--br2);border-radius:var(--r);background:var(--bg2);color:var(--tx);resize:none;min-height:38px;max-height:100px}
+.thread-ta:focus{outline:none;border-color:var(--br2)}
+.thread-photo-btn{padding:7px 9px;border-radius:var(--r);border:0.5px solid var(--br2);background:var(--bg);cursor:pointer;font-size:11px;color:var(--tx2);white-space:nowrap;position:relative;font-family:var(--font)}
+.thread-photo-btn input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.thread-photo-preview{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.thread-photo-thumb{width:48px;height:48px;border-radius:5px;overflow:hidden;position:relative;border:0.5px solid var(--br)}
+.thread-photo-thumb img{width:100%;height:100%;object-fit:cover}
+.thread-photo-thumb .rm{position:absolute;top:1px;right:1px;background:rgba(0,0,0,.55);color:#fff;border:none;border-radius:50%;width:15px;height:15px;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
 @media(max-width:600px){
   .sidebar{display:none}
   .mobile-nav{display:block}
@@ -279,7 +297,7 @@ const TRANSLATIONS = {
     toastNotified:'· Notifica inviata al negozio',toastExportReady:'Export completato: ',
     toastExportPrep:'Preparazione export...',toastNoData:'Nessun dato da esportare',
     panelRespNote:'Nota di risposta (visibile al negozio)',panelRespPlaceholder:'Aggiungi una nota...',
-    panelApprove:'Approva',panelReject:'Nega',panelSuspend:'Sospendi',panelClose:'Chiudi',
+    panelApprove:'Approva',panelReject:'Nega',panelSuspend:'Sospendi',panelClose:'Chiudi',threadTitle:'Conversazione',threadPlaceholder:'Scrivi un messaggio...',threadSend:'Invia',threadPhoto:'Foto',threadNoMsg:'Nessun messaggio ancora. Inizia la conversazione.',threadYou:'Tu',threadSending:'Invio...',
     panelPhotos:'Foto allegate',panelNoPhotos:'Nessuna foto allegata',
     panelHqReply:'Risposta sede',panelStatus:'Stato',
     fStore:'Negozio',fProv2:'Provenienza',fCust:'Cliente',fCustEmail:'Email cliente',
@@ -343,7 +361,7 @@ const TRANSLATIONS = {
     toastNotified:'· Store notified',toastExportReady:'Export complete: ',
     toastExportPrep:'Preparing export...',toastNoData:'No data to export',
     panelRespNote:'Response note (visible to store)',panelRespPlaceholder:'Add a note...',
-    panelApprove:'Approve',panelReject:'Reject',panelSuspend:'Suspend',panelClose:'Close',
+    panelApprove:'Approve',panelReject:'Reject',panelSuspend:'Suspend',panelClose:'Close',threadTitle:'Conversation',threadPlaceholder:'Write a message...',threadSend:'Send',threadPhoto:'Photo',threadNoMsg:'No messages yet. Start the conversation.',threadYou:'You',threadSending:'Sending...',
     panelPhotos:'Attached photos',panelNoPhotos:'No photos attached',
     panelHqReply:'Head office reply',panelStatus:'Status',
     fStore:'Store',fProv2:'Source',fCust:'Customer',fCustEmail:'Customer email',
@@ -407,7 +425,7 @@ const TRANSLATIONS = {
     toastNotified:'· Boutique notifiée',toastExportReady:'Export terminé : ',
     toastExportPrep:'Préparation export...',toastNoData:'Aucune donnée à exporter',
     panelRespNote:'Note de réponse (visible par la boutique)',panelRespPlaceholder:'Ajouter une note...',
-    panelApprove:'Approuver',panelReject:'Refuser',panelSuspend:'Suspendre',panelClose:'Fermer',
+    panelApprove:'Approuver',panelReject:'Refuser',panelSuspend:'Suspendre',panelClose:'Fermer',threadTitle:'Conversation',threadPlaceholder:'Écrire un message...',threadSend:'Envoyer',threadPhoto:'Photo',threadNoMsg:'Aucun message. Démarrez la conversation.',threadYou:'Vous',threadSending:'Envoi...',
     panelPhotos:'Photos jointes',panelNoPhotos:'Aucune photo jointe',
     panelHqReply:'Réponse du siège',panelStatus:'Statut',
     fStore:'Boutique',fProv2:'Provenance',fCust:'Client',fCustEmail:'Email client',
@@ -471,7 +489,7 @@ const TRANSLATIONS = {
     toastNotified:'· Filiale benachrichtigt',toastExportReady:'Export abgeschlossen: ',
     toastExportPrep:'Export wird vorbereitet...',toastNoData:'Keine Daten zum Exportieren',
     panelRespNote:'Antwortnotiz (für Filiale sichtbar)',panelRespPlaceholder:'Notiz hinzufügen...',
-    panelApprove:'Genehmigen',panelReject:'Ablehnen',panelSuspend:'Aussetzen',panelClose:'Schließen',
+    panelApprove:'Genehmigen',panelReject:'Ablehnen',panelSuspend:'Aussetzen',panelClose:'Schließen',threadTitle:'Konversation',threadPlaceholder:'Nachricht schreiben...',threadSend:'Senden',threadPhoto:'Foto',threadNoMsg:'Noch keine Nachrichten.',threadYou:'Sie',threadSending:'Wird gesendet...',
     panelPhotos:'Angehängte Fotos',panelNoPhotos:'Keine Fotos angehängt',
     panelHqReply:'Antwort der Zentrale',panelStatus:'Status',
     fStore:'Filiale',fProv2:'Herkunft',fCust:'Kunde',fCustEmail:'Kunden-E-Mail',
@@ -535,7 +553,7 @@ const TRANSLATIONS = {
     toastNotified:'· Tienda notificada',toastExportReady:'Export completo: ',
     toastExportPrep:'Preparando export...',toastNoData:'No hay datos para exportar',
     panelRespNote:'Nota de respuesta (visible para la tienda)',panelRespPlaceholder:'Añadir una nota...',
-    panelApprove:'Aprobar',panelReject:'Rechazar',panelSuspend:'Suspender',panelClose:'Cerrar',
+    panelApprove:'Aprobar',panelReject:'Rechazar',panelSuspend:'Suspender',panelClose:'Cerrar',threadTitle:'Conversación',threadPlaceholder:'Escribe un mensaje...',threadSend:'Enviar',threadPhoto:'Foto',threadNoMsg:'Sin mensajes. Empieza la conversación.',threadYou:'Tú',threadSending:'Enviando...',
     panelPhotos:'Fotos adjuntas',panelNoPhotos:'Sin fotos adjuntas',
     panelHqReply:'Respuesta de sede',panelStatus:'Estado',
     fStore:'Tienda',fProv2:'Origen',fCust:'Cliente',fCustEmail:'Email cliente',
@@ -599,7 +617,7 @@ const TRANSLATIONS = {
     toastNotified:'· Üzlet értesítve',toastExportReady:'Export kész: ',
     toastExportPrep:'Export előkészítése...',toastNoData:'Nincs exportálható adat',
     panelRespNote:'Válasz megjegyzés (üzlet számára látható)',panelRespPlaceholder:'Megjegyzés hozzáadása...',
-    panelApprove:'Jóváhagyás',panelReject:'Elutasítás',panelSuspend:'Felfüggesztés',panelClose:'Bezárás',
+    panelApprove:'Jóváhagyás',panelReject:'Elutasítás',panelSuspend:'Felfüggesztés',panelClose:'Bezárás',threadTitle:'Beszélgetés',threadPlaceholder:'Üzenet írása...',threadSend:'Küldés',threadPhoto:'Fotó',threadNoMsg:'Még nincs üzenet.',threadYou:'Ön',threadSending:'Küldés...',
     panelPhotos:'Csatolt fotók',panelNoPhotos:'Nincs csatolt fotó',
     panelHqReply:'Központ válasza',panelStatus:'Állapot',
     fStore:'Üzlet',fProv2:'Forrás',fCust:'Ügyfél',fCustEmail:'Ügyfél email',
@@ -663,7 +681,7 @@ const TRANSLATIONS = {
     toastNotified:'· Butik meddelad',toastExportReady:'Export klar: ',
     toastExportPrep:'Förbereder export...',toastNoData:'Ingen data att exportera',
     panelRespNote:'Svarsnot (synlig för butiken)',panelRespPlaceholder:'Lägg till en not...',
-    panelApprove:'Godkänn',panelReject:'Avslå',panelSuspend:'Pausa',panelClose:'Stäng',
+    panelApprove:'Godkänn',panelReject:'Avslå',panelSuspend:'Pausa',panelClose:'Stäng',threadTitle:'Konversation',threadPlaceholder:'Skriv ett meddelande...',threadSend:'Skicka',threadPhoto:'Foto',threadNoMsg:'Inga meddelanden än.',threadYou:'Du',threadSending:'Skickar...',
     panelPhotos:'Bifogade foton',panelNoPhotos:'Inga foton bifogade',
     panelHqReply:'Svar från HK',panelStatus:'Status',
     fStore:'Butik',fProv2:'Källa',fCust:'Kund',fCustEmail:'Kund-e-post',
@@ -727,7 +745,7 @@ const TRANSLATIONS = {
     toastNotified:'· Κατάστημα ενημερώθηκε',toastExportReady:'Export ολοκληρώθηκε: ',
     toastExportPrep:'Προετοιμασία export...',toastNoData:'Δεν υπάρχουν δεδομένα',
     panelRespNote:'Σημείωση απάντησης (ορατή στο κατάστημα)',panelRespPlaceholder:'Προσθήκη σημείωσης...',
-    panelApprove:'Έγκριση',panelReject:'Απόρριψη',panelSuspend:'Αναστολή',panelClose:'Κλείσιμο',
+    panelApprove:'Έγκριση',panelReject:'Απόρριψη',panelSuspend:'Αναστολή',panelClose:'Κλείσιμο',threadTitle:'Συνομιλία',threadPlaceholder:'Γράψτε μήνυμα...',threadSend:'Αποστολή',threadPhoto:'Φωτ.',threadNoMsg:'Δεν υπάρχουν μηνύματα.',threadYou:'Εσείς',threadSending:'Αποστολή...',
     panelPhotos:'Συνημμένες φωτογραφίες',panelNoPhotos:'Καμία φωτογραφία',
     panelHqReply:'Απάντηση κεντρικών',panelStatus:'Κατάσταση',
     fStore:'Κατάστημα',fProv2:'Προέλευση',fCust:'Πελάτης',fCustEmail:'Email πελάτη',
@@ -791,7 +809,7 @@ const TRANSLATIONS = {
     toastNotified:'· Loja notificada',toastExportReady:'Export concluído: ',
     toastExportPrep:'A preparar export...',toastNoData:'Sem dados para exportar',
     panelRespNote:'Nota de resposta (visível para a loja)',panelRespPlaceholder:'Adicionar uma nota...',
-    panelApprove:'Aprovar',panelReject:'Rejeitar',panelSuspend:'Suspender',panelClose:'Fechar',
+    panelApprove:'Aprovar',panelReject:'Rejeitar',panelSuspend:'Suspender',panelClose:'Fechar',threadTitle:'Conversa',threadPlaceholder:'Escreva uma mensagem...',threadSend:'Enviar',threadPhoto:'Foto',threadNoMsg:'Sem mensagens. Inicie a conversa.',threadYou:'Você',threadSending:'A enviar...',
     panelPhotos:'Fotos anexadas',panelNoPhotos:'Sem fotos anexadas',
     panelHqReply:'Resposta da sede',panelStatus:'Estado',
     fStore:'Loja',fProv2:'Origem',fCust:'Cliente',fCustEmail:'Email cliente',
@@ -1442,6 +1460,21 @@ async function openPanel(id) {
       ${photosHtml}
       ${r.approval_note ? `<div class="divider"></div><div class="fl">${t('panelHqReply')}</div><div class="field-note" style="margin-top:6px">${r.approval_note}</div><div style="font-size:11px;color:var(--tx2);margin-top:4px">— ${r.decided_by||t('roleSede')}</div>` : ''}
       ${canDecide ? `<div class="divider"></div><div class="fl" style="margin-bottom:6px">${t('panelRespNote')}</div><textarea class="note-ta" id="resp-note" placeholder="${t('panelRespPlaceholder')}"></textarea>` : ''}
+
+      <div class="divider"></div>
+      <div style="font-size:11px;color:var(--tx2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;font-weight:500">${t('threadTitle')}</div>
+      <div class="thread-wrap" id="thread-messages"><div style="font-size:12px;color:var(--tx2);padding:8px 0">${t('loading')}</div></div>
+      <div id="thread-photo-preview" class="thread-photo-preview"></div>
+      <div class="thread-input-row">
+        <textarea class="thread-ta" id="thread-input" placeholder="${t('threadPlaceholder')}" rows="1"
+          oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px'"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage('${r.id}','${r.store_id}')}"></textarea>
+        <div class="thread-photo-btn" title="${t('threadPhoto')}">
+          📎
+          <input type="file" id="thread-photo-input" accept="image/*" multiple onchange="previewThreadPhotos(this)">
+        </div>
+        <button class="btn btn-primary" style="padding:7px 12px;font-size:12px;white-space:nowrap" onclick="sendMessage('${r.id}','${r.store_id}')" id="thread-send-btn">${t('threadSend')}</button>
+      </div>
     </div>
     <div class="panel-foot">
       ${canDecide ? `
@@ -1451,9 +1484,146 @@ async function openPanel(id) {
       ` : `<button class="btn" style="flex:1" onclick="closePanel()">${t('panelClose')}</button>`}
     </div>`;
   document.getElementById('overlay').classList.add('open');
-  // store request data for PDF generation
   window._panelRequest = r;
   window._panelStore = store;
+  // Load thread asynchronously
+  loadThread(r.id);
+}
+
+// ── MESSAGE THREAD ──────────────────────────────────────────
+let threadUploadFiles = [];
+
+async function loadThread(requestId) {
+  const area = document.getElementById('thread-messages');
+  if (!area) return;
+  const { data, error } = await sb.from('messages')
+    .select('*').eq('request_id', requestId)
+    .order('created_at', { ascending: true });
+  if (error) { area.innerHTML = `<div style="font-size:12px;color:var(--red-tx)">${t('errLoad')}${error.message}</div>`; return; }
+  renderThread(data || []);
+}
+
+function renderThread(msgs) {
+  const area = document.getElementById('thread-messages');
+  if (!area) return;
+  if (!msgs.length) {
+    area.innerHTML = `<div style="font-size:12px;color:var(--tx2);padding:8px 0;text-align:center">${t('threadNoMsg')}</div>`;
+    return;
+  }
+  area.innerHTML = msgs.map(m => {
+    const isMe = m.sender_id === currentUser.id;
+    const senderName = isMe ? t('threadYou') : (allAccounts.find(a=>a.id===m.sender_id)?.name || m.sender_id);
+    const timeStr = new Date(m.created_at).toLocaleString(currentLang, {day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+    const photosHtml = (m.photo_urls && m.photo_urls.length)
+      ? `<div class="msg-photos">${m.photo_urls.map(u=>`<a href="${u}" target="_blank"><img src="${u}" alt="" onerror="this.style.display='none'"></a>`).join('')}</div>`
+      : '';
+    return `<div style="display:flex;flex-direction:column">
+      <div class="msg-bubble ${isMe?'me':'other'}">
+        ${m.body ? `<div>${m.body.replace(/\n/g,'<br>')}</div>` : ''}
+        ${photosHtml}
+        <div class="msg-meta">${senderName} · ${timeStr}</div>
+      </div>
+    </div>`;
+  }).join('');
+  // scroll to bottom
+  area.scrollTop = area.scrollHeight;
+}
+
+function previewThreadPhotos(input) {
+  threadUploadFiles = Array.from(input.files).slice(0, 4);
+  const preview = document.getElementById('thread-photo-preview');
+  if (!preview) return;
+  preview.innerHTML = threadUploadFiles.map((f, i) => {
+    const url = URL.createObjectURL(f);
+    return `<div class="thread-photo-thumb">
+      <img src="${url}">
+      <button class="rm" onclick="removeThreadPhoto(${i})">×</button>
+    </div>`;
+  }).join('');
+}
+
+function removeThreadPhoto(idx) {
+  threadUploadFiles.splice(idx, 1);
+  const dt = new DataTransfer();
+  threadUploadFiles.forEach(f => dt.items.add(f));
+  const inp = document.getElementById('thread-photo-input');
+  if (inp) inp.files = dt.files;
+  previewThreadPhotos({ files: dt.files });
+}
+
+async function sendMessage(requestId, storeId) {
+  const inp = document.getElementById('thread-input');
+  const body = inp?.value?.trim();
+  const sendBtn = document.getElementById('thread-send-btn');
+
+  if (!body && !threadUploadFiles.length) return;
+
+  if (sendBtn) { sendBtn.disabled = true; sendBtn.textContent = t('threadSending'); }
+  if (inp) inp.disabled = true;
+
+  // Upload photos
+  const photoUrls = [];
+  for (const file of threadUploadFiles) {
+    const ext = file.name.split('.').pop();
+    const path = `messages/${requestId}/${genId()}.${ext}`;
+    const { data: upData, error: upErr } = await sb.storage.from('fallati-photos').upload(path, file);
+    if (!upErr && upData) {
+      const { data: urlData } = sb.storage.from('fallati-photos').getPublicUrl(path);
+      if (urlData?.publicUrl) photoUrls.push(urlData.publicUrl);
+    }
+  }
+
+  const msg = {
+    id: genId(),
+    request_id: requestId,
+    sender_id: currentUser.id,
+    sender_role: currentUser.role,
+    body: body || null,
+    photo_urls: photoUrls,
+    created_at: new Date().toISOString()
+  };
+
+  const { error } = await sb.from('messages').insert(msg);
+
+  if (error) {
+    showToast(t('errSend') + error.message);
+  } else {
+    // Clear input
+    if (inp) { inp.value = ''; inp.style.height = 'auto'; inp.disabled = false; }
+    threadUploadFiles = [];
+    const preview = document.getElementById('thread-photo-preview');
+    if (preview) preview.innerHTML = '';
+    const photoInp = document.getElementById('thread-photo-input');
+    if (photoInp) photoInp.value = '';
+
+    // Send notification to the other party
+    // If sender is store → notify sede; if sender is sede/admin → notify store
+    if (isStore()) {
+      // Store replied — notify sede via a generic notification marked as store-reply
+      // (sede will see unread badge on the request when they open it)
+      await sb.from('notifications').insert({
+        id: genId(),
+        store_id: storeId,   // used as reference key, sede sees all
+        request_id: requestId,
+        message: `💬 ${currentUser.name} (${t('roleStore')}): ${body ? body.slice(0,60) : '📎'}`,
+        read: false
+      });
+    } else {
+      // Sede/admin replied → notify the store
+      await sb.from('notifications').insert({
+        id: genId(),
+        store_id: storeId,
+        request_id: requestId,
+        message: `💬 ${t('panelHqReply')}: ${body ? body.slice(0,60) : '📎'}`,
+        read: false
+      });
+    }
+
+    // Reload thread
+    await loadThread(requestId);
+  }
+
+  if (sendBtn) { sendBtn.disabled = false; sendBtn.textContent = t('threadSend'); }
 }
 
 // ── PDF GENERATION ─────────────────────────────────────────
