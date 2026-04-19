@@ -1408,7 +1408,7 @@ async function openPanel(id) {
   const { data: r, error } = await sb.from('requests').select('*').eq('id', id).single();
   if (error || !r) { showToast(t('errOpen')); return; }
   const store = allAccounts.find(a => a.id === r.store_id);
-  const canDecide = isSede() && (r.status === 'pending' || r.status === 'suspended');
+  const canDecide = isSede();
 
   const fields = [
     [t('fStore'), store?.name || r.store_id],
