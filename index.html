@@ -197,7 +197,85 @@ tr.clickable:hover td{background:var(--bg2);cursor:pointer}
 .mob-nav-btn.active{color:var(--tx);border-top-color:var(--tx)}
 .mob-nav-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 .mob-nav-badge{background:var(--amber-bg);color:var(--amber-tx);font-size:10px;padding:1px 5px;border-radius:8px;font-weight:500;line-height:1.4}
-/* MESSAGE THREAD */
+/* MANUAL LAYOUT */
+.man-layout{display:flex;height:100%;overflow:hidden}
+.man-sidebar{width:240px;flex-shrink:0;background:var(--bg);border-right:0.5px solid var(--br);overflow-y:auto;display:flex;flex-direction:column}
+.man-lang-sel{padding:14px 14px 10px;border-bottom:0.5px solid var(--br)}
+.man-lang-btn{font-size:11px;padding:4px 10px;border-radius:20px;border:0.5px solid var(--br2);background:var(--bg2);cursor:pointer;font-family:var(--font);color:var(--tx2);transition:all .15s}
+.man-lang-btn.active{background:var(--tx);color:var(--bg);border-color:var(--tx)}
+.man-toc{padding:10px 8px;flex:1}
+.man-toc-item{width:100%;display:flex;align-items:center;gap:8px;padding:7px 8px;border:none;background:none;cursor:pointer;font-family:var(--font);font-size:12px;color:var(--tx2);border-radius:6px;text-align:left;line-height:1.3;transition:background .1s}
+.man-toc-item:hover{background:var(--bg2)}
+.man-toc-item.active{background:var(--bg3);color:var(--tx);font-weight:500}
+.man-toc-icon{font-size:14px;flex-shrink:0;width:20px;text-align:center}
+.man-content{flex:1;overflow-y:auto;padding:24px 28px;background:var(--bg)}
+.man-content h2{font-size:20px;font-weight:500;margin-bottom:16px;padding-bottom:10px;border-bottom:0.5px solid var(--br);color:var(--tx)}
+.man-content h3{font-size:14px;font-weight:500;margin:18px 0 10px;color:var(--tx)}
+.man-content p{font-size:13px;color:var(--tx2);line-height:1.65;margin-bottom:10px}
+.man-content ul{padding-left:18px;margin-bottom:10px}
+.man-content li{font-size:13px;color:var(--tx2);line-height:1.7}
+.man-table-wrap{overflow-x:auto;margin-bottom:16px;border-radius:var(--r);border:0.5px solid var(--br)}
+.man-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.man-table th{background:var(--bg3);font-weight:500;color:var(--tx);padding:9px 12px;text-align:left;border-bottom:0.5px solid var(--br);white-space:nowrap}
+.man-table td{padding:9px 12px;color:var(--tx2);line-height:1.5;border-bottom:0.5px solid var(--br);vertical-align:top}
+.man-table tr:last-child td{border-bottom:none}
+.man-table tr:hover td{background:var(--bg2)}
+.cls-ok{background:var(--green-bg);color:var(--green-tx);font-weight:500;text-align:center}
+.cls-ff{background:var(--amber-bg);color:var(--amber-tx);font-weight:500;text-align:center}
+.cls-fl{background:#fde8e8;color:#7c2a2a;font-weight:500;text-align:center}
+.cls-fb{background:#f0e4f4;color:#6b2a8a;font-weight:500;text-align:center}
+.man-matrix{margin-bottom:16px}
+.man-matrix .man-table th:first-child{width:180px}
+.man-box{background:var(--bg2);border:0.5px solid var(--br);border-radius:var(--r);padding:14px 16px;margin-bottom:14px;font-size:13px;color:var(--tx2);line-height:1.65}
+.man-box strong{color:var(--tx)}
+.man-box ul{padding-left:16px;margin-top:6px}
+.man-warn{border-color:var(--amber-br);background:var(--amber-bg);color:var(--amber-tx)}
+.man-tip{background:var(--blue-bg);border:0.5px solid var(--blue-br);border-radius:var(--r);padding:10px 14px;font-size:12.5px;color:var(--blue-tx);margin-top:14px;line-height:1.55}
+.man-steps{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.man-step{display:flex;gap:12px;align-items:flex-start;font-size:13px;color:var(--tx2);line-height:1.55}
+.man-step-num{width:26px;height:26px;border-radius:50%;background:var(--tx);color:var(--bg);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;margin-top:1px}
+.man-two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.man-card{background:var(--bg2);border:0.5px solid var(--br);border-radius:var(--r);padding:14px 16px}
+.man-card h3{font-size:13px;font-weight:500;margin-bottom:8px;margin-top:0}
+.man-card p,.man-card li{font-size:12.5px;color:var(--tx2);line-height:1.6}
+.man-card ul{padding-left:16px;margin-top:6px}
+.man-categories{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.man-cat{background:var(--bg2);border:0.5px solid var(--br);border-radius:var(--r);padding:12px 14px;font-size:12.5px;color:var(--tx2)}
+.man-classify{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.man-cls-item{display:flex;align-items:center;gap:10px;flex:1;min-width:180px;background:var(--bg2);border:0.5px solid var(--br);border-radius:var(--r);padding:12px 14px;font-size:12.5px;color:var(--tx2);line-height:1.45}
+.man-cls-item.ff{background:var(--amber-bg);border-color:var(--amber-br)}
+.man-cls-item.fl{background:#fde8e8;border-color:#e08888}
+.man-cls-item.fb{background:#f0e4f4;border-color:#c084d4}
+.man-cls-badge{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;font-size:11px;font-weight:700;flex-shrink:0;color:#fff}
+.man-cls-badge.ff,.man-cls-item.ff .man-cls-badge,.cls-ff .man-cls-badge{background:var(--amber-tx)}
+.man-cls-item.ff .man-cls-badge{background:var(--amber-tx)}
+.man-cls-item.fl .man-cls-badge{background:#7c2a2a}
+.man-cls-item.fb .man-cls-badge{background:#6b2a8a}
+.man-cls-badge{background:var(--tx)}
+.man-symbols{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:14px}
+.man-sym-group{background:var(--bg2);border:0.5px solid var(--br);border-radius:var(--r);padding:12px 14px}
+.man-sym-group h4{font-size:12px;font-weight:500;margin-bottom:8px;color:var(--tx)}
+.man-sym-row{display:flex;gap:10px;align-items:center;padding:4px 0;font-size:12px;color:var(--tx2);border-bottom:0.5px solid var(--br)}
+.man-sym-row:last-child{border-bottom:none}
+.man-sym-icon{min-width:60px;font-family:var(--mono);font-size:11px;color:var(--tx);background:var(--bg);border:0.5px solid var(--br);border-radius:4px;padding:2px 6px;text-align:center}
+/* MOBILE MANUAL */
+@media(max-width:700px){
+  .man-layout{position:relative;overflow:hidden}
+  .man-sidebar{position:absolute;top:0;left:-100%;width:240px;height:100%;z-index:10;transition:left .2s ease;box-shadow:none}
+  .man-sidebar.man-sidebar-open{left:0;box-shadow:4px 0 16px rgba(0,0,0,.12)}
+  .man-content{padding:16px;width:100%}
+  .man-mob-toc-btn{display:flex!important}
+  .man-two-col{grid-template-columns:1fr}
+  .man-categories{grid-template-columns:1fr 1fr}
+  .man-symbols{grid-template-columns:1fr}
+  .man-classify{flex-direction:column}
+}
+.man-mob-toc-btn{display:none;align-items:center;gap:6px;padding:7px 12px;border:0.5px solid var(--br2);border-radius:var(--r);background:var(--bg);font-size:12px;cursor:pointer;font-family:var(--font);color:var(--tx2);margin-bottom:14px}
+@media(max-width:600px){
+  .man-mob-toc-btn{display:flex!important}
+  .man-layout{padding-bottom:80px}
+}
+/* END MANUAL */
 .thread-wrap{display:flex;flex-direction:column;gap:8px;margin-top:8px;max-height:260px;overflow-y:auto;padding-right:2px}
 .msg-bubble{max-width:85%;padding:9px 12px;border-radius:12px;font-size:13px;line-height:1.45}
 .msg-bubble.me{align-self:flex-end;background:var(--tx);color:var(--bg);border-bottom-right-radius:4px}
@@ -267,7 +345,7 @@ const TRANSLATIONS = {
     hqIntName:'Sede International',hqIntRole:'Approvazioni negozi INT',
     storeRole:'Negozio',pwPlaceholder:'Password...',loginBtn:'Accedi',pwError:'Password errata.',
     navPending:'In attesa',navAll:'Tutte le richieste',navNew:'Nuova richiesta',
-    navPendingSede:'Da approvare',navAllSede:'Storico richieste',navStats:'Statistiche',navSuspended:'Sospese',navRegistry:'Anagrafica negozi',titleRegistry:'Anagrafica negozi',regAddStore:'Aggiungi negozio',regEditStore:'Modifica negozio',regDeleteStore:'Elimina negozio',regConfirmDelete:'Sei sicuro di voler eliminare questo negozio?',regStoreName:'Nome negozio',regStoreId:'Codice negozio',regRegion:'Regione',regEmail:'Email negozio',regPassword:'Password',regActive:'Attivo',regSave:'Salva',regCancel:'Annulla',regSaved:'Negozio salvato.',regDeleted:'Negozio eliminato.',regErrId:'Il codice negozio è obbligatorio.',regErrName:'Il nome negozio è obbligatorio.',regErrPwd:'La password è obbligatoria.',regErrIdExists:'Questo codice esiste già.',titleSuspended:'Richieste sospese',errArticleLen:'Il codice articolo deve essere di 11 caratteri.',
+    navPendingSede:'Da approvare',navAllSede:'Storico richieste',navStats:'Statistiche',navSuspended:'Sospese',navRegistry:'Anagrafica negozi',titleRegistry:'Anagrafica negozi',regAddStore:'Aggiungi negozio',regEditStore:'Modifica negozio',regDeleteStore:'Elimina negozio',regConfirmDelete:'Sei sicuro di voler eliminare questo negozio?',regStoreName:'Nome negozio',regStoreId:'Codice negozio',regRegion:'Regione',regEmail:'Email negozio',regPassword:'Password',regActive:'Attivo',regSave:'Salva',regCancel:'Annulla',regSaved:'Negozio salvato.',regDeleted:'Negozio eliminato.',regErrId:'Il codice negozio è obbligatorio.',regErrName:'Il nome negozio è obbligatorio.',regErrPwd:'La password è obbligatoria.',regErrIdExists:'Questo codice esiste già.',titleSuspended:'Richieste sospese',errArticleLen:'Il codice articolo deve essere di 11 caratteri.',navManual:'Manuale difetti',
     roleStore:'Negozio',roleSede:'Sede',logout:'Esci',
     titlePendingSede:'Da approvare',titlePendingStore:'Richieste in attesa',
     titleAll:'Storico richieste',titleNew:'Nuova richiesta fallato',titleStats:'Statistiche',
@@ -331,7 +409,7 @@ const TRANSLATIONS = {
     hqIntName:'Head Office International',hqIntRole:'International store approvals',
     storeRole:'Store',pwPlaceholder:'Password...',loginBtn:'Login',pwError:'Wrong password.',
     navPending:'Pending',navAll:'All requests',navNew:'New request',
-    navPendingSede:'To approve',navAllSede:'Request history',navStats:'Statistics',navSuspended:'Suspended',navRegistry:'Store registry',titleRegistry:'Store registry',regAddStore:'Add store',regEditStore:'Edit store',regDeleteStore:'Delete store',regConfirmDelete:'Are you sure you want to delete this store?',regStoreName:'Store name',regStoreId:'Store code',regRegion:'Region',regEmail:'Store email',regPassword:'Password',regActive:'Active',regSave:'Save',regCancel:'Cancel',regSaved:'Store saved.',regDeleted:'Store deleted.',regErrId:'Store code is required.',regErrName:'Store name is required.',regErrPwd:'Password is required.',regErrIdExists:'This code already exists.',titleSuspended:'Suspended requests',errArticleLen:'Article code must be exactly 11 characters.',
+    navPendingSede:'To approve',navAllSede:'Request history',navStats:'Statistics',navSuspended:'Suspended',navRegistry:'Store registry',titleRegistry:'Store registry',regAddStore:'Add store',regEditStore:'Edit store',regDeleteStore:'Delete store',regConfirmDelete:'Are you sure you want to delete this store?',regStoreName:'Store name',regStoreId:'Store code',regRegion:'Region',regEmail:'Store email',regPassword:'Password',regActive:'Active',regSave:'Save',regCancel:'Cancel',regSaved:'Store saved.',regDeleted:'Store deleted.',regErrId:'Store code is required.',regErrName:'Store name is required.',regErrPwd:'Password is required.',regErrIdExists:'This code already exists.',titleSuspended:'Suspended requests',errArticleLen:'Article code must be exactly 11 characters.',navManual:'Defect manual',
     roleStore:'Store',roleSede:'Head Office',logout:'Logout',
     titlePendingSede:'To approve',titlePendingStore:'Pending requests',
     titleAll:'Request history',titleNew:'New flawed item request',titleStats:'Statistics',
@@ -395,7 +473,7 @@ const TRANSLATIONS = {
     hqIntName:'Siège International',hqIntRole:'Approbations boutiques INT',
     storeRole:'Boutique',pwPlaceholder:'Mot de passe...',loginBtn:'Connexion',pwError:'Mot de passe incorrect.',
     navPending:'En attente',navAll:'Toutes les demandes',navNew:'Nouvelle demande',
-    navPendingSede:'À approuver',navAllSede:'Historique',navStats:'Statistiques',navSuspended:'Suspendues',navRegistry:'Registre boutiques',titleRegistry:'Registre boutiques',regAddStore:'Ajouter boutique',regEditStore:'Modifier boutique',regDeleteStore:'Supprimer boutique',regConfirmDelete:'Êtes-vous sûr de vouloir supprimer cette boutique?',regStoreName:'Nom boutique',regStoreId:'Code boutique',regRegion:'Région',regEmail:'Email boutique',regPassword:'Mot de passe',regActive:'Actif',regSave:'Enregistrer',regCancel:'Annuler',regSaved:'Boutique enregistrée.',regDeleted:'Boutique supprimée.',regErrId:'Le code boutique est obligatoire.',regErrName:'Le nom boutique est obligatoire.',regErrPwd:'Le mot de passe est obligatoire.',regErrIdExists:'Ce code existe déjà.',titleSuspended:'Demandes suspendues',errArticleLen:'Le code article doit comporter exactement 11 caractères.',
+    navPendingSede:'À approuver',navAllSede:'Historique',navStats:'Statistiques',navSuspended:'Suspendues',navRegistry:'Registre boutiques',titleRegistry:'Registre boutiques',regAddStore:'Ajouter boutique',regEditStore:'Modifier boutique',regDeleteStore:'Supprimer boutique',regConfirmDelete:'Êtes-vous sûr de vouloir supprimer cette boutique?',regStoreName:'Nom boutique',regStoreId:'Code boutique',regRegion:'Région',regEmail:'Email boutique',regPassword:'Mot de passe',regActive:'Actif',regSave:'Enregistrer',regCancel:'Annuler',regSaved:'Boutique enregistrée.',regDeleted:'Boutique supprimée.',regErrId:'Le code boutique est obligatoire.',regErrName:'Le nom boutique est obligatoire.',regErrPwd:'Le mot de passe est obligatoire.',regErrIdExists:'Ce code existe déjà.',titleSuspended:'Demandes suspendues',errArticleLen:'Le code article doit comporter exactement 11 caractères.',navManual:'Manuel défauts',
     roleStore:'Boutique',roleSede:'Siège',logout:'Déconnexion',
     titlePendingSede:'À approuver',titlePendingStore:'Demandes en attente',
     titleAll:'Historique des demandes',titleNew:'Nouvelle demande article défectueux',titleStats:'Statistiques',
@@ -459,7 +537,7 @@ const TRANSLATIONS = {
     hqIntName:'Zentrale International',hqIntRole:'Genehmigungen INT-Filialen',
     storeRole:'Filiale',pwPlaceholder:'Passwort...',loginBtn:'Anmelden',pwError:'Falsches Passwort.',
     navPending:'Ausstehend',navAll:'Alle Anfragen',navNew:'Neue Anfrage',
-    navPendingSede:'Zu genehmigen',navAllSede:'Verlauf',navStats:'Statistiken',navSuspended:'Ausgesetzt',navRegistry:'Filialverwaltung',titleRegistry:'Filialverwaltung',regAddStore:'Filiale hinzufügen',regEditStore:'Filiale bearbeiten',regDeleteStore:'Filiale löschen',regConfirmDelete:'Möchten Sie diese Filiale wirklich löschen?',regStoreName:'Filialname',regStoreId:'Filialcode',regRegion:'Region',regEmail:'Filial-E-Mail',regPassword:'Passwort',regActive:'Aktiv',regSave:'Speichern',regCancel:'Abbrechen',regSaved:'Filiale gespeichert.',regDeleted:'Filiale gelöscht.',regErrId:'Filialcode ist erforderlich.',regErrName:'Filialname ist erforderlich.',regErrPwd:'Passwort ist erforderlich.',regErrIdExists:'Dieser Code existiert bereits.',titleSuspended:'Ausgesetzte Anfragen',errArticleLen:'Der Artikelcode muss genau 11 Zeichen lang sein.',
+    navPendingSede:'Zu genehmigen',navAllSede:'Verlauf',navStats:'Statistiken',navSuspended:'Ausgesetzt',navRegistry:'Filialverwaltung',titleRegistry:'Filialverwaltung',regAddStore:'Filiale hinzufügen',regEditStore:'Filiale bearbeiten',regDeleteStore:'Filiale löschen',regConfirmDelete:'Möchten Sie diese Filiale wirklich löschen?',regStoreName:'Filialname',regStoreId:'Filialcode',regRegion:'Region',regEmail:'Filial-E-Mail',regPassword:'Passwort',regActive:'Aktiv',regSave:'Speichern',regCancel:'Abbrechen',regSaved:'Filiale gespeichert.',regDeleted:'Filiale gelöscht.',regErrId:'Filialcode ist erforderlich.',regErrName:'Filialname ist erforderlich.',regErrPwd:'Passwort ist erforderlich.',regErrIdExists:'Dieser Code existiert bereits.',titleSuspended:'Ausgesetzte Anfragen',errArticleLen:'Der Artikelcode muss genau 11 Zeichen lang sein.',navManual:'Defekthandbuch',
     roleStore:'Filiale',roleSede:'Zentrale',logout:'Abmelden',
     titlePendingSede:'Zu genehmigen',titlePendingStore:'Ausstehende Anfragen',
     titleAll:'Anfrageverlauf',titleNew:'Neue Fehlartikel-Anfrage',titleStats:'Statistiken',
@@ -523,7 +601,7 @@ const TRANSLATIONS = {
     hqIntName:'Sede Internacional',hqIntRole:'Aprobaciones tiendas INT',
     storeRole:'Tienda',pwPlaceholder:'Contraseña...',loginBtn:'Acceder',pwError:'Contraseña incorrecta.',
     navPending:'Pendiente',navAll:'Todas las solicitudes',navNew:'Nueva solicitud',
-    navPendingSede:'Por aprobar',navAllSede:'Historial',navStats:'Estadísticas',navSuspended:'Suspendidas',navRegistry:'Registro tiendas',titleRegistry:'Registro tiendas',regAddStore:'Añadir tienda',regEditStore:'Editar tienda',regDeleteStore:'Eliminar tienda',regConfirmDelete:'¿Seguro que quieres eliminar esta tienda?',regStoreName:'Nombre tienda',regStoreId:'Código tienda',regRegion:'Región',regEmail:'Email tienda',regPassword:'Contraseña',regActive:'Activo',regSave:'Guardar',regCancel:'Cancelar',regSaved:'Tienda guardada.',regDeleted:'Tienda eliminada.',regErrId:'El código de tienda es obligatorio.',regErrName:'El nombre de tienda es obligatorio.',regErrPwd:'La contraseña es obligatoria.',regErrIdExists:'Este código ya existe.',titleSuspended:'Solicitudes suspendidas',errArticleLen:'El código de artículo debe tener exactamente 11 caracteres.',
+    navPendingSede:'Por aprobar',navAllSede:'Historial',navStats:'Estadísticas',navSuspended:'Suspendidas',navRegistry:'Registro tiendas',titleRegistry:'Registro tiendas',regAddStore:'Añadir tienda',regEditStore:'Editar tienda',regDeleteStore:'Eliminar tienda',regConfirmDelete:'¿Seguro que quieres eliminar esta tienda?',regStoreName:'Nombre tienda',regStoreId:'Código tienda',regRegion:'Región',regEmail:'Email tienda',regPassword:'Contraseña',regActive:'Activo',regSave:'Guardar',regCancel:'Cancelar',regSaved:'Tienda guardada.',regDeleted:'Tienda eliminada.',regErrId:'El código de tienda es obligatorio.',regErrName:'El nombre de tienda es obligatorio.',regErrPwd:'La contraseña es obligatoria.',regErrIdExists:'Este código ya existe.',titleSuspended:'Solicitudes suspendidas',errArticleLen:'El código de artículo debe tener exactamente 11 caracteres.',navManual:'Manual defectos',
     roleStore:'Tienda',roleSede:'Sede',logout:'Salir',
     titlePendingSede:'Por aprobar',titlePendingStore:'Solicitudes pendientes',
     titleAll:'Historial de solicitudes',titleNew:'Nueva solicitud artículo defectuoso',titleStats:'Estadísticas',
@@ -587,7 +665,7 @@ const TRANSLATIONS = {
     hqIntName:'Nemzetközi Központ',hqIntRole:'INT üzlet jóváhagyások',
     storeRole:'Üzlet',pwPlaceholder:'Jelszó...',loginBtn:'Bejelentkezés',pwError:'Hibás jelszó.',
     navPending:'Függőben',navAll:'Összes kérés',navNew:'Új kérés',
-    navPendingSede:'Jóváhagyásra vár',navAllSede:'Előzmények',navStats:'Statisztikák',navSuspended:'Felfüggesztett',navRegistry:'Üzlet nyilvántartás',titleRegistry:'Üzlet nyilvántartás',regAddStore:'Üzlet hozzáadása',regEditStore:'Üzlet szerkesztése',regDeleteStore:'Üzlet törlése',regConfirmDelete:'Biztosan törli ezt az üzletet?',regStoreName:'Üzlet neve',regStoreId:'Üzlet kód',regRegion:'Régió',regEmail:'Üzlet email',regPassword:'Jelszó',regActive:'Aktív',regSave:'Mentés',regCancel:'Mégse',regSaved:'Üzlet mentve.',regDeleted:'Üzlet törölve.',regErrId:'Az üzlet kód kötelező.',regErrName:'Az üzlet neve kötelező.',regErrPwd:'A jelszó kötelező.',regErrIdExists:'Ez a kód már létezik.',titleSuspended:'Felfüggesztett kérések',errArticleLen:'A cikkszámnak pontosan 11 karakter hosszúnak kell lennie.',
+    navPendingSede:'Jóváhagyásra vár',navAllSede:'Előzmények',navStats:'Statisztikák',navSuspended:'Felfüggesztett',navRegistry:'Üzlet nyilvántartás',titleRegistry:'Üzlet nyilvántartás',regAddStore:'Üzlet hozzáadása',regEditStore:'Üzlet szerkesztése',regDeleteStore:'Üzlet törlése',regConfirmDelete:'Biztosan törli ezt az üzletet?',regStoreName:'Üzlet neve',regStoreId:'Üzlet kód',regRegion:'Régió',regEmail:'Üzlet email',regPassword:'Jelszó',regActive:'Aktív',regSave:'Mentés',regCancel:'Mégse',regSaved:'Üzlet mentve.',regDeleted:'Üzlet törölve.',regErrId:'Az üzlet kód kötelező.',regErrName:'Az üzlet neve kötelező.',regErrPwd:'A jelszó kötelező.',regErrIdExists:'Ez a kód már létezik.',titleSuspended:'Felfüggesztett kérések',errArticleLen:'A cikkszámnak pontosan 11 karakter hosszúnak kell lennie.',navManual:'Hibakézikönyv',
     roleStore:'Üzlet',roleSede:'Központ',logout:'Kilépés',
     titlePendingSede:'Jóváhagyásra vár',titlePendingStore:'Függő kérések',
     titleAll:'Kérések előzményei',titleNew:'Új hibás cikk kérés',titleStats:'Statisztikák',
@@ -651,7 +729,7 @@ const TRANSLATIONS = {
     hqIntName:'Internationellt HK',hqIntRole:'Godkännanden INT-butiker',
     storeRole:'Butik',pwPlaceholder:'Lösenord...',loginBtn:'Logga in',pwError:'Fel lösenord.',
     navPending:'Väntande',navAll:'Alla ärenden',navNew:'Nytt ärende',
-    navPendingSede:'Att godkänna',navAllSede:'Ärendehistorik',navStats:'Statistik',navSuspended:'Pausade',navRegistry:'Butiksregister',titleRegistry:'Butiksregister',regAddStore:'Lägg till butik',regEditStore:'Redigera butik',regDeleteStore:'Ta bort butik',regConfirmDelete:'Är du säker på att du vill ta bort denna butik?',regStoreName:'Butiksnamn',regStoreId:'Butikskod',regRegion:'Region',regEmail:'Butiks-e-post',regPassword:'Lösenord',regActive:'Aktiv',regSave:'Spara',regCancel:'Avbryt',regSaved:'Butik sparad.',regDeleted:'Butik borttagen.',regErrId:'Butikskod krävs.',regErrName:'Butiksnamn krävs.',regErrPwd:'Lösenord krävs.',regErrIdExists:'Denna kod finns redan.',titleSuspended:'Pausade ärenden',errArticleLen:'Artikelkoden måste vara exakt 11 tecken lång.',
+    navPendingSede:'Att godkänna',navAllSede:'Ärendehistorik',navStats:'Statistik',navSuspended:'Pausade',navRegistry:'Butiksregister',titleRegistry:'Butiksregister',regAddStore:'Lägg till butik',regEditStore:'Redigera butik',regDeleteStore:'Ta bort butik',regConfirmDelete:'Är du säker på att du vill ta bort denna butik?',regStoreName:'Butiksnamn',regStoreId:'Butikskod',regRegion:'Region',regEmail:'Butiks-e-post',regPassword:'Lösenord',regActive:'Aktiv',regSave:'Spara',regCancel:'Avbryt',regSaved:'Butik sparad.',regDeleted:'Butik borttagen.',regErrId:'Butikskod krävs.',regErrName:'Butiksnamn krävs.',regErrPwd:'Lösenord krävs.',regErrIdExists:'Denna kod finns redan.',titleSuspended:'Pausade ärenden',errArticleLen:'Artikelkoden måste vara exakt 11 tecken lång.',navManual:'Defekthandbok',
     roleStore:'Butik',roleSede:'Huvudkontor',logout:'Logga ut',
     titlePendingSede:'Att godkänna',titlePendingStore:'Väntande ärenden',
     titleAll:'Ärendehistorik',titleNew:'Nytt ärende felaktig artikel',titleStats:'Statistik',
@@ -715,7 +793,7 @@ const TRANSLATIONS = {
     hqIntName:'Διεθνή Κεντρικά',hqIntRole:'Εγκρίσεις INT καταστημάτων',
     storeRole:'Κατάστημα',pwPlaceholder:'Κωδικός...',loginBtn:'Σύνδεση',pwError:'Λάθος κωδικός.',
     navPending:'Σε αναμονή',navAll:'Όλα τα αιτήματα',navNew:'Νέο αίτημα',
-    navPendingSede:'Προς έγκριση',navAllSede:'Ιστορικό',navStats:'Στατιστικά',navSuspended:'Ανεσταλμένα',navRegistry:'Μητρώο καταστημάτων',titleRegistry:'Μητρώο καταστημάτων',regAddStore:'Προσθήκη καταστήματος',regEditStore:'Επεξεργασία',regDeleteStore:'Διαγραφή',regConfirmDelete:'Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το κατάστημα;',regStoreName:'Όνομα καταστήματος',regStoreId:'Κωδικός',regRegion:'Περιοχή',regEmail:'Email καταστήματος',regPassword:'Κωδικός πρόσβασης',regActive:'Ενεργό',regSave:'Αποθήκευση',regCancel:'Ακύρωση',regSaved:'Κατάστημα αποθηκεύτηκε.',regDeleted:'Κατάστημα διαγράφηκε.',regErrId:'Ο κωδικός καταστήματος απαιτείται.',regErrName:'Το όνομα απαιτείται.',regErrPwd:'Ο κωδικός πρόσβασης απαιτείται.',regErrIdExists:'Αυτός ο κωδικός υπάρχει ήδη.',titleSuspended:'Ανεσταλμένα αιτήματα',errArticleLen:'Ο κωδικός πρέπει να είναι ακριβώς 11 χαρακτήρες.',
+    navPendingSede:'Προς έγκριση',navAllSede:'Ιστορικό',navStats:'Στατιστικά',navSuspended:'Ανεσταλμένα',navRegistry:'Μητρώο καταστημάτων',titleRegistry:'Μητρώο καταστημάτων',regAddStore:'Προσθήκη καταστήματος',regEditStore:'Επεξεργασία',regDeleteStore:'Διαγραφή',regConfirmDelete:'Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το κατάστημα;',regStoreName:'Όνομα καταστήματος',regStoreId:'Κωδικός',regRegion:'Περιοχή',regEmail:'Email καταστήματος',regPassword:'Κωδικός πρόσβασης',regActive:'Ενεργό',regSave:'Αποθήκευση',regCancel:'Ακύρωση',regSaved:'Κατάστημα αποθηκεύτηκε.',regDeleted:'Κατάστημα διαγράφηκε.',regErrId:'Ο κωδικός καταστήματος απαιτείται.',regErrName:'Το όνομα απαιτείται.',regErrPwd:'Ο κωδικός πρόσβασης απαιτείται.',regErrIdExists:'Αυτός ο κωδικός υπάρχει ήδη.',titleSuspended:'Ανεσταλμένα αιτήματα',errArticleLen:'Ο κωδικός πρέπει να είναι ακριβώς 11 χαρακτήρες.',navManual:'Εγχειρίδιο ελαττωμάτων',
     roleStore:'Κατάστημα',roleSede:'Κεντρικά',logout:'Αποσύνδεση',
     titlePendingSede:'Προς έγκριση',titlePendingStore:'Αναμένοντα αιτήματα',
     titleAll:'Ιστορικό αιτημάτων',titleNew:'Νέο αίτημα ελαττωματικού',titleStats:'Στατιστικά',
@@ -779,7 +857,7 @@ const TRANSLATIONS = {
     hqIntName:'Sede Internacional',hqIntRole:'Aprovações lojas INT',
     storeRole:'Loja',pwPlaceholder:'Palavra-passe...',loginBtn:'Entrar',pwError:'Palavra-passe incorreta.',
     navPending:'Pendente',navAll:'Todos os pedidos',navNew:'Novo pedido',
-    navPendingSede:'Para aprovar',navAllSede:'Histórico',navStats:'Estatísticas',navSuspended:'Suspensas',navRegistry:'Registo de lojas',titleRegistry:'Registo de lojas',regAddStore:'Adicionar loja',regEditStore:'Editar loja',regDeleteStore:'Eliminar loja',regConfirmDelete:'Tem a certeza que quer eliminar esta loja?',regStoreName:'Nome da loja',regStoreId:'Código da loja',regRegion:'Região',regEmail:'Email da loja',regPassword:'Palavra-passe',regActive:'Ativo',regSave:'Guardar',regCancel:'Cancelar',regSaved:'Loja guardada.',regDeleted:'Loja eliminada.',regErrId:'O código da loja é obrigatório.',regErrName:'O nome da loja é obrigatório.',regErrPwd:'A palavra-passe é obrigatória.',regErrIdExists:'Este código já existe.',titleSuspended:'Pedidos suspensos',errArticleLen:'O código do artigo deve ter exatamente 11 caracteres.',
+    navPendingSede:'Para aprovar',navAllSede:'Histórico',navStats:'Estatísticas',navSuspended:'Suspensas',navRegistry:'Registo de lojas',titleRegistry:'Registo de lojas',regAddStore:'Adicionar loja',regEditStore:'Editar loja',regDeleteStore:'Eliminar loja',regConfirmDelete:'Tem a certeza que quer eliminar esta loja?',regStoreName:'Nome da loja',regStoreId:'Código da loja',regRegion:'Região',regEmail:'Email da loja',regPassword:'Palavra-passe',regActive:'Ativo',regSave:'Guardar',regCancel:'Cancelar',regSaved:'Loja guardada.',regDeleted:'Loja eliminada.',regErrId:'O código da loja é obrigatório.',regErrName:'O nome da loja é obrigatório.',regErrPwd:'A palavra-passe é obrigatória.',regErrIdExists:'Este código já existe.',titleSuspended:'Pedidos suspensos',errArticleLen:'O código do artigo deve ter exatamente 11 caracteres.',navManual:'Manual de defeitos',
     roleStore:'Loja',roleSede:'Sede',logout:'Sair',
     titlePendingSede:'Para aprovar',titlePendingStore:'Pedidos pendentes',
     titleAll:'Histórico de pedidos',titleNew:'Novo pedido artigo com defeito',titleStats:'Estatísticas',
@@ -1004,12 +1082,14 @@ function renderApp() {
     <button class="nav-item active" id="nav-pending" onclick="setTab('pending')"><div class="nav-dot warn"></div>${t('navPending')}<span class="nav-badge" id="nb-pending" style="display:none">0</span></button>
     <button class="nav-item" id="nav-all" onclick="setTab('all')"><div class="nav-dot"></div>${t('navAll')}</button>
     <button class="nav-item" id="nav-new" onclick="setTab('new')"><div class="nav-dot"></div>${t('navNew')}</button>
+    <button class="nav-item" id="nav-manual" onclick="setTab('manual')"><div class="nav-dot"></div>${t('navManual')}</button>
   ` : `
     <button class="nav-item active" id="nav-pending" onclick="setTab('pending')"><div class="nav-dot warn"></div>${t('navPendingSede')}<span class="nav-badge" id="nb-pending" style="display:none">0</span></button>
     <button class="nav-item" id="nav-suspended" onclick="setTab('suspended')"><div class="nav-dot" style="background:#185FA5;opacity:1"></div>${t('navSuspended')}<span class="nav-badge" id="nb-suspended" style="display:none;background:var(--blue-bg);color:var(--blue-tx)">0</span></button>
     <button class="nav-item" id="nav-all" onclick="setTab('all')"><div class="nav-dot"></div>${t('navAllSede')}</button>
     <button class="nav-item" id="nav-stats" onclick="setTab('stats')"><div class="nav-dot"></div>${t('navStats')}</button>
     <button class="nav-item" id="nav-registry" onclick="setTab('registry')"><div class="nav-dot"></div>${t('navRegistry')}</button>
+    <button class="nav-item" id="nav-manual" onclick="setTab('manual')"><div class="nav-dot"></div>${t('navManual')}</button>
   `;
   return `
   <div class="app">
@@ -1050,6 +1130,10 @@ function renderApp() {
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
           <span>${t('navNew')}</span>
         </button>
+        <button class="mob-nav-btn" id="mob-manual" onclick="setTab('manual')">
+          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <span>${t('navManual')}</span>
+        </button>
         <button class="mob-nav-btn" id="mob-logout" onclick="logout()">
           <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
           <span>${t('logout')}</span>
@@ -1075,6 +1159,10 @@ function renderApp() {
           <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
           <span>${t('navRegistry')}</span>
         </button>
+        <button class="mob-nav-btn" id="mob-manual" onclick="setTab('manual')">
+          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <span>${t('navManual')}</span>
+        </button>
         <button class="mob-nav-btn" id="mob-logout" onclick="logout()">
           <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
           <span>${t('logout')}</span>
@@ -1090,7 +1178,7 @@ function renderApp() {
 // ── TABS ───────────────────────────────────────────────────
 function setTab(tab) {
   currentTab = tab;
-  ['pending','suspended','all','new','stats','registry'].forEach(k => {
+  ['pending','suspended','all','new','stats','registry','manual'].forEach(k => {
     const el = document.getElementById('nav-'+k);
     if (el) el.classList.toggle('active', k === tab);
     const mob = document.getElementById('mob-'+k);
@@ -1136,10 +1224,575 @@ async function loadTab(tab) {
     await renderRegistry();
     return;
   }
+  if (tab === 'manual') {
+    renderManualTab();
+    return;
+  }
   tc.innerHTML = `<div class="loading">${t('loading')}</div>`;
   await loadNotifications();
   const data = await fetchRequests(tab === 'pending' ? 'pending' : null);
   if (tab === 'pending') { renderPendingTab(data); } else { renderAllTab(data); }
+}
+
+// ── DEFECT MANUAL ──────────────────────────────────────────
+const MANUAL_LANG_KEY = 'fallati_manual_lang';
+let manualLang = localStorage.getItem(MANUAL_LANG_KEY) || 'it';
+
+const MANUAL_DATA = {
+  it: {
+    title: 'Manuale Difetti Capi',
+    langLabel: 'Lingua manuale',
+    toc: 'Indice',
+    chapters: [
+      { id:'intro', label:'1. Introduzione', icon:'📋' },
+      { id:'qc', label:'2. Controllo Qualità Boggi', icon:'🔍' },
+      { id:'cases', label:'3. Casistica', icon:'📊' },
+      { id:'categories', label:'4. Categorie di Prodotto', icon:'👔' },
+      { id:'color', label:'5a. Problemi Colore', icon:'🎨' },
+      { id:'snag', label:'5b. Fili Tirati (Snagging)', icon:'🧵' },
+      { id:'pilling', label:'5c. Pilling', icon:'⚪' },
+      { id:'seams', label:'5d. Danni alle Cuciture', icon:'🪡' },
+      { id:'fabric', label:'5e. Danni al Tessuto', icon:'🔲' },
+      { id:'lining', label:'5f. Foderatura / Imbottitura', icon:'🧥' },
+      { id:'washing', label:'5g. Danni da Lavaggio', icon:'🫧' },
+      { id:'zip', label:'5h. Difetti alle Zip', icon:'🤐' },
+      { id:'accessories', label:'5i. Accessori (no Zip)', icon:'🔘' },
+      { id:'odour', label:'5j. Problemi di Odore', icon:'👃' },
+      { id:'conclusions', label:'6. Conclusioni', icon:'✅' },
+    ],
+    sections: {
+      intro: `<h2>1. Introduzione</h2>
+<p><strong>Obiettivo del manuale:</strong> Fornire linee guida per l'identificazione, la gestione e la segnalazione dei capi difettosi.</p>
+<p>Boggi Milano è sinonimo di qualità e attenzione ai dettagli. Investiamo costantemente per garantire prodotti di alto livello: dalla selezione dei tessuti alla scelta dei laboratori di confezione, sottoposti a rigidi protocolli di certificazione.</p>
+<p>Il manuale fornisce parametri oggettivi per aiutare a:</p>
+<ul><li>Identificare il difetto</li><li>Classificarlo</li><li>Segnalarlo</li></ul>
+<div class="man-box">
+<strong>Struttura del manuale:</strong>
+<ul><li>Descrizione del difetto, spiegazione tecnica e cause</li><li>Esempi fotografici</li><li>Riparazione o possibili soluzioni</li><li>Consigli, tips e risposta da dare al cliente</li><li>Definizione e classificazione del difetto</li></ul>
+</div>
+<div class="man-classify">
+  <div class="man-cls-item ff"><span class="man-cls-badge">FF</span><div><strong>Fallato Factory</strong><br>Difetto di produzione rilevato prima della vendita</div></div>
+  <div class="man-cls-item fl"><span class="man-cls-badge">FL</span><div><strong>Fallato Last Call</strong><br>Capo non vendibile in prima linea, destinato a outlet</div></div>
+  <div class="man-cls-item fb"><span class="man-cls-badge">FB</span><div><strong>Fallato da Buttare</strong><br>Capo non vendibile, da eliminare</div></div>
+</div>`,
+      qc: `<h2>2. Il Controllo Qualità di Boggi Milano</h2>
+<p>Il sistema di controllo qualità si struttura su tre livelli:</p>
+<div class="man-steps">
+  <div class="man-step"><div class="man-step-num">1</div><div><strong>Ispettori in tutto il mondo</strong><br>Rete di ispettori specializzati che monitorano ogni fase del processo produttivo, seguendo rigidi protocolli.</div></div>
+  <div class="man-step"><div class="man-step-num">2</div><div><strong>Collaborazione con terze parti indipendenti</strong><br>Aziende esterne indipendenti per verifiche aggiuntive, garantendo un livello ulteriore di obiettività.</div></div>
+  <div class="man-step"><div class="man-step-num">3</div><div><strong>Controllo a campione secondo AQL</strong><br>Sistema Acceptable Quality Level per valutare una percentuale rappresentativa dei capi di ogni lotto produttivo.</div></div>
+</div>
+<div class="man-box man-warn">Nonostante i controlli, qualcosa può sfuggire. Per questo è fondamentale segnalare tempestivamente qualsiasi problema in store tramite la <strong>Procedura Fallati</strong>.</div>`,
+      cases: `<h2>3. Casistica</h2>
+<div class="man-two-col">
+<div class="man-card">
+<h3>🔹 Caso Isolato</h3>
+<p><strong>Recuperabile:</strong> capi macchiati, stropicciati o con difetti sartoriali riparabili restano in vendita in prima linea.</p>
+<p><strong>Non recuperabile:</strong> si classificano nei livelli FF → FL → FB secondo le istruzioni.</p>
+</div>
+<div class="man-card">
+<h3>🔸 Caso Diffuso / Sistemico</h3>
+<p>Coinvolge tutta o parte della partita produttiva. Prima di segnalare, verificare con i referenti che non ci siano azioni già avviate.</p>
+<ul><li><strong>Misure o vestibilità anomale</strong></li><li><strong>Difettosità anomale</strong> (casi rari fuori casistica)</li></ul>
+</div>
+</div>`,
+      categories: `<h2>4. Categorie di Prodotto</h2>
+<div class="man-categories">
+  <div class="man-cat">👔 Abiti, Giacche e Cappotti</div>
+  <div class="man-cat">👖 Pantaloni e Bermuda</div>
+  <div class="man-cat">👕 Camicie</div>
+  <div class="man-cat">🧶 Maglie</div>
+  <div class="man-cat">🧥 Giubbotti</div>
+  <div class="man-cat">👗 Felpe, Polo e T-Shirt</div>
+  <div class="man-cat">🧣 Accessori (Sciarpe, Cravatte, Pochette)</div>
+  <div class="man-cat">👜 Pelletteria (Cinture, Pelletteria)</div>
+  <div class="man-cat">👠 Scarpe</div>
+</div>`,
+      color: `<h2>5a. Problemi Colore</h2>
+<p><em>Categorie: Abiti, Giacche, Cappotti, Pantaloni, Bermuda, Camicie, Maglie, Giubbotti, Felpe, Polo, T-Shirt, Accessori</em></p>
+<div class="man-table-wrap"><table class="man-table"><thead><tr><th>Difetto di Colore</th><th>Cause Comuni</th><th>Soluzione / Risposta al Cliente</th></tr></thead><tbody>
+<tr><td><strong>Viraggio del colore</strong><br><em>Cambiamenti di tono nelle piegature esterne esposte alla luce</em></td><td>Scarsa solidità del colore — sbiadisce con esposizione prolungata alla luce artificiale</td><td>Evitare esposizione diretta a luce intensa per lunghi periodi. Non è sinonimo di scarsa qualità.</td></tr>
+<tr><td><strong>Differenza di tono (centro cimosa)</strong></td><td>Irregolarità nella trama o difetto di tintura durante la produzione</td><td>Prevendita: togliere dalla vendita e segnalare. Postvendita: sostituire immediatamente.</td></tr>
+<tr><td><strong>Macchie da smacchiatura</strong></td><td>Prodotti smacchianti non adatti, applicazione eccessiva, solventi aggressivi</td><td>Su capo nuovo: sostituzione o reso. Su capo trattato dal cliente: consigliare di seguire le istruzioni di cura.</td></tr>
+<tr><td><strong>Barratura del colore</strong><br><em>Linee orizzontali o verticali</em></td><td>Difetti nel filato, tensione irregolare durante la tessitura, errori di tintura</td><td>Prevendita: togliere e segnalare. Postvendita: sostituire immediatamente.</td></tr>
+</tbody></table></div>
+<h3>Classificazione colore</h3>
+<div class="man-matrix"><table class="man-table"><thead><tr><th>Gravità</th><th>Zone Nascoste</th><th>Zone Visibili</th></tr></thead><tbody>
+<tr><td>Minore</td><td class="cls-ok">Non Fallato</td><td class="cls-ff">FF</td></tr>
+<tr><td>Moderato</td><td class="cls-ff">FF</td><td class="cls-fl">FL</td></tr>
+<tr><td>Grave</td><td class="cls-fl">FL</td><td class="cls-fb">FB</td></tr>
+</tbody></table></div>
+<div class="man-tip">💡 Capi più soggetti: denim e capi in cotone/lino con effetto delavé, old o tintura in capo.</div>`,
+      snag: `<h2>5b. Fili Tirati (Snagging)</h2>
+<p>Il "snagging" si verifica quando uno o più fili vengono tirati fuori dalla loro posizione, creando un'irregolarità visibile sulla superficie del capo.</p>
+<div class="man-two-col">
+<div><h3>Cause Comuni</h3><ul><li>Contatto con gioielli, unghie o superfici ruvide</li><li>Sfregamento eccessivo (borse, cinture, sedili)</li><li>Manipolazione errata durante trasporto o vendita</li></ul></div>
+<div><h3>Riparazione</h3><p>In alcuni casi riparabile con ago, riposizionando il filo nella trama. Se irreparabile, classificare secondo schema.</p></div>
+</div>
+<h3>Classificazione</h3>
+<div class="man-matrix"><table class="man-table"><thead><tr><th>Gravità</th><th>Zone Nascoste</th><th>Zone Visibili</th></tr></thead><tbody>
+<tr><td>Minore</td><td class="cls-ok">Non Fallato</td><td class="cls-ff">FF</td></tr>
+<tr><td>Moderato</td><td class="cls-ff">FF</td><td class="cls-fl">FL</td></tr>
+<tr><td>Grave</td><td class="cls-fl">FL</td><td class="cls-fb">FB</td></tr>
+</tbody></table></div>
+<div class="man-tip">💡 Se il cliente si lamenta: verificare se riparabile (1-2 fili). In caso di snagging diffuso, spiegare le cause e valutare: rifiuto reclamo / sconto / sostituzione.</div>`,
+      pilling: `<h2>5c. Pilling</h2>
+<p>Formazione di piccole palline sulla superficie del capo causata dall'attrito tra le fibre. Comune in tessuti morbidi e naturali, non sempre è un difetto di qualità.</p>
+<div class="man-table-wrap"><table class="man-table"><thead><tr><th>Difetto</th><th>Cause Comuni</th><th>Soluzione</th></tr></thead><tbody>
+<tr><td><strong>Pilling</strong></td><td>Attrito ripetuto (braccia, borse, cinture); fibre corte (lana, cotone, sintetici); lavaggi frequenti o ad alta temperatura</td><td>Usare rimuovi-pilling o spazzola. Su capo nuovo: valutare reso o cambio.</td></tr>
+</tbody></table></div>
+<h3>Prevenzione e gestione</h3>
+<div class="man-steps">
+<div class="man-step"><div class="man-step-num">1</div><div><strong>Lavaggio delicato</strong> — basse temperature, ciclo delicato o a mano</div></div>
+<div class="man-step"><div class="man-step-num">2</div><div><strong>Evitare lo sfregamento</strong> — no contatto prolungato con superfici abrasive</div></div>
+<div class="man-step"><div class="man-step-num">3</div><div><strong>Buste protettive</strong> — durante il lavaggio in lavatrice</div></div>
+<div class="man-step"><div class="man-step-num">4</div><div><strong>Ammorbidente</strong> — riduce l'attrito tra le fibre</div></div>
+<div class="man-step"><div class="man-step-num">5</div><div><strong>Rimozione regolare</strong> — usare rimuovi-pilling o spazzola apposita</div></div>
+</div>
+<div class="man-tip">💡 Per il cashmere: non indossare più di 2-3 giorni di fila. Lavare spesso (le fibre si allentano con l'acqua e tornano allo stato originale asciugandosi).</div>`,
+      seams: `<h2>5d. Danni alle Cuciture</h2>
+<p>Se il difetto è rilevato prima della vendita, riparare immediatamente. Non tutti i difetti alle cuciture sono difetti di produzione — alcuni derivano da usura o uso improprio.</p>
+<div class="man-table-wrap"><table class="man-table"><thead><tr><th>Problema</th><th>Cause</th><th>Soluzione</th></tr></thead><tbody>
+<tr><td><strong>Cuciture lente o allentate</strong></td><td>Tessuto elastico sotto sforzo, lavaggi aggressivi, uso eccessivo</td><td>Offrire controllo e riparazione. Se difetto confermato: riparazione o sostituzione.</td></tr>
+<tr><td><strong>Fili sfilacciati / rotture</strong></td><td>Lavaggi aggressivi o asciugatrice, tessuto debole</td><td>Lavaggi delicati. Se usato correttamente: riparare. Se difetto produzione: sostituire.</td></tr>
+<tr><td><strong>Punti saltati / cuciture irregolari</strong></td><td>Difetto di produzione</td><td>Offrire sostituzione o riparazione in store.</td></tr>
+</tbody></table></div>
+<h3>Classificazione</h3>
+<div class="man-matrix"><table class="man-table"><thead><tr><th>Gravità</th><th>Zone Nascoste</th><th>Zone Visibili</th></tr></thead><tbody>
+<tr><td>Minore</td><td class="cls-ok">Non Fallato</td><td class="cls-ff">FF</td></tr>
+<tr><td>Moderato</td><td class="cls-ff">FF</td><td class="cls-fl">FL</td></tr>
+<tr><td>Grave</td><td class="cls-fl">FL</td><td class="cls-fb">FB</td></tr>
+</tbody></table></div>
+<div class="man-tip">💡 Capi usati non riparabili → sempre FB. Consigliare cicli delicati, limitare asciugatrice, evitare superfici ruvide o angoli spigolosi.</div>`,
+      fabric: `<h2>5e. Danni al Tessuto</h2>
+<div class="man-table-wrap"><table class="man-table"><thead><tr><th>Difetto</th><th>Cause</th><th>Soluzione</th></tr></thead><tbody>
+<tr><td><strong>Perdita di elasticità</strong></td><td>Lavaggi aggressivi, alta temperatura, stiratura eccessiva</td><td>Lavaggi a basse temperature, no asciugatrice. Capo nuovo: sostituzione.</td></tr>
+<tr><td><strong>Deformazioni / cedimenti</strong></td><td>Alta temperatura di lavaggio, asciugatura in posizione errata</td><td>Asciugatura in piano per capi delicati. Se correttamente lavato: verificare difetto di fabbricazione.</td></tr>
+<tr><td><strong>Strappi e buchi</strong></td><td>Usura in zone di stress (ginocchia, gomiti), contatto con oggetti appuntiti</td><td>Capo nuovo con buchi inspiegabili: riparazione o sostituzione.</td></tr>
+<tr><td><strong>Usura tra le cosce (zona inguinale)</strong></td><td>Frizione continua, sudorazione, tessuti delicati come lana</td><td>Suggerire rinforzo interno in sartoria. Alternare i pantaloni di lana con tessuti più robusti.</td></tr>
+</tbody></table></div>
+<h3>Classificazione</h3>
+<div class="man-matrix"><table class="man-table"><thead><tr><th>Gravità</th><th>Zone Nascoste</th><th>Zone Visibili</th></tr></thead><tbody>
+<tr><td>Minore</td><td class="cls-ok">Non Fallato</td><td class="cls-ff">FF</td></tr>
+<tr><td>Moderato</td><td class="cls-ff">FF</td><td class="cls-fl">FL</td></tr>
+<tr><td>Grave</td><td class="cls-fl">FL</td><td class="cls-fb">FB</td></tr>
+</tbody></table></div>
+<div class="man-tip">💡 Capi già usati e lavati → sempre FB. Consigliare cicli delicati, asciugatura in piano, no asciugatrice, evitare contatto con oggetti appuntiti.</div>`,
+      lining: `<h2>5f. Danni a Foderatura / Imbottitura</h2>
+<p><em>Categorie: Abiti, Giacche e Cappotti, Pantaloni e Bermuda, Giubbotti</em></p>
+<div class="man-table-wrap"><table class="man-table"><thead><tr><th>Problema</th><th>Cause</th><th>Soluzione</th></tr></thead><tbody>
+<tr><td><strong>Fodera / imbottitura che si scuce o strappa</strong></td><td>Difetto di produzione, uso frequente, materiale delicato</td><td>Capo nuovo: riparazione o sostituzione. Usura normale: servizio di riparazione.</td></tr>
+<tr><td><strong>Deformazione / spostamento imbottitura</strong></td><td>Lavaggi non idonei, alta temperatura, centrifuga forte, asciugatura non uniforme</td><td>Lavaggi seguendo le istruzioni. Se recente e curato correttamente: riparazione o sostituzione.</td></tr>
+<tr><td><strong>Fodera arricciata / deformata</strong></td><td>Stiratura errata o alta temperatura, asciugatura impropria</td><td>Seguire istruzioni. Se deformata nonostante lavaggio corretto: verifica difetto e riparazione/sostituzione.</td></tr>
+<tr><td><strong>Spiumatura (piume che fuoriescono)</strong></td><td>Normale nella prima fase d'uso (piume piccole attraversano cuciture/tessuto)</td><td>Non tirare le piume. Rimuovere con nastro adesivo. I piumini Boggi sono realizzati con materiali downproof.</td></tr>
+<tr><td><strong>Bubbling adesivo interno (bollicine / rigonfiamenti)</strong></td><td>Problema adesione in produzione, calore/umidità eccessivi, stiratura/lavaggio a temperature errate</td><td>Capo non vendibile → inviare al magazzino: <strong>Concorezzo</strong> (Italia) / <strong>Stance</strong> (Estero)</td></tr>
+</tbody></table></div>
+<div class="man-tip">💡 Se il problema compare prima della vendita e si sospetta un difetto di fabbricazione, segnalare all'ufficio prodotto per valutazione sistemica.</div>`,
+      washing: `<h2>5g. Danni da Lavaggio</h2>
+<div class="man-table-wrap"><table class="man-table"><thead><tr><th>Difetto</th><th>Cause</th><th>Soluzione</th></tr></thead><tbody>
+<tr><td><strong>Scolorimento</strong></td><td>Alta temperatura, detersivi aggressivi o sbiancanti, esposizione al sole da umido</td><td>Verificare che le istruzioni siano state seguite. Consigliare detersivi delicati.</td></tr>
+<tr><td><strong>Capo ristretto / deformato</strong></td><td>Lavaggio ad alta temperatura, cicli di asciugatura intensi</td><td>Lavaggio a freddo e asciugatura naturale. Reso se difettoso.</td></tr>
+<tr><td><strong>Stampa / applicazioni danneggiate</strong></td><td>Stiratura diretta sulla stampa, alta temperatura di lavaggio</td><td>Evitare contatto diretto col ferro, lavare a basse temperature.</td></tr>
+<tr><td><strong>Sbiancamento / macchie irreversibili</strong></td><td>Candeggina o prodotti chimici aggressivi, lavaggio con capi che perdono colore</td><td>Evitare sostanze forti, separare i colori. Rimborso o cambio se difettoso.</td></tr>
+</tbody></table></div>
+<h3>Guida pratica ai simboli di lavaggio</h3>
+<div class="man-symbols">
+  <div class="man-sym-group"><h4>Lavaggio in acqua</h4>
+    <div class="man-sym-row"><div class="man-sym-icon">🚫🛁</div><div>Non lavabile in acqua — solo a secco</div></div>
+    <div class="man-sym-row"><div class="man-sym-icon">🛁</div><div>Lavabile a mano o in lavatrice</div></div>
+    <div class="man-sym-row"><div class="man-sym-icon">🛁—</div><div>Lavaggio a bassa velocità, ciclo delicato</div></div>
+    <div class="man-sym-row"><div class="man-sym-icon">✋</div><div>Solo lavaggio a mano</div></div>
+    <div class="man-sym-row"><div class="man-sym-icon">30°/40°/60°</div><div>Temperatura massima consigliata (lavatrice)</div></div>
+  </div>
+  <div class="man-sym-group"><h4>Lavaggio a secco</h4>
+    <div class="man-sym-row"><div class="man-sym-icon">🚫⭕</div><div>Non lavabile a secco</div></div>
+    <div class="man-sym-row"><div class="man-sym-icon">⭕</div><div>Lavaggio a secco con qualsiasi solvente</div></div>
+    <div class="man-sym-row"><div class="man-sym-icon">Ⓐ</div><div>Qualsiasi solvente</div></div>
+    <div class="man-sym-row"><div class="man-sym-icon">Ⓟ</div><div>Percloroetilene, essenze minerali, R133, R11</div></div>
+    <div class="man-sym-row"><div class="man-sym-icon">Ⓕ</div><div>Idrocarburi e trifluoro-tricloroetano</div></div>
+  </div>
+  <div class="man-sym-group"><h4>Asciugatura</h4>
+    <div class="man-sym-row"><div class="man-sym-icon">⬜⭕</div><div>Asciugabile in asciugatrice</div></div>
+    <div class="man-sym-row"><div class="man-sym-icon">🚫⬜⭕</div><div>Non asciugare in asciugatrice</div></div>
+  </div>
+  <div class="man-sym-group"><h4>Candeggio</h4>
+    <div class="man-sym-row"><div class="man-sym-icon">🚫△</div><div>Non candeggiare</div></div>
+    <div class="man-sym-row"><div class="man-sym-icon">△</div><div>Candeggio consentito</div></div>
+    <div class="man-sym-row"><div class="man-sym-icon">△CL</div><div>Solo prodotti a base di cloro</div></div>
+  </div>
+  <div class="man-sym-group"><h4>Stiratura</h4>
+    <div class="man-sym-row"><div class="man-sym-icon">🔲•</div><div>Max 110°C, no vapore</div></div>
+    <div class="man-sym-row"><div class="man-sym-icon">🔲••</div><div>Max 150°C</div></div>
+    <div class="man-sym-row"><div class="man-sym-icon">🔲•••</div><div>Max 200°C</div></div>
+    <div class="man-sym-row"><div class="man-sym-icon">🚫🔲</div><div>Non stirare</div></div>
+  </div>
+</div>
+<div class="man-tip">💡 Una centrifuga intensa può causare scolorimento. L'esposizione al sole da umido sbiadisce i colori (raggi UV rompono le molecole del colorante).</div>`,
+      zip: `<h2>5h. Difetti alle Zip</h2>
+<div class="man-table-wrap"><table class="man-table"><thead><tr><th>Problema</th><th>Cause</th><th>Soluzione</th></tr></thead><tbody>
+<tr><td><strong>Zip che si blocca / difficile da aprire</strong></td><td>Detriti incastrati, dentini piegati, mancanza di lubrificazione</td><td>Pulire la zip; applicare lubrificante. Capo nuovo persistente: riparazione o sostituzione.</td></tr>
+<tr><td><strong>Cerniera che si apre da sola</strong></td><td>Difetto del cursore, usura o danneggiamento</td><td>Capo nuovo: riparare o sostituire. Capo usato: cambiare cursore in sartoria.</td></tr>
+<tr><td><strong>Tirante del cursore che si rompe / stacca</strong></td><td>Problema di fissaggio, forzatura eccessiva, usura</td><td>Capo nuovo: sostituzione o riparazione cursore. Capo usato: sartoria + recupero accessorio.</td></tr>
+<tr><td><strong>Dentini piegati / rotti</strong></td><td>Apertura/chiusura forzata o urti accidentali</td><td>Maneggiare con cura. Capo nuovo: sostituzione zip. Capo usato: sartoria.</td></tr>
+</tbody></table></div>
+<h3>Classificazione zip</h3>
+<div class="man-box">
+<ul>
+<li>Zip bloccata ma utilizzabile con cura (capo nuovo) → <span class="man-cls-badge ff">FF</span></li>
+<li>Zip che si apre ma ancora funzionante (capo nuovo) → <span class="man-cls-badge ff">FF</span></li>
+<li>Zip bloccata che compromette l'utilizzo normale (capo nuovo) → <span class="man-cls-badge fl">FL</span></li>
+<li>Capi usati non riparabili → <span class="man-cls-badge fb">FB</span></li>
+</ul>
+</div>
+<div class="man-tip">💡 Consigli generali: mantenere le zip pulite; non forzare; lubrificare con cera d'api o grafite; chiudere le zip prima del lavaggio; conservare in luoghi asciutti.</div>`,
+      accessories: `<h2>5i. Danni / Mancanza di Accessori (no Zip)</h2>
+<div class="man-table-wrap"><table class="man-table"><thead><tr><th>Problema</th><th>Cause</th><th>Soluzione</th></tr></thead><tbody>
+<tr><td><strong>Bottone cucito che si stacca / mancante</strong></td><td>Cucitura debole, urti, controllo qualità incompleto</td><td>Verificare bottone di scorta → sartoria. Se assente: richiedere all'ufficio prodotto e organizzare riparazione.</td></tr>
+<tr><td><strong>Bottoni a pressione (Snap) mancanti / difettosi</strong></td><td>Non correttamente fissati in produzione, assenza bottoni di scorta</td><td>Capo non vendibile → magazzino: <strong>Concorezzo</strong> (IT) / <strong>Stance</strong> (Estero)</td></tr>
+<tr><td><strong>Gancio che si stacca / rompe</strong></td><td>Fissaggio debole, uso frequente e forzature</td><td>Capo non vendibile → magazzino di riferimento</td></tr>
+<tr><td><strong>Bottone di scorta mancante</strong></td><td>Controllo qualità incompleto, rimozione accidentale pre-vendita</td><td>Richiedere all'ufficio prodotto. Se non disponibile: sartoria. Capo nuovo/garanzia: riparazione gratuita.</td></tr>
+</tbody></table></div>
+<div class="man-classify">
+  <div class="man-cls-item ff"><span class="man-cls-badge">FF</span><div>Capo nuovo non riparabile</div></div>
+  <div class="man-cls-item fb"><span class="man-cls-badge">FB</span><div>Capo usato sostituito</div></div>
+</div>`,
+      odour: `<h2>5j. Problemi di Odore dei Capi</h2>
+<div class="man-table-wrap"><table class="man-table"><thead><tr><th>Tipo di Odore</th><th>Cause</th><th>Soluzione</th></tr></thead><tbody>
+<tr><td><strong>Odore chimico / di plastica</strong></td><td>Imballaggio in plastica sigillata (off-gassing da ftalati nel cellophane)</td><td>Areare in luogo ventilato o lavare secondo istruzioni. Se persiste: sostituzione.</td></tr>
+<tr><td><strong>Odore di umidità / muffa</strong></td><td>Stoccaggio o trasporto in ambienti umidi senza ventilazione</td><td>Lavare e far asciugare completamente. Se persiste: sostituzione.</td></tr>
+</tbody></table></div>
+<h3>Come eliminare gli odori</h3>
+<div class="man-steps">
+<div class="man-step"><div class="man-step-num">1</div><div><strong>Aerazione prolungata</strong> — all'aria aperta lontano dalla luce diretta</div></div>
+<div class="man-step"><div class="man-step-num">2</div><div><strong>Lavaggio delicato</strong> — detersivo delicato + aceto bianco nel risciacquo</div></div>
+<div class="man-step"><div class="man-step-num">3</div><div><strong>Vapore per tessuti</strong> — elimina odori senza danneggiare il tessuto</div></div>
+<div class="man-step"><div class="man-step-num">4</div><div><strong>Spray per tessuti</strong> — prodotti con oli essenziali e enzimi (no profumi forti che mascherano)</div></div>
+<div class="man-step"><div class="man-step-num">5</div><div><strong>Essiccazione naturale</strong> — aria aperta, attenzione ai capi delicati e luce diretta</div></div>
+</div>`,
+      conclusions: `<h2>6. Conclusioni</h2>
+<div class="man-steps">
+<div class="man-step"><div class="man-step-num">1</div><div><strong>Dimostrare competenza e sicurezza</strong> — usare il manuale come riferimento, dare al cliente la percezione di un servizio professionale e di alta qualità</div></div>
+<div class="man-step"><div class="man-step-num">2</div><div><strong>Mostrare empatia e ascolto attivo</strong> — ascoltare con attenzione, rassicurare il cliente sulle soluzioni disponibili</div></div>
+<div class="man-step"><div class="man-step-num">3</div><div><strong>Offrire soluzioni proattive e personalizzate</strong> — riparazione immediata, sostituzione o reso</div></div>
+<div class="man-step"><div class="man-step-num">4</div><div><strong>Educare il cliente su cura e manutenzione</strong> — concludere l'interazione con consigli utili sulla cura del capo</div></div>
+<div class="man-step"><div class="man-step-num">5</div><div><strong>Rimanere aggiornati</strong> — partecipare ai corsi di aggiornamento interni e leggere gli aggiornamenti aziendali</div></div>
+<div class="man-step"><div class="man-step-num">6</div><div><strong>Gestire i reclami come opportunità di miglioramento</strong> — segnalare i difetti ricorrenti ai referenti</div></div>
+</div>
+<div class="man-box" style="margin-top:20px;background:var(--bg3);text-align:center;padding:20px">
+<em>"Ogni cliente che esce dal negozio soddisfatto contribuisce alla reputazione positiva del marchio. Il nostro obiettivo non è solo risolvere un problema, ma trasformare un reclamo in una testimonianza di eccellenza."</em>
+</div>`,
+    }
+  },
+  en: {
+    title: 'Garment Quality Playbook',
+    langLabel: 'Manual language',
+    toc: 'Table of Contents',
+    chapters: [
+      { id:'intro', label:'1. Introduction', icon:'📋' },
+      { id:'qc', label:'2. Boggi Quality Control', icon:'🔍' },
+      { id:'cases', label:'3. Case Studies', icon:'📊' },
+      { id:'categories', label:'4. Product Categories', icon:'👔' },
+      { id:'color', label:'5a. Colour Issues', icon:'🎨' },
+      { id:'snag', label:'5b. Pulled Threads (Snagging)', icon:'🧵' },
+      { id:'pilling', label:'5c. Pilling', icon:'⚪' },
+      { id:'seams', label:'5d. Seam Damages', icon:'🪡' },
+      { id:'fabric', label:'5e. Fabric Damage', icon:'🔲' },
+      { id:'lining', label:'5f. Lining / Padding', icon:'🧥' },
+      { id:'washing', label:'5g. Washing Damage', icon:'🫧' },
+      { id:'zip', label:'5h. Zip Defects', icon:'🤐' },
+      { id:'accessories', label:'5i. Accessories (no Zip)', icon:'🔘' },
+      { id:'odour', label:'5j. Odour Problems', icon:'👃' },
+      { id:'conclusions', label:'6. Conclusions', icon:'✅' },
+    ],
+    sections: {
+      intro: `<h2>1. Introduction</h2>
+<p><strong>Purpose of the manual:</strong> To provide guidelines on how to spot, handle, and report faulty items.</p>
+<p>Boggi Milano is a synonym of quality and attention to details. We are increasingly investing to guarantee our customers a high-quality product — from the selection of fabrics and accessories to the choice of manufacturing workshops, which must undergo strict certification protocols.</p>
+<p>We chose to edit this manual to provide you with objective parameters to help you in:</p>
+<ul><li>Identifying the defect</li><li>Classifying it</li><li>Reporting it</li></ul>
+<div class="man-box">
+<strong>Manual structure:</strong>
+<ul><li>Description of the defect, technical explanation and causes</li><li>Photographic examples</li><li>Repair or potential solutions</li><li>Advice, tips and response to provide to the customer</li><li>Definition and classification of the defect</li></ul>
+</div>
+<div class="man-classify">
+  <div class="man-cls-item ff"><span class="man-cls-badge">FF</span><div><strong>Factory Defective</strong><br>Production defect found before sale</div></div>
+  <div class="man-cls-item fl"><span class="man-cls-badge">FL</span><div><strong>Last Call Defective</strong><br>Not saleable in first-line stores — outlet only</div></div>
+  <div class="man-cls-item fb"><span class="man-cls-badge">FB</span><div><strong>Defective to be Disposed Of</strong><br>Not saleable, to be eliminated</div></div>
+</div>`,
+      qc: `<h2>2. Boggi Milano Quality Control</h2>
+<p>The quality control system is structured on three levels:</p>
+<div class="man-steps">
+  <div class="man-step"><div class="man-step-num">1</div><div><strong>Worldwide Inspectors</strong><br>Network of specialised inspectors monitoring every stage of the manufacturing process, following strict protocols.</div></div>
+  <div class="man-step"><div class="man-step-num">2</div><div><strong>Collaboration with Independent Third Parties</strong><br>External companies conduct additional tests, providing an extra level of objectivity.</div></div>
+  <div class="man-step"><div class="man-step-num">3</div><div><strong>Sample Control according to AQL (Acceptable Quality Level)</strong><br>Evaluates a representative percentage of items from each production batch.</div></div>
+</div>
+<div class="man-box man-warn">Despite all our efforts, some issues may escape the control system. For this reason, please promptly report any product-related issues in store via the <strong>Defective Product Procedure</strong>.</div>`,
+      cases: `<h2>3. Case Studies</h2>
+<div class="man-two-col">
+<div class="man-card">
+<h3>🔹 Isolated Case</h3>
+<p><strong>Recoverable:</strong> stained, creased or items with repairable tailoring defects can remain on sale in first-line stores.</p>
+<p><strong>Not recoverable:</strong> classify according to FF → FL → FB levels.</p>
+</div>
+<div class="man-card">
+<h3>🔸 Widespread / Systemic Case</h3>
+<p>Affects all or part of the production batch. Before reporting, verify with contacts that no corrective actions or recall campaigns are already underway.</p>
+<ul><li><strong>Anomalous measurements or fit</strong></li><li><strong>Anomalous defects</strong> (unique/rare cases outside listed categories)</li></ul>
+</div>
+</div>`,
+      categories: `<h2>4. Product Categories</h2>
+<div class="man-categories">
+  <div class="man-cat">👔 Suits, Jackets and Coats</div>
+  <div class="man-cat">👖 Trousers and Shorts</div>
+  <div class="man-cat">👕 Shirts</div>
+  <div class="man-cat">🧶 Sweaters</div>
+  <div class="man-cat">🧥 Jackets</div>
+  <div class="man-cat">👗 Sweatshirts, Polos and T-Shirts</div>
+  <div class="man-cat">🧣 Accessories (Scarves, Ties, Pochettes)</div>
+  <div class="man-cat">👜 Leather Goods (Belts, Leather Goods)</div>
+  <div class="man-cat">👠 Shoes</div>
+</div>`,
+      color: `<h2>5a. Colour Issues</h2>
+<p><em>Categories: Suits, Jackets, Coats, Trousers, Shorts, Shirts, Sweaters, Jackets, Sweatshirts, Polo Shirts, T-Shirts, Accessories</em></p>
+<div class="man-table-wrap"><table class="man-table"><thead><tr><th>Colour Issue</th><th>Common Causes</th><th>Solution / Response to Customer</th></tr></thead><tbody>
+<tr><td><strong>Colour variance</strong><br><em>Changes in colour tone in outer fold lines exposed to artificial light</em></td><td>Poor colour strength — fades with prolonged exposure to artificial light</td><td>Avoid exposing delicate garments to intense artificial light. This is never a sign of poor quality.</td></tr>
+<tr><td><strong>Difference in tone (selvedge centre)</strong></td><td>Irregular weave or dyeing defect during manufacturing</td><td>Before sale: remove and report. After sale: replace immediately.</td></tr>
+<tr><td><strong>Stains from stain removal</strong></td><td>Unsuitable stain removers, excessive application, aggressive solvents</td><td>New garment: replacement or return. Treated by customer: suggest following care instructions.</td></tr>
+<tr><td><strong>Colour crosshatching</strong><br><em>Horizontal or vertical lines</em></td><td>Yarn defects, tension problems during weaving, dyeing faults</td><td>Before sale: remove and report. After sale: replace immediately.</td></tr>
+</tbody></table></div>
+<h3>Colour Classification</h3>
+<div class="man-matrix"><table class="man-table"><thead><tr><th>Severity</th><th>Hidden Areas</th><th>Visible Areas</th></tr></thead><tbody>
+<tr><td>Minor</td><td class="cls-ok">Not Faulty</td><td class="cls-ff">FF</td></tr>
+<tr><td>Moderate</td><td class="cls-ff">FF</td><td class="cls-fl">FL</td></tr>
+<tr><td>Severe</td><td class="cls-fl">FL</td><td class="cls-fb">FB</td></tr>
+</tbody></table></div>
+<div class="man-tip">💡 Garments most subject to fading: denim and cotton/linen garments dyed to achieve a faded, old or garment-dyed effect.</div>`,
+      snag: `<h2>5b. Pulled Threads (Snagging)</h2>
+<p>Snagging occurs when one or more threads are accidentally caught and pulled out of their original position, creating an irregularity on the surface of the garment.</p>
+<div class="man-two-col">
+<div><h3>Common Causes</h3><ul><li>Contact with jewellery, fingernails or rough surfaces</li><li>Excessive rubbing (bags, belts, rough seats)</li><li>Incorrect handling during transport or sale</li></ul></div>
+<div><h3>Repair</h3><p>Can sometimes be repaired using a needle to reposition the thread. If beyond repair, classify accordingly.</p></div>
+</div>
+<h3>Classification</h3>
+<div class="man-matrix"><table class="man-table"><thead><tr><th>Severity</th><th>Hidden Areas</th><th>Visible Areas</th></tr></thead><tbody>
+<tr><td>Minor</td><td class="cls-ok">Not Faulty</td><td class="cls-ff">FF</td></tr>
+<tr><td>Moderate</td><td class="cls-ff">FF</td><td class="cls-fl">FL</td></tr>
+<tr><td>Severe</td><td class="cls-fl">FL</td><td class="cls-fb">FB</td></tr>
+</tbody></table></div>
+<div class="man-tip">💡 If a customer complains: check if repairable (1–2 threads). For widespread snagging, explain causes and follow commercial guidelines: reject complaint / offer discount / replace garment.</div>`,
+      pilling: `<h2>5c. Pilling</h2>
+<p>Pilling manifests as small dots or 'pills' on the surface of the garment caused by fibre friction. Common in softer and natural fabrics — not always a quality defect.</p>
+<div class="man-table-wrap"><table class="man-table"><thead><tr><th>Defect</th><th>Common Causes</th><th>Solution</th></tr></thead><tbody>
+<tr><td><strong>Pilling</strong></td><td>Repeated friction (arms, bags, belts); shorter fibres (wool, cotton, synthetic blends); frequent or high-temperature washing</td><td>Use a pill remover or fabric brush. New garment: consider return or exchange.</td></tr>
+</tbody></table></div>
+<h3>Prevention and Management</h3>
+<div class="man-steps">
+<div class="man-step"><div class="man-step-num">1</div><div><strong>Gentle washing</strong> — low temperatures, delicate cycle or by hand</div></div>
+<div class="man-step"><div class="man-step-num">2</div><div><strong>Avoid rubbing</strong> — no prolonged contact with abrasive surfaces</div></div>
+<div class="man-step"><div class="man-step-num">3</div><div><strong>Protective bags</strong> — use laundry bag when machine washing</div></div>
+<div class="man-step"><div class="man-step-num">4</div><div><strong>Fabric softener</strong> — reduces friction between fibres</div></div>
+<div class="man-step"><div class="man-step-num">5</div><div><strong>Regular removal</strong> — use lint remover or special brush</div></div>
+</div>
+<div class="man-tip">💡 For cashmere: avoid wearing more than 2–3 days in a row. Wash often — fibres loosen when wet and return to their original state when dry.</div>`,
+      seams: `<h2>5d. Seam Damages</h2>
+<p>If identified before sale, repair immediately. Not all seam defects are manufacturing defects — some result from wear, improper use or incorrect care.</p>
+<div class="man-table-wrap"><table class="man-table"><thead><tr><th>Problem</th><th>Causes</th><th>Solution</th></tr></thead><tbody>
+<tr><td><strong>Loose or slack seams</strong></td><td>Elastic fabric under stress, aggressive washing, frequent/excessive wearing</td><td>Offer inspection and repair. If defect confirmed: repair or replacement.</td></tr>
+<tr><td><strong>Frayed threads / broken seams</strong></td><td>Aggressive washing or dryer use, weak fabric</td><td>Delicate washing. If worn correctly: assist with repair. If manufacturing defect: consider replacing.</td></tr>
+<tr><td><strong>Open stitches / irregular stitching</strong></td><td>Manufacturing defect in stitching</td><td>Offer replacement or repair in store.</td></tr>
+</tbody></table></div>
+<h3>Classification</h3>
+<div class="man-matrix"><table class="man-table"><thead><tr><th>Severity</th><th>Hidden Areas</th><th>Visible Areas</th></tr></thead><tbody>
+<tr><td>Minor</td><td class="cls-ok">Not Faulty</td><td class="cls-ff">FF</td></tr>
+<tr><td>Moderate</td><td class="cls-ff">FF</td><td class="cls-fl">FL</td></tr>
+<tr><td>Severe</td><td class="cls-fl">FL</td><td class="cls-fb">FB</td></tr>
+</tbody></table></div>
+<div class="man-tip">💡 Used garments that cannot be repaired → always FB. Advise: delicate wash cycles, limit dryer use, avoid rough surfaces or sharp corners.</div>`,
+      fabric: `<h2>5e. Fabric Damage</h2>
+<div class="man-table-wrap"><table class="man-table"><thead><tr><th>Defect</th><th>Causes</th><th>Solution</th></tr></thead><tbody>
+<tr><td><strong>Loss of elasticity</strong></td><td>Aggressive washing, high-temperature drying, excessive ironing</td><td>Low-temperature washing, avoid dryer. New garment: replacement.</td></tr>
+<tr><td><strong>Deformations / sagging</strong></td><td>High-temperature washing, unsuitable drying position</td><td>Flat drying for delicate items. If washed correctly: check for manufacturing defect.</td></tr>
+<tr><td><strong>Rips and holes</strong></td><td>Wear in stress areas (knees, elbows), contact with sharp objects</td><td>New garment with unexplained rips: repair or replacement.</td></tr>
+<tr><td><strong>Fabric deterioration between thighs</strong></td><td>Continuous friction, sweating, delicate fabrics like wool</td><td>Suggest internal tailored reinforcement. Alternate wool trousers with more robust fabrics.</td></tr>
+</tbody></table></div>
+<h3>Classification</h3>
+<div class="man-matrix"><table class="man-table"><thead><tr><th>Severity</th><th>Hidden Areas</th><th>Visible Areas</th></tr></thead><tbody>
+<tr><td>Minor</td><td class="cls-ok">Not Faulty</td><td class="cls-ff">FF</td></tr>
+<tr><td>Moderate</td><td class="cls-ff">FF</td><td class="cls-fl">FL</td></tr>
+<tr><td>Severe</td><td class="cls-fl">FL</td><td class="cls-fb">FB</td></tr>
+</tbody></table></div>
+<div class="man-tip">💡 Worn and washed items → always FB. Advise: gentle wash cycles, flat drying, avoid dryer unless specified, avoid contact with sharp objects.</div>`,
+      lining: `<h2>5f. Damage to Lining or Padding</h2>
+<p><em>Categories: Suits, Jackets and Coats, Trousers and Shorts, Vests</em></p>
+<div class="man-table-wrap"><table class="man-table"><thead><tr><th>Problem</th><th>Causes</th><th>Solution</th></tr></thead><tbody>
+<tr><td><strong>Lining / padding that comes unstitched or tears</strong></td><td>Manufacturing defect in seams, regular use or rubbing, delicate fabric</td><td>New garment: repair or replacement. Normal wear: repair service.</td></tr>
+<tr><td><strong>Distortion / displacement of padding</strong></td><td>Inappropriate washing, high temperatures, excessive spin, uneven drying</td><td>Follow washing instructions. If recent and cared for correctly: repair or replacement.</td></tr>
+<tr><td><strong>Wrinkled or misshapen lining</strong></td><td>Incorrect ironing or high-temperature washing, improper drying</td><td>Follow instructions. If curled despite correct washing: check for defect and repair/replace.</td></tr>
+<tr><td><strong>Plucking (down feathers coming out)</strong></td><td>Normal during initial use — smaller feathers may pass through seams or fabric</td><td>Do not pull on down. Remove visible feathers gently with adhesive tape. Boggi duvets use downproof materials.</td></tr>
+<tr><td><strong>Bubbling of adhesive inside (bubbles or lumps)</strong></td><td>Adhesive adhesion problem in manufacturing, excessive heat/humidity, improper ironing/laundering</td><td>Item cannot be sold → send to warehouse: <strong>Concorezzo</strong> (Italy) / <strong>Stance</strong> (Foreign)</td></tr>
+</tbody></table></div>
+<div class="man-tip">💡 If the problem occurs before sale and you suspect a manufacturing defect, report to the product department for systemic assessment.</div>`,
+      washing: `<h2>5g. Damage Caused by Washing</h2>
+<div class="man-table-wrap"><table class="man-table"><thead><tr><th>Defect</th><th>Causes</th><th>Solution</th></tr></thead><tbody>
+<tr><td><strong>Fabric colour fading</strong></td><td>Excessively high temperatures, aggressive cleaning agents or bleach, exposure to sunlight while damp</td><td>Check washing instructions were followed. Explain importance of mild detergents.</td></tr>
+<tr><td><strong>Shrunken or misshapen garment</strong></td><td>High-temperature washing, intense drying cycles</td><td>Cold washing and natural drying. Refund if faulty.</td></tr>
+<tr><td><strong>Damaged printing or patches</strong></td><td>Direct ironing on the print, high-temperature washing</td><td>Avoid direct iron contact, low-temperature washing for printed garments.</td></tr>
+<tr><td><strong>Bleaching or permanent stains</strong></td><td>Bleach or harsh chemicals, washing with colour-shedding items</td><td>Avoid strong chemicals, separate colours. Refund or exchange if defective.</td></tr>
+</tbody></table></div>
+<h3>Practical Guide to Washing Symbols</h3>
+<div class="man-symbols">
+  <div class="man-sym-group"><h4>Washing in water</h4>
+    <div class="man-sym-row"><div class="man-sym-icon">🚫🛁</div><div>Cannot be washed in water — dry cleaning only</div></div>
+    <div class="man-sym-row"><div class="man-sym-icon">🛁</div><div>Can be washed by hand or in washing machine</div></div>
+    <div class="man-sym-row"><div class="man-sym-icon">🛁—</div><div>Low-speed wash, delicate programmes</div></div>
+    <div class="man-sym-row"><div class="man-sym-icon">✋</div><div>Hand wash only</div></div>
+    <div class="man-sym-row"><div class="man-sym-icon">30°/40°/60°</div><div>Maximum recommended temperature</div></div>
+  </div>
+  <div class="man-sym-group"><h4>Dry cleaning</h4>
+    <div class="man-sym-row"><div class="man-sym-icon">🚫⭕</div><div>Cannot be dry cleaned</div></div>
+    <div class="man-sym-row"><div class="man-sym-icon">⭕</div><div>Dry cleaning recommended with any solvent</div></div>
+    <div class="man-sym-row"><div class="man-sym-icon">Ⓐ</div><div>Any solvent</div></div>
+    <div class="man-sym-row"><div class="man-sym-icon">Ⓟ</div><div>Perchloroethylene, mineral spirits, R133, R11</div></div>
+    <div class="man-sym-row"><div class="man-sym-icon">Ⓕ</div><div>Hydrocarbons and trifluoro-trichloroethane</div></div>
+  </div>
+  <div class="man-sym-group"><h4>Drying</h4>
+    <div class="man-sym-row"><div class="man-sym-icon">⬜⭕</div><div>Can be tumble dried</div></div>
+    <div class="man-sym-row"><div class="man-sym-icon">🚫⬜⭕</div><div>Cannot be tumble dried</div></div>
+  </div>
+  <div class="man-sym-group"><h4>Bleaching</h4>
+    <div class="man-sym-row"><div class="man-sym-icon">🚫△</div><div>Do not bleach under any circumstances</div></div>
+    <div class="man-sym-row"><div class="man-sym-icon">△</div><div>Bleach and chlorine can be used</div></div>
+    <div class="man-sym-row"><div class="man-sym-icon">△CL</div><div>Only chlorine-based products</div></div>
+  </div>
+  <div class="man-sym-group"><h4>Ironing</h4>
+    <div class="man-sym-row"><div class="man-sym-icon">🔲•</div><div>Max 110°C, no steam</div></div>
+    <div class="man-sym-row"><div class="man-sym-icon">🔲••</div><div>Max 150°C</div></div>
+    <div class="man-sym-row"><div class="man-sym-icon">🔲•••</div><div>Max 200°C</div></div>
+    <div class="man-sym-row"><div class="man-sym-icon">🚫🔲</div><div>Do not iron</div></div>
+  </div>
+</div>
+<div class="man-tip">💡 Excessive spinning can cause dye release. Drying in direct sunlight causes fading (UV rays break down dye molecules).</div>`,
+      zip: `<h2>5h. Zip Defects</h2>
+<div class="man-table-wrap"><table class="man-table"><thead><tr><th>Problem</th><th>Causes</th><th>Solution</th></tr></thead><tbody>
+<tr><td><strong>Zip that sticks / difficult to open or close</strong></td><td>Grit or dust stuck in zip, bent or damaged fangs, lack of lubrication</td><td>Keep clean; apply zip lubricant. New garment persistent: repair or replacement.</td></tr>
+<tr><td><strong>Zip opening by itself</strong></td><td>Slider defect, slider wear or damage</td><td>New garment: repair or replace. Worn garment: replace slider at tailor.</td></tr>
+<tr><td><strong>Zipper slider pull tab breaks or comes off</strong></td><td>Problem securing tie rod bridge, excessive force, wear</td><td>New garment: replacement or repair. Worn: tailor + recover accessory via product office.</td></tr>
+<tr><td><strong>Bent or broken zip tabs</strong></td><td>Forced opening/closure or accidental impact</td><td>Handle with care. New garment: replace zip. Worn: visit tailor.</td></tr>
+</tbody></table></div>
+<h3>Zip Classification</h3>
+<div class="man-box">
+<ul>
+<li>Zip stuck but usable with care (new garment) → <span class="man-cls-badge ff">FF</span></li>
+<li>Zip opens but still functional (new garment) → <span class="man-cls-badge ff">FF</span></li>
+<li>Zip stuck, compromising normal use (new garment) → <span class="man-cls-badge fl">FL</span></li>
+<li>Used and irreparable garments → <span class="man-cls-badge fb">FB</span></li>
+</ul>
+</div>
+<div class="man-tip">💡 General advice: keep zips clean; avoid forcing; lubricate with beeswax or graphite; close zips before washing; store in cool dry place.</div>`,
+      accessories: `<h2>5i. Damage or Lack of Accessories (no Zip)</h2>
+<div class="man-table-wrap"><table class="man-table"><thead><tr><th>Problem</th><th>Causes</th><th>Solution</th></tr></thead><tbody>
+<tr><td><strong>Stitched button coming off or missing</strong></td><td>Weak stitching, impact or friction, incomplete quality control</td><td>Check for spare button → tailor. If absent: request from product dept and organise repair.</td></tr>
+<tr><td><strong>Missing or defective press buttons (snaps)</strong></td><td>Not properly secured in manufacturing, no spare buttons</td><td>Item cannot be sold → warehouse: <strong>Concorezzo</strong> (Italy) / <strong>Stance</strong> (Foreign)</td></tr>
+<tr><td><strong>Hook coming off or breaking</strong></td><td>Weak fastening, frequent use and stressing</td><td>Item cannot be sold → relevant warehouse</td></tr>
+<tr><td><strong>Spare button missing</strong></td><td>Incomplete quality control, accidental removal before sale</td><td>Request from product dept. If unavailable: organise tailoring repair. New/warranty: at no extra cost.</td></tr>
+</tbody></table></div>
+<div class="man-classify">
+  <div class="man-cls-item ff"><span class="man-cls-badge">FF</span><div>New item that cannot be repaired</div></div>
+  <div class="man-cls-item fb"><span class="man-cls-badge">FB</span><div>Used item that has been replaced</div></div>
+</div>`,
+      odour: `<h2>5j. Problem of Odour of Garments</h2>
+<div class="man-table-wrap"><table class="man-table"><thead><tr><th>Type of Odour</th><th>Causes</th><th>Solution</th></tr></thead><tbody>
+<tr><td><strong>Chemical or plastic odour</strong></td><td>Sealed plastic packaging (off-gassing from phthalates in cellophane)</td><td>Air in ventilated area or wash according to instructions. If persistent: replacement.</td></tr>
+<tr><td><strong>Smell of humidity or mould</strong></td><td>Storage or transport in humid environments without ventilation</td><td>Wash and allow to dry completely. If persistent: replacement.</td></tr>
+</tbody></table></div>
+<h3>How to eliminate odours</h3>
+<div class="man-steps">
+<div class="man-step"><div class="man-step-num">1</div><div><strong>Prolonged ventilation</strong> — in open air, away from direct sunlight</div></div>
+<div class="man-step"><div class="man-step-num">2</div><div><strong>Gentle washing</strong> — mild detergent + white vinegar in the rinse cycle</div></div>
+<div class="man-step"><div class="man-step-num">3</div><div><strong>Fabric steamer</strong> — effective at removing odours without damaging fabric</div></div>
+<div class="man-step"><div class="man-step-num">4</div><div><strong>Fabric sprays</strong> — with natural ingredients, enzymes (avoid strong perfumes that only mask odour)</div></div>
+<div class="man-step"><div class="man-step-num">5</div><div><strong>Natural drying</strong> — open air, careful with delicate garments in direct sunlight</div></div>
+</div>`,
+      conclusions: `<h2>6. Conclusions</h2>
+<div class="man-steps">
+<div class="man-step"><div class="man-step-num">1</div><div><strong>Be confident and competent</strong> — use the manual as reference, give customers the impression of professional, high-quality service</div></div>
+<div class="man-step"><div class="man-step-num">2</div><div><strong>Show empathy and active listening</strong> — listen carefully, reassure customers about available solutions</div></div>
+<div class="man-step"><div class="man-step-num">3</div><div><strong>Offer proactive and tailor-made solutions</strong> — immediate repair, replacement or return</div></div>
+<div class="man-step"><div class="man-step-num">4</div><div><strong>Educate the customer on care and maintenance</strong> — conclude with useful garment care advice</div></div>
+<div class="man-step"><div class="man-step-num">5</div><div><strong>Stay updated on procedures and new products</strong> — attend internal courses, read company updates</div></div>
+<div class="man-step"><div class="man-step-num">6</div><div><strong>Treat complaints as opportunities for improvement</strong> — report recurring defects to managers</div></div>
+</div>
+<div class="man-box" style="margin-top:20px;background:var(--bg3);text-align:center;padding:20px">
+<em>"Every customer who leaves the shop satisfied contributes to the brand's positive reputation. Our goal is not only to solve a problem, but to turn a complaint into a testament to excellence."</em>
+</div>`,
+    }
+  }
+};
+
+function renderManualTab() {
+  const tc = document.getElementById('tab-content');
+  if (!tc) return;
+  const ptEl = document.getElementById('page-title');
+  if (ptEl) ptEl.textContent = t('navManual');
+
+  const md = MANUAL_DATA[manualLang] || MANUAL_DATA['en'];
+  const firstChap = md.chapters[0].id;
+
+  tc.innerHTML = `
+<div class="man-layout">
+  <div class="man-sidebar" id="man-sidebar">
+    <div class="man-lang-sel">
+      <span style="font-size:11px;color:var(--tx2);text-transform:uppercase;letter-spacing:.4px">${md.langLabel}</span>
+      <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap">
+        <button class="man-lang-btn ${manualLang==='it'?'active':''}" onclick="switchManualLang('it')">🇮🇹 Italiano</button>
+        <button class="man-lang-btn ${manualLang==='en'?'active':''}" onclick="switchManualLang('en')">🇬🇧 English</button>
+      </div>
+    </div>
+    <nav class="man-toc">
+      <div style="font-size:11px;color:var(--tx2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;padding:0 4px">${md.toc}</div>
+      ${md.chapters.map(ch => `
+        <button class="man-toc-item" id="toc-${ch.id}" onclick="showManualSection('${ch.id}')">
+          <span class="man-toc-icon">${ch.icon}</span>
+          <span>${ch.label}</span>
+        </button>`).join('')}
+    </nav>
+  </div>
+  <div class="man-content" id="man-content">
+    <button class="man-mob-toc-btn" onclick="document.getElementById('man-sidebar').classList.toggle('man-sidebar-open')">
+      ☰ ${md.toc}
+    </button>
+    <div id="man-section-body"></div>
+  </div>
+</div>`;
+  showManualSection(firstChap);
+}
+
+function switchManualLang(lang) {
+  manualLang = lang;
+  localStorage.setItem(MANUAL_LANG_KEY, lang);
+  renderManualTab();
+}
+
+function showManualSection(id) {
+  const md = MANUAL_DATA[manualLang] || MANUAL_DATA['en'];
+  const body = document.getElementById('man-section-body');
+  const content = md.sections[id];
+  if (body && content) {
+    body.innerHTML = content;
+    // Scroll to top
+    const mc = document.getElementById('man-content');
+    if (mc) mc.scrollTop = 0;
+  }
+  // Update active toc item
+  md.chapters.forEach(ch => {
+    const el = document.getElementById('toc-'+ch.id);
+    if (el) el.classList.toggle('active', ch.id === id);
+  });
+  // Mobile: close sidebar after selection
+  if (window.innerWidth <= 700) {
+    const sb = document.getElementById('man-sidebar');
+    if (sb) sb.classList.remove('man-sidebar-open');
+  }
 }
 
 // ── SUPABASE FETCH ─────────────────────────────────────────
