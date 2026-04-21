@@ -3,519 +3,1816 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HR - HEKANIZE Sync</title>
+<title>Gestione Fallati – Boggi Milano</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
+*{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bd:#3d2b1f;--bm:#6b4c38;--bl:#9a7a66;
-  --bdk:#c4a882;--bmd:#e0cdb4;--blt:#f5efe5;--bpg:#f9f5ef;
-  --wh:#fff;--br:#d9c9b0;--brk:#b8a48a;
-  --tx:#2a1f16;--tx2:#6b5444;--tx3:#a8917a;
-  --gn:#3a5c2e;--gnb:#e4f0e1;--rd:#7a2e2e;--rdb:#f5e8e8;
-  --am:#7a5010;--amb:#f5ead8;--bl2:#1a4060;--blb:#e0ecf5;
-  --r:8px;--rs:5px;
+  --bg:#ffffff;--bg2:#f5f5f3;--bg3:#eeede9;
+  --tx:#1a1a18;--tx2:#6b6b67;--tx3:#9b9b96;
+  --br:rgba(0,0,0,0.10);--br2:rgba(0,0,0,0.18);
+  --green-bg:#eaf3de;--green-tx:#27500a;--green-br:#97c459;
+  --red-bg:#fcebeb;--red-tx:#791f1f;--red-br:#f09595;
+  --amber-bg:#faeeda;--amber-tx:#854f0b;--amber-br:#ef9f27;
+  --blue-bg:#e6f1fb;--blue-tx:#0c447c;--blue-br:#85b7eb;
+  --r:8px;--rl:12px;
+  --font:'Segoe UI',system-ui,sans-serif;
+  --mono:'SF Mono','Fira Mono',monospace;
 }
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Century Gothic','Futura',sans-serif;background:var(--bpg);color:var(--tx);font-size:14px;min-height:100vh;}
-.site-header{background:var(--blt);border-bottom:1px solid var(--brk);padding:1.4rem 2rem 1.1rem;display:flex;flex-direction:column;align-items:center;gap:.75rem;}
-.site-header img{height:120px;width:auto;display:block;}
-.tagline{font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--bl);}
-.tab-nav{background:var(--bd);display:flex;padding:0 2rem;}
-.tab-btn{font-family:'Century Gothic','Futura',sans-serif;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.5);padding:0 1.5rem;height:42px;display:flex;align-items:center;cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;}
-.tab-btn:hover{color:rgba(255,255,255,.85);}
-.tab-btn.active{color:#fff;border-bottom-color:var(--bdk);}
-.page{display:none;padding:2rem;max-width:1400px;margin:0 auto;}
-.page.active{display:block;}
-.ptitle{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--bm);margin-bottom:1.5rem;padding-bottom:.75rem;border-bottom:1px solid var(--br);}
-.upload-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;}
-.ucard{background:var(--wh);border:1px solid var(--br);border-radius:var(--r);padding:1.25rem 1.5rem;border-top:2px solid var(--bm);}
-.ucard h3{font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--bm);margin-bottom:.5rem;font-weight:400;}
-.ucard p{font-size:.82rem;color:var(--tx2);margin-bottom:.75rem;}
-.file-row{display:flex;align-items:center;gap:.75rem;}
-.file-btn{font-family:'Century Gothic',sans-serif;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;padding:.55rem 1rem;border-radius:var(--rs);border:1px solid var(--brk);background:var(--blt);color:var(--bm);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .15s;}
-.file-btn:hover{background:var(--bmd);}
-.file-name{font-size:.78rem;color:var(--tx3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.fb{margin-top:.75rem;padding:.55rem .8rem;border-radius:var(--rs);font-size:.75rem;display:none;gap:.55rem;align-items:flex-start;}
-.fb.ok{display:flex;background:var(--gnb);border:1px solid #a0c89a;color:var(--gn);}
-.fb.err{display:flex;background:var(--rdb);border:1px solid #c9a0a0;color:var(--rd);}
-.fb-icon{font-size:1.1rem;line-height:1;flex-shrink:0;}
-.fb-body{display:flex;flex-direction:column;gap:2px;}
-.fb-name{font-size:.78rem;}
-.fb-rows{font-size:.68rem;opacity:.85;}
-.actions{display:flex;gap:.75rem;margin-bottom:1.5rem;align-items:center;flex-wrap:wrap;}
-.btn{font-family:'Century Gothic','Futura',sans-serif;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;padding:.65rem 1.4rem;border-radius:var(--rs);border:1px solid var(--br);cursor:pointer;transition:background .15s,opacity .15s;}
-.btn-primary{background:var(--bd);color:var(--blt);border-color:var(--bd);}
-.btn-primary:hover{background:var(--bm);}
-.btn-primary:disabled{opacity:.38;cursor:not-allowed;}
-.btn-secondary{background:var(--wh);color:var(--bd);border-color:var(--brk);}
-.btn-secondary:hover{background:var(--blt);}
-.btn-secondary:disabled{opacity:.38;cursor:not-allowed;}
-.btn-sm{font-size:.65rem;padding:.45rem 1rem;}
-.btn-add{background:var(--gnb);color:var(--gn);border-color:#a0c89a;}
-.btn-add:hover{background:#d4ebd0;}
-.ready-pill{display:none;font-size:.72rem;color:var(--gn);background:var(--gnb);border:1px solid #a0c89a;padding:.38rem .85rem;border-radius:var(--rs);}
-.ready-pill.show{display:block;}
-#loadingMsg{font-size:.72rem;color:var(--tx3);letter-spacing:.04em;}
-.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem;margin-bottom:1.5rem;}
-.stat{background:var(--wh);border:1px solid var(--br);border-radius:var(--r);padding:1rem 1.25rem;}
-.stat .lbl{font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3);margin-bottom:.4rem;}
-.stat .val{font-size:2rem;letter-spacing:-.02em;line-height:1;}
-.stat .sub{font-size:.68rem;color:var(--tx3);margin-top:.3rem;}
-.st-bd .val{color:var(--bd)}.st-gn .val{color:var(--gn)}.st-rd .val{color:var(--rd)}.st-am .val{color:var(--am)}.st-bl .val{color:var(--bl2)}
-.note-bar{display:none;background:var(--amb);border:1px solid var(--bdk);border-left:3px solid var(--am);border-radius:var(--rs);padding:.7rem 1rem;font-size:.76rem;color:var(--am);margin-bottom:1.5rem;line-height:1.6;}
-.sec-title{font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--tx3);margin-bottom:.6rem;}
-.fbar{display:flex;gap:.5rem;margin-bottom:1rem;align-items:center;flex-wrap:wrap;}
-.flbl{font-size:.62rem;color:var(--tx3);letter-spacing:.1em;text-transform:uppercase;}
-.fbar select,.fbar input[type=text]{font-family:'Century Gothic',sans-serif;font-size:.78rem;padding:.4rem .7rem;border:1px solid var(--br);border-radius:var(--rs);background:var(--wh);color:var(--tx);}
-.tbl-wrap{background:var(--wh);border:1px solid var(--br);border-radius:var(--r);overflow:hidden;}
-table.data{width:100%;border-collapse:collapse;font-size:.78rem;}
-table.data thead th{background:var(--bd);color:var(--bmd);padding:.7rem .75rem;text-align:left;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;font-weight:400;}
-table.data tbody tr{border-bottom:1px solid var(--br);}
-table.data tbody tr:last-child{border-bottom:none;}
-table.data tbody tr:hover{background:var(--blt);}
-table.data td{padding:.55rem .75rem;color:var(--tx);vertical-align:top;}
-.bdg{display:inline-block;font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;padding:.15rem .55rem;border-radius:99px;white-space:nowrap;}
-.b-ok{background:var(--gnb);color:var(--gn)}.b-diff{background:var(--rdb);color:var(--rd)}.b-warn{background:var(--amb);color:var(--am)}.b-info{background:var(--blb);color:var(--bl2)}
-.dc{background:#fdf0f0}.dv{color:var(--rd)}
-.pag{display:flex;gap:.5rem;align-items:center;padding:.75rem 1rem;border-top:1px solid var(--br);font-size:.72rem;color:var(--tx2);}
-.pag .btn{padding:.25rem .65rem;font-size:.72rem;letter-spacing:0;}
-.pi{margin:0 auto;}
-.sn{font-size:.68rem;color:var(--tx3);display:block;margin-top:2px;}
-.empty{padding:3rem 2rem;text-align:center;color:var(--tx3);font-size:.88rem;line-height:1.8;}
-.map-intro{font-size:.82rem;color:var(--tx2);margin-bottom:1.25rem;line-height:1.7;}
-.map-legend{display:flex;gap:1.25rem;font-size:.68rem;color:var(--tx3);margin-bottom:.8rem;align-items:center;}
-.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:.3rem;}
-.dot-ok{background:var(--gn)}.dot-em{background:var(--am)}
-.map-toolbar{display:flex;gap:.5rem;align-items:center;margin-bottom:.75rem;flex-wrap:wrap;}
-.map-toolbar input[type=text]{font-family:'Century Gothic',sans-serif;font-size:.78rem;padding:.35rem .65rem;border:1px solid var(--br);border-radius:var(--rs);background:var(--wh);color:var(--tx);width:220px;}
-.counter-bar{font-size:.68rem;color:var(--tx3);margin-bottom:.5rem;}
-.map-tbl-wrap{background:var(--wh);border:1px solid var(--br);border-radius:var(--r);overflow:hidden;margin-bottom:1rem;}
-table.maptbl{width:100%;border-collapse:collapse;font-size:.8rem;}
-table.maptbl thead th{background:var(--bd);color:var(--bmd);padding:.6rem .75rem;text-align:left;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;font-weight:400;}
-table.maptbl tbody tr{border-bottom:1px solid var(--br);}
-table.maptbl tbody tr:last-child{border-bottom:none;}
-table.maptbl tbody tr:hover{background:var(--blt);}
-table.maptbl td{padding:.38rem .75rem;vertical-align:middle;}
-table.maptbl td:first-child{font-family:monospace;font-size:.82rem;font-weight:600;color:var(--bm);width:110px;}
-.map-input{width:100%;font-family:'Century Gothic',sans-serif;font-size:.78rem;padding:.3rem .5rem;border:1px solid var(--br);border-radius:4px;background:var(--wh);color:var(--tx);}
-.map-input:focus{outline:none;border-color:var(--bm);}
-.map-input.empty{background:#fff8f0;border-color:var(--bdk);}
-.map-input.changed{border-color:var(--gn);}
-.btn-del{background:none;border:none;color:var(--tx3);font-size:.95rem;padding:.15rem .45rem;cursor:pointer;}
-.btn-del:hover{color:var(--rd);}
-.map-add-bar{display:none;gap:.5rem;align-items:center;padding:1rem 1.25rem;background:var(--blt);border:1px solid var(--br);border-radius:var(--rs);flex-wrap:wrap;margin-bottom:.75rem;}
-.map-add-bar input{font-family:'Century Gothic',sans-serif;font-size:.78rem;padding:.38rem .65rem;border:1px solid var(--br);border-radius:var(--rs);background:var(--wh);color:var(--tx);}
-.map-note{font-size:.7rem;color:var(--tx3);margin-top:.75rem;line-height:1.6;}
+body{font-family:var(--font);font-size:14px;color:var(--tx);background:var(--bg3)}
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* SIDEBAR */
+.sidebar{width:220px;background:var(--bg);border-right:0.5px solid var(--br);display:flex;flex-direction:column;flex-shrink:0}
+.logo{padding:18px 16px 14px;border-bottom:0.5px solid var(--br)}
+.logo-title{font-size:15px;font-weight:500}
+.logo-sub{font-size:11px;color:var(--tx2);margin-top:2px}
+.nav{flex:1;padding:8px 0;overflow-y:auto}
+.nav-item{padding:9px 16px;cursor:pointer;font-size:13px;color:var(--tx2);display:flex;align-items:center;gap:8px;border:none;background:none;width:100%;text-align:left;font-family:var(--font)}
+.nav-item.active{background:var(--bg2);color:var(--tx);font-weight:500}
+.nav-item:hover:not(.active){background:var(--bg2)}
+.nav-dot{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.35;flex-shrink:0}
+.nav-dot.warn{background:#BA7517;opacity:1}
+.nav-badge{margin-left:auto;background:var(--amber-bg);color:var(--amber-tx);font-size:11px;padding:1px 7px;border-radius:10px;font-weight:500}
+.user-area{padding:12px 16px;border-top:0.5px solid var(--br)}
+.user-role{font-size:11px;color:var(--tx2)}
+.user-name{font-size:13px;font-weight:500;margin-top:2px}
+.btn-logout{margin-top:8px;font-size:11px;color:var(--tx2);cursor:pointer;background:none;border:none;padding:0;font-family:var(--font);text-decoration:underline}
+.btn-logout-full{margin-top:10px;width:100%;font-size:12px;color:var(--tx2);cursor:pointer;background:var(--bg2);border:0.5px solid var(--br);border-radius:var(--r);padding:7px 10px;font-family:var(--font);text-align:center;display:block}
+.btn-logout-full:hover{background:var(--red-bg);color:var(--red-tx);border-color:var(--red-br)}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:var(--bg);border-bottom:0.5px solid var(--br);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:52px;flex-shrink:0}
+.topbar-title{font-weight:500;font-size:15px}
+.content{flex:1;overflow-y:auto;padding:20px}
+
+/* BUTTONS */
+.btn{padding:7px 14px;border-radius:var(--r);border:0.5px solid var(--br2);background:var(--bg);color:var(--tx);cursor:pointer;font-size:13px;font-family:var(--font)}
+.btn:hover{background:var(--bg2)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-primary{background:var(--tx);color:var(--bg);border-color:var(--tx)}
+.btn-primary:hover{opacity:.85}
+.btn-approve{background:var(--green-bg);color:var(--green-tx);border-color:var(--green-br)}
+.btn-approve:hover{opacity:.85}
+.btn-reject{background:var(--red-bg);color:var(--red-tx);border-color:var(--red-br)}
+.btn-reject:hover{opacity:.85}
+.btn-suspend{background:var(--blue-bg);color:var(--blue-tx);border-color:var(--blue-br)}
+.btn-suspend:hover{opacity:.85}
+
+/* METRICS */
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:20px}
+.metric-card{background:var(--bg2);border-radius:var(--r);padding:14px}
+.metric-label{font-size:11px;color:var(--tx2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.metric-value{font-size:22px;font-weight:500}
+
+/* TABLE */
+.table-wrap{background:var(--bg);border:0.5px solid var(--br);border-radius:var(--rl);overflow:hidden}
+.table-head{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--br);gap:8px;flex-wrap:wrap}
+.filter-sel{font-size:12px;padding:5px 8px;border:0.5px solid var(--br2);border-radius:var(--r);background:var(--bg2);color:var(--tx);font-family:var(--font)}
+.table-scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{padding:9px 14px;text-align:left;font-size:11px;font-weight:500;color:var(--tx2);text-transform:uppercase;letter-spacing:.4px;border-bottom:0.5px solid var(--br);background:var(--bg2);white-space:nowrap}
+td{padding:10px 14px;border-bottom:0.5px solid var(--br);vertical-align:middle;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tr.clickable:hover td{background:var(--bg2);cursor:pointer}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:500;white-space:nowrap}
+.b-pending{background:var(--amber-bg);color:var(--amber-tx)}
+.b-approved{background:var(--green-bg);color:var(--green-tx)}
+.b-rejected{background:var(--red-bg);color:var(--red-tx)}
+.b-suspended{background:var(--blue-bg);color:var(--blue-tx)}
+
+/* PANEL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:100}
+.overlay.open{display:flex;justify-content:flex-end}
+.panel{width:480px;max-width:100vw;height:100%;background:var(--bg);display:flex;flex-direction:column;border-left:0.5px solid var(--br)}
+.panel-hdr{padding:16px 20px;border-bottom:0.5px solid var(--br);display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0}
+.panel-body{flex:1;overflow-y:auto;padding:20px}
+.panel-foot{padding:14px 20px;border-top:0.5px solid var(--br);display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap}
+.close-x{background:none;border:none;cursor:pointer;font-size:22px;color:var(--tx2);line-height:1;padding:0 4px;flex-shrink:0}
+.fg{margin-bottom:14px}
+.fl{font-size:11px;color:var(--tx2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+.fv{font-size:13px;line-height:1.5}
+.divider{height:0.5px;background:var(--br);margin:14px 0}
+.note-ta{width:100%;font-family:var(--font);font-size:13px;padding:9px;border:0.5px solid var(--br2);border-radius:var(--r);background:var(--bg2);color:var(--tx);resize:none;min-height:68px}
+.note-ta:focus{outline:none;border-color:var(--br2)}
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
+.photo-thumb{aspect-ratio:1;border-radius:var(--r);border:0.5px solid var(--br);overflow:hidden;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--tx2)}
+.photo-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* LOGIN */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg3)}
+.login-card{background:var(--bg);border:0.5px solid var(--br);border-radius:var(--rl);padding:32px;width:380px;max-width:calc(100vw - 32px)}
+.login-title{font-size:18px;font-weight:500;margin-bottom:4px}
+.login-sub{font-size:13px;color:var(--tx2);margin-bottom:24px}
+.acc-btn{width:100%;text-align:left;padding:11px 14px;border-radius:var(--r);border:0.5px solid var(--br2);background:var(--bg);cursor:pointer;font-family:var(--font);margin-bottom:6px;display:block}
+.acc-btn:hover{background:var(--bg2)}
+.acc-btn.sede{border-color:var(--blue-br);background:var(--blue-bg)}
+.acc-btn.sede:hover{opacity:.85}
+.acc-name{font-size:14px;font-weight:500;color:var(--tx)}
+.acc-btn.sede .acc-name{color:var(--blue-tx)}
+.acc-role{font-size:11px;color:var(--tx2);margin-top:2px}
+.acc-btn.sede .acc-role{color:var(--blue-tx);opacity:.8}
+.sep{font-size:11px;color:var(--tx2);text-align:center;margin:10px 0 8px}
+.stores-list{max-height:260px;overflow-y:auto;padding-right:2px}
+.pw-row{margin-top:10px;display:flex;gap:8px;align-items:center}
+.pw-input{flex:1;font-family:var(--font);font-size:13px;padding:8px 10px;border:0.5px solid var(--br2);border-radius:var(--r);background:var(--bg2);color:var(--tx)}
+.pw-input:focus{outline:none}
+.pw-err{color:var(--red-tx);font-size:12px;margin-top:6px}
+
+/* FORM */
+.form-card{background:var(--bg);border:0.5px solid var(--br);border-radius:var(--rl);padding:24px;max-width:660px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ff{display:flex;flex-direction:column;gap:4px}
+.ff.full{grid-column:1/-1}
+.ff label{font-size:12px;color:var(--tx2);font-weight:500}
+.ff input,.ff select,.ff textarea{font-family:var(--font);font-size:13px;padding:8px 10px;border:0.5px solid var(--br2);border-radius:var(--r);background:var(--bg2);color:var(--tx)}
+.ff textarea{resize:none;height:66px}
+.ff input:focus,.ff select:focus,.ff textarea:focus{outline:none;border-color:#888}
+.upload-area{border:1px dashed var(--br2);border-radius:var(--r);padding:16px;text-align:center;color:var(--tx2);font-size:12px;cursor:pointer;position:relative}
+.upload-area:hover{background:var(--bg2)}
+.upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.photo-preview{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.photo-preview-item{aspect-ratio:1;border-radius:var(--r);overflow:hidden;border:0.5px solid var(--br);position:relative}
+.photo-preview-item img{width:100%;height:100%;object-fit:cover}
+.photo-preview-item .rm{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.5);color:#fff;border:none;border-radius:50%;width:18px;height:18px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+
+/* NOTIFICATION BANNER */
+.notif-banner{background:var(--amber-bg);border:0.5px solid var(--amber-br);border-radius:var(--r);padding:12px 16px;margin-bottom:16px;display:flex;align-items:flex-start;gap:10px}
+.notif-close{margin-left:auto;background:none;border:none;cursor:pointer;font-size:18px;color:var(--amber-tx);padding:0 4px;flex-shrink:0}
+
+/* UTILS */
+.empty{text-align:center;padding:40px;color:var(--tx2);font-size:13px}
+.loading{text-align:center;padding:40px;color:var(--tx2);font-size:13px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:10px 20px;border-radius:20px;font-size:13px;z-index:999;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+.field-note{background:var(--bg2);padding:10px;border-radius:var(--r);font-size:13px;line-height:1.5;color:var(--tx)}
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:20px}
+.stat-card{background:var(--bg);border:0.5px solid var(--br);border-radius:var(--rl);padding:16px}
+.stat-card-title{font-size:11px;color:var(--tx2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;font-weight:500}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.bar-label{font-size:12px;color:var(--tx);min-width:0;flex:0 0 auto;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-track{flex:1;height:6px;background:var(--bg2);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width .4s}
+.bar-val{font-size:11px;color:var(--tx2);min-width:32px;text-align:right}
+.donut-wrap{display:flex;align-items:center;gap:16px}
+.donut-legend{flex:1;min-width:0}
+.legend-row{display:flex;align-items:center;gap:6px;margin-bottom:6px;font-size:12px}
+.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.kpi-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:16px}
+.kpi-card{background:var(--bg2);border-radius:var(--r);padding:14px}
+.kpi-label{font-size:11px;color:var(--tx2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px}
+.kpi-value{font-size:24px;font-weight:500}
+.kpi-sub{font-size:11px;color:var(--tx2);margin-top:2px}
+.stats-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.btn-excel{background:var(--green-bg);color:var(--green-tx);border-color:var(--green-br);padding:7px 14px;border-radius:var(--r);border:0.5px solid;cursor:pointer;font-size:13px;font-family:var(--font);font-weight:500}
+.btn-excel:hover{opacity:.85}
+
+/* TABLE COLUMN FILTERS */
+.th-filter{display:flex;flex-direction:column;gap:3px;cursor:default}
+.th-label{display:flex;align-items:center;gap:4px;white-space:nowrap}
+.th-sort{font-size:9px;opacity:.5;cursor:pointer;user-select:none}
+.th-sort:hover{opacity:1}
+.col-filter{font-size:11px;padding:3px 6px;border:0.5px solid var(--br2);border-radius:4px;background:var(--bg);color:var(--tx);font-family:var(--font);width:100%;margin-top:2px}
+.col-filter:focus{outline:none;border-color:var(--br2)}
+.filter-active{border-color:#378ADD !important;background:var(--blue-bg) !important}
+.filter-clear-btn{font-size:10px;color:var(--tx2);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;margin-top:2px;font-family:var(--font)}
+.filter-count{font-size:11px;color:var(--tx2);margin-left:auto}
+/* LANGUAGE SELECTOR */
+.lang-bar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;justify-content:center}
+.lang-btn{padding:5px 10px;border-radius:20px;border:0.5px solid var(--br2);background:var(--bg);cursor:pointer;font-size:12px;font-family:var(--font);color:var(--tx2)}
+.lang-btn:hover{background:var(--bg2)}
+.lang-btn.active{background:var(--tx);color:var(--bg);border-color:var(--tx)}
+/* MOBILE BOTTOM NAV */
+.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:0.5px solid var(--br);z-index:90;padding:0 0 env(safe-area-inset-bottom,0)}
+.mobile-nav-inner{display:flex;align-items:stretch}
+.mob-nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px 8px;border:none;background:none;cursor:pointer;font-family:var(--font);font-size:10px;color:var(--tx2);gap:3px;border-top:2px solid transparent;min-height:56px}
+.mob-nav-btn.active{color:var(--tx);border-top-color:var(--tx)}
+.mob-nav-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.mob-nav-badge{background:var(--amber-bg);color:var(--amber-tx);font-size:10px;padding:1px 5px;border-radius:8px;font-weight:500;line-height:1.4}
+@media(max-width:600px){
+  .sidebar{display:none}
+  .mobile-nav{display:block}
+  .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .panel{width:100vw}
+  .form-grid{grid-template-columns:1fr}
+  .ff.full{grid-column:1}
+  .content{padding:14px;padding-bottom:80px}
+  .topbar{padding:0 14px}
+  .stats-2col{grid-template-columns:1fr}
+  .kpi-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+  table{font-size:12px}
+  td,th{padding:8px 10px}
+}
 </style>
 </head>
 <body>
 
-<div class="site-header">
-  <img src="logo.jpg" alt="Boggi Milano" onerror="this.style.display='none'">
-  <span class="tagline">HR &mdash; Hekanize Sync</span>
-</div>
+<div id="root"></div>
+<div class="toast" id="toast"></div>
 
-<div class="tab-nav">
-  <button class="tab-btn active" id="tab-pgMain" onclick="goPage('pgMain')">Riconciliazione</button>
-  <button class="tab-btn" id="tab-pgMap" onclick="goPage('pgMap')">Mapping Job Title</button>
-</div>
-
-<div class="page active" id="pgMain">
-  <p class="ptitle">Riconciliazione Matricole &mdash; Zucchetti &harr; Hekanize</p>
-  <div class="upload-grid">
-    <div class="ucard">
-      <h3>Sorgente A &mdash; Zucchetti HR</h3>
-      <p>Export HR Zucchetti (.xlsx)</p>
-      <div class="file-row">
-        <button class="file-btn" id="btnPickZ">Scegli file</button>
-        <span class="file-name" id="fnZ">Nessun file selezionato</span>
-      </div>
-      <div class="fb" id="fbZ">
-        <span class="fb-icon" id="fbZi"></span>
-        <div class="fb-body"><span class="fb-name" id="fbZn"></span><span class="fb-rows" id="fbZr"></span></div>
-      </div>
-    </div>
-    <div class="ucard">
-      <h3>Sorgente B &mdash; Hekanize</h3>
-      <p>Export Hekanize (.csv)</p>
-      <div class="file-row">
-        <button class="file-btn" id="btnPickC">Scegli file</button>
-        <span class="file-name" id="fnC">Nessun file selezionato</span>
-      </div>
-      <div class="fb" id="fbC">
-        <span class="fb-icon" id="fbCi"></span>
-        <div class="fb-body"><span class="fb-name" id="fbCn"></span><span class="fb-rows" id="fbCr"></span></div>
-      </div>
-    </div>
-  </div>
-  <div class="actions">
-    <button class="btn btn-primary" id="btnAnalyze" disabled>Avvia Analisi</button>
-    <button class="btn btn-secondary" id="btnExport" disabled>Esporta Differenze XLSX</button>
-    <span class="ready-pill" id="readyPill">&#10003; Entrambi i file pronti</span>
-    <span id="loadingMsg"></span>
-  </div>
-  <div id="noteBar" class="note-bar"></div>
-  <div id="statsSection" style="display:none">
-    <div class="stats-grid" id="statsGrid"></div>
-    <p class="sec-title">Dettaglio dipendenti &mdash; <span id="filterCount"></span></p>
-    <div class="fbar">
-      <span class="flbl">Filtro</span>
-      <select id="fSt"><option value="all">Tutti i record</option><option value="diff">Solo con differenze</option><option value="aligned">Solo allineati</option><option value="only_z">Solo in Zucchetti</option><option value="only_c">Solo in Hekanize</option></select>
-      <select id="fFi"><option value="all">Tutti i campi</option><option value="store">Differenza Store</option><option value="role">Differenza Job Title</option><option value="badge">Differenza Badge ID</option></select>
-      <input type="text" id="fSe" placeholder="Matricola, cognome..." style="width:200px">
-    </div>
-    <div class="tbl-wrap">
-      <table class="data">
-        <thead><tr><th>Matricola</th><th>Cognome / Nome</th><th>Store &mdash; Zucchetti</th><th>Store &mdash; Hekanize</th><th>Job Title &mdash; Zucchetti</th><th>Job Title &mdash; Hekanize</th><th>Badge &mdash; Zucchetti</th><th>Badge &mdash; Hekanize</th><th>Stato</th></tr></thead>
-        <tbody id="tBody"></tbody>
-      </table>
-      <div class="pag">
-        <button class="btn btn-secondary" id="bPrev">&larr;</button>
-        <button class="btn btn-secondary" id="bNext">&rarr;</button>
-        <span class="pi" id="pagInfo"></span>
-      </div>
-    </div>
-  </div>
-  <div id="emptyState" class="empty">Carica i due file e clicca <strong>Avvia Analisi</strong>.</div>
-</div>
-
-<div class="page" id="pgMap">
-  <p class="ptitle">Mapping Job Title &mdash; Zucchetti &rarr; Hekanize</p>
-  <p class="map-intro">Corrispondenza tra codici <strong>ENTE_PROMOTORE</strong> di Zucchetti e descrizioni <strong>Role</strong> di Hekanize.</p>
-  <div class="map-legend"><span><span class="dot dot-ok"></span>Definito</span><span><span class="dot dot-em"></span>Da completare</span></div>
-  <div class="map-toolbar">
-    <input type="text" id="mapSearch" placeholder="Cerca codice o descrizione...">
-    <button class="btn btn-sm btn-add" id="btnShowAdd">+ Aggiungi</button>
-    <button class="btn btn-sm btn-secondary" id="btnResetMap">Ripristina default</button>
-  </div>
-  <div class="counter-bar" id="mapCounter"></div>
-  <div class="map-tbl-wrap"><table class="maptbl"><thead><tr><th style="width:120px">Codice</th><th>Descrizione Hekanize</th><th style="width:44px"></th></tr></thead><tbody id="mapBody"></tbody></table></div>
-  <div class="map-add-bar" id="addBar">
-    <input type="text" id="newCode" placeholder="Codice (es. XYZ)" style="width:130px;text-transform:uppercase">
-    <input type="text" id="newDesc" placeholder="Descrizione Hekanize" style="width:320px">
-    <button class="btn btn-sm btn-add" id="btnConfirmAdd">Aggiungi</button>
-    <button class="btn btn-sm btn-secondary" id="btnCancelAdd">Annulla</button>
-  </div>
-  <p class="map-note">Codici con campo vuoto appaiono come "no mapping" nel report.</p>
-</div>
-
-<!-- Hidden file inputs -->
-<input type="file" id="inputZ" accept=".xlsx,.xls" style="display:none">
-<input type="file" id="inputC" accept=".csv" style="display:none">
-
-<script src="xlsx.min.js"></script>
 <script>
-(function() {
-  /* === DATA === */
-  var DEFAULT_MAP = {"SM": "Store Manager", "VSM": "Vice Store Manager", "SA": "Sales Advisor", "SSA": "Senior Sales Advisor", "SSAP": "Senior Sales Advisor Plus", "JSA": "Junior Sales Advisor", "VM": "Visual", "FC": "Field Coach", "FCMD": "Field Coach", "REC": "Receptionist", "PRM": "Project Manager", "ACC": "Domestic Accounting Specialist", "ACO": "Domestic Accounting Coordinator", "ADM": "Domestic Administration Manager", "AS": "Domestic HR Specialist", "RS": "Domestic HR Specialist", "CCM": "Domestic Control Manager", "CCS": "Control Specialist", "EACC": "Control Specialist", "CSP": "Retail Operations Specialist", "CSU": "Customer Service Specialist", "DROC": "Retail Operations Coordinator", "ECS": "Corporate Partnership Specialist", "HMI": "Chief Marketing Officer", "HS": "Hardware Specialist", "ICS": "Inventory Control Specialist", "LGS": "Warehouse Specialist", "MC": "Maintenance Coordinator", "MCS": "Content Development Specialist", "MPR": "PR & Corporate Partnership Manager", "OCC": "Omnichannel Customer Service Manager", "OM": "Head of Ecommerce & Digital", "PLC": "HR Administration Specialist", "PUME": "Purchasing and Merchandising Specialist", "RHD": "Networking Security & Hardware Coordinator", "RO": "Retail Audit Coordinator", "SAC": "Stock Auditing Coordinator", "SHC": "Ecommerce Shooting Coordinator", "TAP": "Tailoring & Retail Operations Specialist", "TRC": "Domestic Treasury Specialist", "WAD": "Web Art Director", "BBC": "Cost Controlling & Purchasing Coordinator", "CBC": "HR Administration Coordinator", "DRM": "", "LGC": ""};
-  var MAP = JSON.parse(JSON.stringify(DEFAULT_MAP));
-  var DZ = null, DC = null;
-  var merged = [], filtered = [], pg = 0, PGS = 50;
+const SUPABASE_URL = 'https://mcjxhhdgadajlmsiyvdq.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1janhoaGRnYWRhamxtc2l5dmRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNjk4MDQsImV4cCI6MjA5MTk0NTgwNH0.7yMOc2o23eg4YYnlhKupyAjslgRMDofLiCaOd2aWLFI';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  /* === NAV === */
-  function goPage(id) {
-    document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
-    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
-    document.getElementById(id).classList.add('active');
-    document.getElementById('tab-' + id).classList.add('active');
-    if (id === 'pgMap') renderMapping();
+const DAMAGE_TYPES_KEYS = ['damage_fabric','damage_stitching','damage_shoes','damage_color','damage_pilling','damage_accessories','damage_thread','damage_washing','damage_zip','damage_tailoring','damage_padding'];
+const PROPOSAL_TYPES = ['FL','FB','FF'];
+const PROVENIENZA_KEYS = ['prov_customer','prov_store','prov_supplier','prov_ecommerce'];
+
+// ── i18n ────────────────────────────────────────────────────
+const LANGS = {
+  it:{flag:'🇮🇹',name:'Italiano'},en:{flag:'🇬🇧',name:'English'},
+  fr:{flag:'🇫🇷',name:'Français'},de:{flag:'🇩🇪',name:'Deutsch'},
+  es:{flag:'🇪🇸',name:'Español'},hu:{flag:'🇭🇺',name:'Magyar'},
+  sv:{flag:'🇸🇪',name:'Svenska'},el:{flag:'🇬🇷',name:'Ελληνικά'},
+  pt:{flag:'🇵🇹',name:'Português'}
+};
+
+const TRANSLATIONS = {
+  it:{
+    appTitle:'Gestione Fallati',appSub:'Boggi Milano',
+    loginTitle:'Gestione Fallati',loginSub:'Seleziona il tuo account',
+    hqLabel:'Sede',storesLabel:'Negozi',
+    hqItaName:'Sede Italia',hqItaRole:'Approvazioni negozi ITA',
+    hqIntName:'Sede International',hqIntRole:'Approvazioni negozi INT',
+    storeRole:'Negozio',pwPlaceholder:'Password...',loginBtn:'Accedi',pwError:'Password errata.',
+    navPending:'In attesa',navAll:'Tutte le richieste',navNew:'Nuova richiesta',
+    navPendingSede:'Da approvare',navAllSede:'Storico richieste',navStats:'Statistiche',
+    roleStore:'Negozio',roleSede:'Sede',logout:'Esci',
+    titlePendingSede:'Da approvare',titlePendingStore:'Richieste in attesa',
+    titleAll:'Storico richieste',titleNew:'Nuova richiesta fallato',titleStats:'Statistiche',
+    downloadExcel:'Scarica Excel',newRequest:'+ Nuova richiesta',
+    metricPending:'In attesa',metricRegion:'Regione',metricToday:'Oggi',metricStores:'negozi',
+    colDate:'Data',colStore:'Negozio',colCustomer:'Cliente',colArticle:'Articolo',
+    colDamage:'Tipo danno',colProv:'Provenienza',colProposal:'Ricodifica',colStatus:'Stato',
+    filterAll:'Tutti',filterRows:'righe',filterOf:'di',removeFilters:'Rimuovi filtri',filterSearch:'Cerca...',
+    statusPending:'In attesa',statusApproved:'Approvata',statusRejected:'Negata',statusSuspended:'Sospesa',
+    open:'Apri',noData:'Nessuna richiesta da mostrare',noResults:'Nessun risultato con i filtri applicati',loading:'Caricamento...',
+    formTitle:'Nuova richiesta fallato',formStore:'Negozio:',
+    fProv:'Provenienza *',fStorePurch:'Negozio di acquisto',fName:'Nome cliente',fNameReq:'Nome cliente *',
+    fEmail:'Email cliente',fCard:'Privilege Card',fPurchDate:'Data acquisto cliente',fPurchDateReq:'Data acquisto cliente *',
+    fDropoff:'Data consegna in negozio *',fUsed:'Articolo usato',fUsedReq:'Articolo usato *',
+    fWear:'Grado usura (1–5) *',fArticle:'Codice articolo (BO) *',fSize:'Taglia *',
+    fDamage:'Tipo danno *',fProposal:'Tipo ricodifica suggerita *',fNote:'Note danno',
+    fPhotos:'Foto articolo *',fPhotosHint:'(almeno 1 richiesta)',fPhotosSelected:'foto selezionate',
+    fPhotoUpload:'Tocca per scattare o selezionare foto · JPG, PNG – max 5 foto',
+    fSubmit:'Invia richiesta',fCancel:'Annulla',fSending:'Invio in corso...',
+    errProv:'Seleziona la provenienza.',errDropoff:'Inserisci la data di consegna.',
+    errWear:'Seleziona il grado di usura.',errArticle:'Inserisci il codice articolo.',
+    errSize:'Inserisci la taglia.',errDamage:'Seleziona il tipo di danno.',
+    errProposal:'Seleziona il tipo di ricodifica.',errPhoto:'Carica almeno una foto.',
+    errName:'Inserisci il nome del cliente.',errPurchDate:'Inserisci la data di acquisto.',errDateOrder:'La data di consegna non può essere antecedente alla data di acquisto.',
+    toastSent:'Richiesta inviata. La sede riceverà notifica.',
+    toastApproved:'approvata',toastRejected:'negata',toastSuspended:'sospesa',
+    toastNotified:'· Notifica inviata al negozio',toastExportReady:'Export completato: ',
+    toastExportPrep:'Preparazione export...',toastNoData:'Nessun dato da esportare',
+    panelRespNote:'Nota di risposta (visibile al negozio)',panelRespPlaceholder:'Aggiungi una nota...',
+    panelApprove:'Approva',panelReject:'Nega',panelSuspend:'Sospendi',panelClose:'Chiudi',
+    panelPhotos:'Foto allegate',panelNoPhotos:'Nessuna foto allegata',
+    panelHqReply:'Risposta sede',panelStatus:'Stato',
+    fStore:'Negozio',fProv2:'Provenienza',fCust:'Cliente',fCustEmail:'Email cliente',
+    fCardLabel:'Privilege Card',fPurchLabel:'Data acquisto',fDropLabel:'Data consegna',
+    fUsedLabel:'Articolo usato',fWearLabel:'Grado usura',fArticleLabel:'Codice articolo',
+    fSizeLabel:'Taglia',fDamageLabel:'Tipo danno',fProposalLabel:'Proposta',fNoteLabel:'Note dal negozio',
+    usedYes:'Sì',usedNo:'No',
+    notifTitle:'nuova risposta dalla sede',notifTitlePlural:'nuove risposte dalla sede',notifDismiss:'×',
+    statTotal:'Totale richieste',statPending:'In attesa',statApprRate:'Tasso approvazione',
+    statRejRate:'Tasso rifiuto',statApproved:'Approvate',statRejected:'Negate',
+    statSuspended:'Sospese',statAvgDays:'Tempo medio risposta',statDays:'giorni',statOn:'su',statValutated:'valutate',
+    statDistrib:'Distribuzione stati',statByProv:'Richieste per provenienza',
+    statTopStores:'Negozi con più richieste',statStoreRate:'Tasso approvazione per negozio',
+    statDamages:'Tipi di danno più frequenti',statProposal:'Tipo ricodifica suggerita',
+    statWear:'Grado usura',statArticles:'Articoli (BO) più presenti',statByMonth:'Richieste per mese',
+    statNoData:'Nessun dato',statNoStats:'Nessuna richiesta disponibile per le statistiche.',
+    prov_customer:'Cliente',prov_store:'Negozio',prov_supplier:'Fornitore',prov_ecommerce:'Ecommerce',
+    damage_fabric:'Tessuto rovinato / pellame',damage_stitching:'Problemi cuciture',damage_shoes:'Problema scarpe',
+    damage_color:'Problemi colore',damage_pilling:'Pilling',damage_accessories:'Problema accessori',
+    damage_thread:'Filo tirato',damage_washing:'Problema lavaggio',damage_zip:'Problema zip',
+    damage_tailoring:'Errore sartoria',damage_padding:'Problema imbottiture',
+    wear1:'1 – Nuovo',wear2:'2',wear3:'3',wear4:'4',wear5:'5 – Molto usato',
+    errConn:'Errore connessione Supabase: ',errLoad:'Errore caricamento: ',errSend:'Errore invio: ',errOpen:'Errore apertura richiesta',errDecide:'Errore: ',
+    langLabel:'Lingua'
+  },
+  en:{
+    appTitle:'Flawed Items',appSub:'Boggi Milano',
+    loginTitle:'Flawed Items',loginSub:'Select your account',
+    hqLabel:'Head Office',storesLabel:'Stores',
+    hqItaName:'Head Office Italy',hqItaRole:'Italy store approvals',
+    hqIntName:'Head Office International',hqIntRole:'International store approvals',
+    storeRole:'Store',pwPlaceholder:'Password...',loginBtn:'Login',pwError:'Wrong password.',
+    navPending:'Pending',navAll:'All requests',navNew:'New request',
+    navPendingSede:'To approve',navAllSede:'Request history',navStats:'Statistics',
+    roleStore:'Store',roleSede:'Head Office',logout:'Logout',
+    titlePendingSede:'To approve',titlePendingStore:'Pending requests',
+    titleAll:'Request history',titleNew:'New flawed item request',titleStats:'Statistics',
+    downloadExcel:'Download Excel',newRequest:'+ New request',
+    metricPending:'Pending',metricRegion:'Region',metricToday:'Today',metricStores:'stores',
+    colDate:'Date',colStore:'Store',colCustomer:'Customer',colArticle:'Article',
+    colDamage:'Damage type',colProv:'Source',colProposal:'Reclass.',colStatus:'Status',
+    filterAll:'All',filterRows:'rows',filterOf:'of',removeFilters:'Clear filters',filterSearch:'Search...',
+    statusPending:'Pending',statusApproved:'Approved',statusRejected:'Rejected',statusSuspended:'Suspended',
+    open:'Open',noData:'No requests to show',noResults:'No results with current filters',loading:'Loading...',
+    formTitle:'New flawed item request',formStore:'Store:',
+    fProv:'Source *',fStorePurch:'Purchase store',fName:'Customer name',fNameReq:'Customer name *',
+    fEmail:'Customer email',fCard:'Privilege Card',fPurchDate:'Customer purchase date',fPurchDateReq:'Customer purchase date *',
+    fDropoff:'Drop-off date *',fUsed:'Item used',fUsedReq:'Item used *',
+    fWear:'Wear level (1–5) *',fArticle:'Article code (BO) *',fSize:'Size *',
+    fDamage:'Damage type *',fProposal:'Suggested reclassification *',fNote:'Damage notes',
+    fPhotos:'Item photos *',fPhotosHint:'(at least 1 required)',fPhotosSelected:'photos selected',
+    fPhotoUpload:'Tap to take or select photos · JPG, PNG – max 5 photos',
+    fSubmit:'Submit request',fCancel:'Cancel',fSending:'Submitting...',
+    errProv:'Select the source.',errDropoff:'Enter the drop-off date.',
+    errWear:'Select the wear level.',errArticle:'Enter the article code.',
+    errSize:'Enter the size.',errDamage:'Select the damage type.',
+    errProposal:'Select the reclassification type.',errPhoto:'Upload at least one photo.',
+    errName:'Enter the customer name.',errPurchDate:'Enter the purchase date.',errDateOrder:'Drop-off date cannot be earlier than the purchase date.',
+    toastSent:'Request submitted. Head office will be notified.',
+    toastApproved:'approved',toastRejected:'rejected',toastSuspended:'suspended',
+    toastNotified:'· Store notified',toastExportReady:'Export complete: ',
+    toastExportPrep:'Preparing export...',toastNoData:'No data to export',
+    panelRespNote:'Response note (visible to store)',panelRespPlaceholder:'Add a note...',
+    panelApprove:'Approve',panelReject:'Reject',panelSuspend:'Suspend',panelClose:'Close',
+    panelPhotos:'Attached photos',panelNoPhotos:'No photos attached',
+    panelHqReply:'Head office reply',panelStatus:'Status',
+    fStore:'Store',fProv2:'Source',fCust:'Customer',fCustEmail:'Customer email',
+    fCardLabel:'Privilege Card',fPurchLabel:'Purchase date',fDropLabel:'Drop-off date',
+    fUsedLabel:'Item used',fWearLabel:'Wear level',fArticleLabel:'Article code',
+    fSizeLabel:'Size',fDamageLabel:'Damage type',fProposalLabel:'Proposal',fNoteLabel:'Store notes',
+    usedYes:'Yes',usedNo:'No',
+    notifTitle:'new reply from head office',notifTitlePlural:'new replies from head office',notifDismiss:'×',
+    statTotal:'Total requests',statPending:'Pending',statApprRate:'Approval rate',
+    statRejRate:'Rejection rate',statApproved:'Approved',statRejected:'Rejected',
+    statSuspended:'Suspended',statAvgDays:'Avg. response time',statDays:'days',statOn:'out of',statValutated:'evaluated',
+    statDistrib:'Status distribution',statByProv:'Requests by source',
+    statTopStores:'Stores with most requests',statStoreRate:'Approval rate by store',
+    statDamages:'Most frequent damage types',statProposal:'Suggested reclassification',
+    statWear:'Wear level',statArticles:'Most requested articles (BO)',statByMonth:'Requests by month',
+    statNoData:'No data',statNoStats:'No requests available for statistics.',
+    prov_customer:'Customer',prov_store:'Store',prov_supplier:'Supplier',prov_ecommerce:'Ecommerce',
+    damage_fabric:'Damaged fabric / leather',damage_stitching:'Stitching problem',damage_shoes:'Shoe problem',
+    damage_color:'Colour problem',damage_pilling:'Pilling',damage_accessories:'Accessories problem',
+    damage_thread:'Pulled thread',damage_washing:'Washing problem',damage_zip:'Zip problem',
+    damage_tailoring:'Tailoring error',damage_padding:'Padding problem',
+    wear1:'1 – New',wear2:'2',wear3:'3',wear4:'4',wear5:'5 – Very used',
+    errConn:'Supabase connection error: ',errLoad:'Load error: ',errSend:'Submit error: ',errOpen:'Error opening request',errDecide:'Error: ',
+    langLabel:'Language'
+  },
+  fr:{
+    appTitle:'Articles Défectueux',appSub:'Boggi Milano',
+    loginTitle:'Articles Défectueux',loginSub:'Sélectionnez votre compte',
+    hqLabel:'Siège',storesLabel:'Boutiques',
+    hqItaName:'Siège Italie',hqItaRole:'Approbations boutiques ITA',
+    hqIntName:'Siège International',hqIntRole:'Approbations boutiques INT',
+    storeRole:'Boutique',pwPlaceholder:'Mot de passe...',loginBtn:'Connexion',pwError:'Mot de passe incorrect.',
+    navPending:'En attente',navAll:'Toutes les demandes',navNew:'Nouvelle demande',
+    navPendingSede:'À approuver',navAllSede:'Historique',navStats:'Statistiques',
+    roleStore:'Boutique',roleSede:'Siège',logout:'Déconnexion',
+    titlePendingSede:'À approuver',titlePendingStore:'Demandes en attente',
+    titleAll:'Historique des demandes',titleNew:'Nouvelle demande article défectueux',titleStats:'Statistiques',
+    downloadExcel:'Télécharger Excel',newRequest:'+ Nouvelle demande',
+    metricPending:'En attente',metricRegion:'Région',metricToday:"Aujourd'hui",metricStores:'boutiques',
+    colDate:'Date',colStore:'Boutique',colCustomer:'Client',colArticle:'Article',
+    colDamage:'Type de défaut',colProv:'Provenance',colProposal:'Reclassif.',colStatus:'Statut',
+    filterAll:'Tous',filterRows:'lignes',filterOf:'sur',removeFilters:'Supprimer filtres',filterSearch:'Rechercher...',
+    statusPending:'En attente',statusApproved:'Approuvé',statusRejected:'Refusé',statusSuspended:'Suspendu',
+    open:'Ouvrir',noData:'Aucune demande à afficher',noResults:'Aucun résultat avec les filtres actuels',loading:'Chargement...',
+    formTitle:'Nouvelle demande article défectueux',formStore:'Boutique:',
+    fProv:'Provenance *',fStorePurch:'Boutique d\'achat',fName:'Nom du client',fNameReq:'Nom du client *',
+    fEmail:'Email client',fCard:'Privilege Card',fPurchDate:'Date d\'achat client',fPurchDateReq:'Date d\'achat client *',
+    fDropoff:'Date de dépôt en boutique *',fUsed:'Article utilisé',fUsedReq:'Article utilisé *',
+    fWear:'Niveau d\'usure (1–5) *',fArticle:'Code article (BO) *',fSize:'Taille *',
+    fDamage:'Type de défaut *',fProposal:'Reclassification suggérée *',fNote:'Notes sur le défaut',
+    fPhotos:'Photos de l\'article *',fPhotosHint:'(au moins 1 requise)',fPhotosSelected:'photos sélectionnées',
+    fPhotoUpload:'Appuyez pour prendre ou sélectionner des photos · JPG, PNG – max 5',
+    fSubmit:'Envoyer la demande',fCancel:'Annuler',fSending:'Envoi en cours...',
+    errProv:'Sélectionnez la provenance.',errDropoff:'Indiquez la date de dépôt.',
+    errWear:"Sélectionnez le niveau d'usure.",errArticle:'Indiquez le code article.',
+    errSize:'Indiquez la taille.',errDamage:'Sélectionnez le type de défaut.',
+    errProposal:'Sélectionnez le type de reclassification.',errPhoto:'Ajoutez au moins une photo.',
+    errName:'Indiquez le nom du client.',errPurchDate:"Indiquez la date d'achat.",errDateOrder:"La date de dépôt ne peut pas être antérieure à la date d'achat.",
+    toastSent:'Demande envoyée. Le siège sera notifié.',
+    toastApproved:'approuvée',toastRejected:'refusée',toastSuspended:'suspendue',
+    toastNotified:'· Boutique notifiée',toastExportReady:'Export terminé : ',
+    toastExportPrep:'Préparation export...',toastNoData:'Aucune donnée à exporter',
+    panelRespNote:'Note de réponse (visible par la boutique)',panelRespPlaceholder:'Ajouter une note...',
+    panelApprove:'Approuver',panelReject:'Refuser',panelSuspend:'Suspendre',panelClose:'Fermer',
+    panelPhotos:'Photos jointes',panelNoPhotos:'Aucune photo jointe',
+    panelHqReply:'Réponse du siège',panelStatus:'Statut',
+    fStore:'Boutique',fProv2:'Provenance',fCust:'Client',fCustEmail:'Email client',
+    fCardLabel:'Privilege Card',fPurchLabel:"Date d'achat",fDropLabel:'Date de dépôt',
+    fUsedLabel:'Article utilisé',fWearLabel:"Niveau d'usure",fArticleLabel:'Code article',
+    fSizeLabel:'Taille',fDamageLabel:'Type de défaut',fProposalLabel:'Proposition',fNoteLabel:'Notes boutique',
+    usedYes:'Oui',usedNo:'Non',
+    notifTitle:'nouvelle réponse du siège',notifTitlePlural:'nouvelles réponses du siège',notifDismiss:'×',
+    statTotal:'Total demandes',statPending:'En attente',statApprRate:'Taux d\'approbation',
+    statRejRate:'Taux de refus',statApproved:'Approuvées',statRejected:'Refusées',
+    statSuspended:'Suspendues',statAvgDays:'Délai moyen de réponse',statDays:'jours',statOn:'sur',statValutated:'évaluées',
+    statDistrib:'Distribution des statuts',statByProv:'Demandes par provenance',
+    statTopStores:'Boutiques avec le plus de demandes',statStoreRate:'Taux d\'approbation par boutique',
+    statDamages:'Types de défauts les plus fréquents',statProposal:'Reclassification suggérée',
+    statWear:"Niveau d'usure",statArticles:'Articles (BO) les plus demandés',statByMonth:'Demandes par mois',
+    statNoData:'Aucune donnée',statNoStats:'Aucune demande disponible pour les statistiques.',
+    prov_customer:'Client',prov_store:'Boutique',prov_supplier:'Fournisseur',prov_ecommerce:'Ecommerce',
+    damage_fabric:'Tissu / cuir endommagé',damage_stitching:'Problème de couture',damage_shoes:'Problème chaussures',
+    damage_color:'Problème de couleur',damage_pilling:'Boulochage',damage_accessories:'Problème accessoires',
+    damage_thread:'Fil tiré',damage_washing:'Problème lavage',damage_zip:'Problème fermeture éclair',
+    damage_tailoring:'Erreur de coupe',damage_padding:'Problème rembourrage',
+    wear1:'1 – Neuf',wear2:'2',wear3:'3',wear4:'4',wear5:'5 – Très usé',
+    errConn:'Erreur connexion Supabase : ',errLoad:'Erreur chargement : ',errSend:'Erreur envoi : ',errOpen:'Erreur ouverture demande',errDecide:'Erreur : ',
+    langLabel:'Langue'
+  },
+  de:{
+    appTitle:'Fehlartikel',appSub:'Boggi Milano',
+    loginTitle:'Fehlartikel',loginSub:'Konto auswählen',
+    hqLabel:'Zentrale',storesLabel:'Filialen',
+    hqItaName:'Zentrale Italien',hqItaRole:'Genehmigungen ITA-Filialen',
+    hqIntName:'Zentrale International',hqIntRole:'Genehmigungen INT-Filialen',
+    storeRole:'Filiale',pwPlaceholder:'Passwort...',loginBtn:'Anmelden',pwError:'Falsches Passwort.',
+    navPending:'Ausstehend',navAll:'Alle Anfragen',navNew:'Neue Anfrage',
+    navPendingSede:'Zu genehmigen',navAllSede:'Verlauf',navStats:'Statistiken',
+    roleStore:'Filiale',roleSede:'Zentrale',logout:'Abmelden',
+    titlePendingSede:'Zu genehmigen',titlePendingStore:'Ausstehende Anfragen',
+    titleAll:'Anfrageverlauf',titleNew:'Neue Fehlartikel-Anfrage',titleStats:'Statistiken',
+    downloadExcel:'Excel herunterladen',newRequest:'+ Neue Anfrage',
+    metricPending:'Ausstehend',metricRegion:'Region',metricToday:'Heute',metricStores:'Filialen',
+    colDate:'Datum',colStore:'Filiale',colCustomer:'Kunde',colArticle:'Artikel',
+    colDamage:'Schadensart',colProv:'Herkunft',colProposal:'Umklass.',colStatus:'Status',
+    filterAll:'Alle',filterRows:'Zeilen',filterOf:'von',removeFilters:'Filter löschen',filterSearch:'Suchen...',
+    statusPending:'Ausstehend',statusApproved:'Genehmigt',statusRejected:'Abgelehnt',statusSuspended:'Ausgesetzt',
+    open:'Öffnen',noData:'Keine Anfragen vorhanden',noResults:'Keine Ergebnisse mit aktuellen Filtern',loading:'Laden...',
+    formTitle:'Neue Fehlartikel-Anfrage',formStore:'Filiale:',
+    fProv:'Herkunft *',fStorePurch:'Kauffiliale',fName:'Kundenname',fNameReq:'Kundenname *',
+    fEmail:'Kunden-E-Mail',fCard:'Privilege Card',fPurchDate:'Kaufdatum Kunde',fPurchDateReq:'Kaufdatum Kunde *',
+    fDropoff:'Abgabedatum *',fUsed:'Artikel verwendet',fUsedReq:'Artikel verwendet *',
+    fWear:'Abnutzungsgrad (1–5) *',fArticle:'Artikelcode (BO) *',fSize:'Größe *',
+    fDamage:'Schadensart *',fProposal:'Vorgeschlagene Umklassifizierung *',fNote:'Schadensnotizen',
+    fPhotos:'Artikelfotos *',fPhotosHint:'(mindestens 1 erforderlich)',fPhotosSelected:'Fotos ausgewählt',
+    fPhotoUpload:'Tippen Sie, um Fotos aufzunehmen oder auszuwählen · JPG, PNG – max. 5',
+    fSubmit:'Anfrage senden',fCancel:'Abbrechen',fSending:'Wird gesendet...',
+    errProv:'Herkunft auswählen.',errDropoff:'Abgabedatum eingeben.',
+    errWear:'Abnutzungsgrad auswählen.',errArticle:'Artikelcode eingeben.',
+    errSize:'Größe eingeben.',errDamage:'Schadensart auswählen.',
+    errProposal:'Umklassifizierungstyp auswählen.',errPhoto:'Mindestens ein Foto hochladen.',
+    errName:'Kundennamen eingeben.',errPurchDate:'Kaufdatum eingeben.',errDateOrder:'Das Abgabedatum kann nicht vor dem Kaufdatum liegen.',
+    toastSent:'Anfrage gesendet. Zentrale wird benachrichtigt.',
+    toastApproved:'genehmigt',toastRejected:'abgelehnt',toastSuspended:'ausgesetzt',
+    toastNotified:'· Filiale benachrichtigt',toastExportReady:'Export abgeschlossen: ',
+    toastExportPrep:'Export wird vorbereitet...',toastNoData:'Keine Daten zum Exportieren',
+    panelRespNote:'Antwortnotiz (für Filiale sichtbar)',panelRespPlaceholder:'Notiz hinzufügen...',
+    panelApprove:'Genehmigen',panelReject:'Ablehnen',panelSuspend:'Aussetzen',panelClose:'Schließen',
+    panelPhotos:'Angehängte Fotos',panelNoPhotos:'Keine Fotos angehängt',
+    panelHqReply:'Antwort der Zentrale',panelStatus:'Status',
+    fStore:'Filiale',fProv2:'Herkunft',fCust:'Kunde',fCustEmail:'Kunden-E-Mail',
+    fCardLabel:'Privilege Card',fPurchLabel:'Kaufdatum',fDropLabel:'Abgabedatum',
+    fUsedLabel:'Artikel verwendet',fWearLabel:'Abnutzungsgrad',fArticleLabel:'Artikelcode',
+    fSizeLabel:'Größe',fDamageLabel:'Schadensart',fProposalLabel:'Vorschlag',fNoteLabel:'Filialnotizen',
+    usedYes:'Ja',usedNo:'Nein',
+    notifTitle:'neue Antwort von der Zentrale',notifTitlePlural:'neue Antworten von der Zentrale',notifDismiss:'×',
+    statTotal:'Anfragen gesamt',statPending:'Ausstehend',statApprRate:'Genehmigungsrate',
+    statRejRate:'Ablehnungsrate',statApproved:'Genehmigt',statRejected:'Abgelehnt',
+    statSuspended:'Ausgesetzt',statAvgDays:'Durchschn. Antwortzeit',statDays:'Tage',statOn:'von',statValutated:'bewertet',
+    statDistrib:'Statusverteilung',statByProv:'Anfragen nach Herkunft',
+    statTopStores:'Filialen mit den meisten Anfragen',statStoreRate:'Genehmigungsrate pro Filiale',
+    statDamages:'Häufigste Schadensarten',statProposal:'Vorgeschlagene Umklassifizierung',
+    statWear:'Abnutzungsgrad',statArticles:'Häufigste Artikel (BO)',statByMonth:'Anfragen pro Monat',
+    statNoData:'Keine Daten',statNoStats:'Keine Anfragen für Statistiken verfügbar.',
+    prov_customer:'Kunde',prov_store:'Filiale',prov_supplier:'Lieferant',prov_ecommerce:'Ecommerce',
+    damage_fabric:'Beschädigter Stoff / Leder',damage_stitching:'Nähproblem',damage_shoes:'Schuhproblem',
+    damage_color:'Farbproblem',damage_pilling:'Pilling',damage_accessories:'Zubehörproblem',
+    damage_thread:'Gezogener Faden',damage_washing:'Waschproblem',damage_zip:'Reißverschlussproblem',
+    damage_tailoring:'Schneiderfehler',damage_padding:'Polsterungsproblem',
+    wear1:'1 – Neu',wear2:'2',wear3:'3',wear4:'4',wear5:'5 – Stark gebraucht',
+    errConn:'Supabase-Verbindungsfehler: ',errLoad:'Ladefehler: ',errSend:'Sendefehler: ',errOpen:'Fehler beim Öffnen',errDecide:'Fehler: ',
+    langLabel:'Sprache'
+  },
+  es:{
+    appTitle:'Artículos Defectuosos',appSub:'Boggi Milano',
+    loginTitle:'Artículos Defectuosos',loginSub:'Selecciona tu cuenta',
+    hqLabel:'Sede',storesLabel:'Tiendas',
+    hqItaName:'Sede Italia',hqItaRole:'Aprobaciones tiendas ITA',
+    hqIntName:'Sede Internacional',hqIntRole:'Aprobaciones tiendas INT',
+    storeRole:'Tienda',pwPlaceholder:'Contraseña...',loginBtn:'Acceder',pwError:'Contraseña incorrecta.',
+    navPending:'Pendiente',navAll:'Todas las solicitudes',navNew:'Nueva solicitud',
+    navPendingSede:'Por aprobar',navAllSede:'Historial',navStats:'Estadísticas',
+    roleStore:'Tienda',roleSede:'Sede',logout:'Salir',
+    titlePendingSede:'Por aprobar',titlePendingStore:'Solicitudes pendientes',
+    titleAll:'Historial de solicitudes',titleNew:'Nueva solicitud artículo defectuoso',titleStats:'Estadísticas',
+    downloadExcel:'Descargar Excel',newRequest:'+ Nueva solicitud',
+    metricPending:'Pendiente',metricRegion:'Región',metricToday:'Hoy',metricStores:'tiendas',
+    colDate:'Fecha',colStore:'Tienda',colCustomer:'Cliente',colArticle:'Artículo',
+    colDamage:'Tipo de daño',colProv:'Origen',colProposal:'Reclas.',colStatus:'Estado',
+    filterAll:'Todos',filterRows:'filas',filterOf:'de',removeFilters:'Borrar filtros',filterSearch:'Buscar...',
+    statusPending:'Pendiente',statusApproved:'Aprobado',statusRejected:'Rechazado',statusSuspended:'Suspendido',
+    open:'Abrir',noData:'No hay solicitudes',noResults:'Sin resultados con los filtros actuales',loading:'Cargando...',
+    formTitle:'Nueva solicitud artículo defectuoso',formStore:'Tienda:',
+    fProv:'Origen *',fStorePurch:'Tienda de compra',fName:'Nombre cliente',fNameReq:'Nombre cliente *',
+    fEmail:'Email cliente',fCard:'Privilege Card',fPurchDate:'Fecha de compra',fPurchDateReq:'Fecha de compra *',
+    fDropoff:'Fecha de entrega en tienda *',fUsed:'Artículo usado',fUsedReq:'Artículo usado *',
+    fWear:'Nivel de desgaste (1–5) *',fArticle:'Código artículo (BO) *',fSize:'Talla *',
+    fDamage:'Tipo de daño *',fProposal:'Reclasificación sugerida *',fNote:'Notas del daño',
+    fPhotos:'Fotos del artículo *',fPhotosHint:'(al menos 1 requerida)',fPhotosSelected:'fotos seleccionadas',
+    fPhotoUpload:'Toca para tomar o seleccionar fotos · JPG, PNG – máx. 5',
+    fSubmit:'Enviar solicitud',fCancel:'Cancelar',fSending:'Enviando...',
+    errProv:'Selecciona el origen.',errDropoff:'Introduce la fecha de entrega.',
+    errWear:'Selecciona el nivel de desgaste.',errArticle:'Introduce el código de artículo.',
+    errSize:'Introduce la talla.',errDamage:'Selecciona el tipo de daño.',
+    errProposal:'Selecciona el tipo de reclasificación.',errPhoto:'Sube al menos una foto.',
+    errName:'Introduce el nombre del cliente.',errPurchDate:'Introduce la fecha de compra.',errDateOrder:'La fecha de entrega no puede ser anterior a la fecha de compra.',
+    toastSent:'Solicitud enviada. La sede será notificada.',
+    toastApproved:'aprobada',toastRejected:'rechazada',toastSuspended:'suspendida',
+    toastNotified:'· Tienda notificada',toastExportReady:'Export completo: ',
+    toastExportPrep:'Preparando export...',toastNoData:'No hay datos para exportar',
+    panelRespNote:'Nota de respuesta (visible para la tienda)',panelRespPlaceholder:'Añadir una nota...',
+    panelApprove:'Aprobar',panelReject:'Rechazar',panelSuspend:'Suspender',panelClose:'Cerrar',
+    panelPhotos:'Fotos adjuntas',panelNoPhotos:'Sin fotos adjuntas',
+    panelHqReply:'Respuesta de sede',panelStatus:'Estado',
+    fStore:'Tienda',fProv2:'Origen',fCust:'Cliente',fCustEmail:'Email cliente',
+    fCardLabel:'Privilege Card',fPurchLabel:'Fecha compra',fDropLabel:'Fecha entrega',
+    fUsedLabel:'Artículo usado',fWearLabel:'Nivel desgaste',fArticleLabel:'Código artículo',
+    fSizeLabel:'Talla',fDamageLabel:'Tipo de daño',fProposalLabel:'Propuesta',fNoteLabel:'Notas tienda',
+    usedYes:'Sí',usedNo:'No',
+    notifTitle:'nueva respuesta de la sede',notifTitlePlural:'nuevas respuestas de la sede',notifDismiss:'×',
+    statTotal:'Total solicitudes',statPending:'Pendiente',statApprRate:'Tasa de aprobación',
+    statRejRate:'Tasa de rechazo',statApproved:'Aprobadas',statRejected:'Rechazadas',
+    statSuspended:'Suspendidas',statAvgDays:'Tiempo medio de respuesta',statDays:'días',statOn:'de',statValutated:'evaluadas',
+    statDistrib:'Distribución de estados',statByProv:'Solicitudes por origen',
+    statTopStores:'Tiendas con más solicitudes',statStoreRate:'Tasa de aprobación por tienda',
+    statDamages:'Tipos de daño más frecuentes',statProposal:'Reclasificación sugerida',
+    statWear:'Nivel de desgaste',statArticles:'Artículos (BO) más solicitados',statByMonth:'Solicitudes por mes',
+    statNoData:'Sin datos',statNoStats:'No hay solicitudes disponibles para estadísticas.',
+    prov_customer:'Cliente',prov_store:'Tienda',prov_supplier:'Proveedor',prov_ecommerce:'Ecommerce',
+    damage_fabric:'Tejido / cuero dañado',damage_stitching:'Problema de costura',damage_shoes:'Problema zapatos',
+    damage_color:'Problema de color',damage_pilling:'Pilling',damage_accessories:'Problema accesorios',
+    damage_thread:'Hilo suelto',damage_washing:'Problema lavado',damage_zip:'Problema cremallera',
+    damage_tailoring:'Error de sastrería',damage_padding:'Problema relleno',
+    wear1:'1 – Nuevo',wear2:'2',wear3:'3',wear4:'4',wear5:'5 – Muy usado',
+    errConn:'Error conexión Supabase: ',errLoad:'Error carga: ',errSend:'Error envío: ',errOpen:'Error al abrir solicitud',errDecide:'Error: ',
+    langLabel:'Idioma'
+  },
+  hu:{
+    appTitle:'Hibás Cikkek',appSub:'Boggi Milano',
+    loginTitle:'Hibás Cikkek',loginSub:'Válassza ki fiókját',
+    hqLabel:'Központ',storesLabel:'Üzletek',
+    hqItaName:'Olasz Központ',hqItaRole:'ITA üzlet jóváhagyások',
+    hqIntName:'Nemzetközi Központ',hqIntRole:'INT üzlet jóváhagyások',
+    storeRole:'Üzlet',pwPlaceholder:'Jelszó...',loginBtn:'Bejelentkezés',pwError:'Hibás jelszó.',
+    navPending:'Függőben',navAll:'Összes kérés',navNew:'Új kérés',
+    navPendingSede:'Jóváhagyásra vár',navAllSede:'Előzmények',navStats:'Statisztikák',
+    roleStore:'Üzlet',roleSede:'Központ',logout:'Kilépés',
+    titlePendingSede:'Jóváhagyásra vár',titlePendingStore:'Függő kérések',
+    titleAll:'Kérések előzményei',titleNew:'Új hibás cikk kérés',titleStats:'Statisztikák',
+    downloadExcel:'Excel letöltése',newRequest:'+ Új kérés',
+    metricPending:'Függőben',metricRegion:'Régió',metricToday:'Ma',metricStores:'üzlet',
+    colDate:'Dátum',colStore:'Üzlet',colCustomer:'Ügyfél',colArticle:'Cikk',
+    colDamage:'Hibatípus',colProv:'Forrás',colProposal:'Átoszt.',colStatus:'Állapot',
+    filterAll:'Mind',filterRows:'sor',filterOf:'/',removeFilters:'Szűrők törlése',filterSearch:'Keresés...',
+    statusPending:'Függőben',statusApproved:'Jóváhagyva',statusRejected:'Elutasítva',statusSuspended:'Felfüggesztve',
+    open:'Megnyitás',noData:'Nincs megjeleníthető kérés',noResults:'Nincs találat a szűrőkkel',loading:'Betöltés...',
+    formTitle:'Új hibás cikk kérés',formStore:'Üzlet:',
+    fProv:'Forrás *',fStorePurch:'Vásárlás üzlete',fName:'Ügyfél neve',fNameReq:'Ügyfél neve *',
+    fEmail:'Ügyfél email',fCard:'Privilege Card',fPurchDate:'Vásárlás dátuma',fPurchDateReq:'Vásárlás dátuma *',
+    fDropoff:'Leadás dátuma *',fUsed:'Cikk használt',fUsedReq:'Cikk használt *',
+    fWear:'Kopás foka (1–5) *',fArticle:'Cikkszám (BO) *',fSize:'Méret *',
+    fDamage:'Hibatípus *',fProposal:'Javasolt átsorolás *',fNote:'Hiba megjegyzések',
+    fPhotos:'Cikk fotók *',fPhotosHint:'(legalább 1 szükséges)',fPhotosSelected:'fotó kiválasztva',
+    fPhotoUpload:'Érintse meg a fotók készítéséhez · JPG, PNG – max 5',
+    fSubmit:'Kérés küldése',fCancel:'Mégse',fSending:'Küldés folyamatban...',
+    errProv:'Válassza ki a forrást.',errDropoff:'Adja meg a leadás dátumát.',
+    errWear:'Válassza ki a kopás fokát.',errArticle:'Adja meg a cikkszámot.',
+    errSize:'Adja meg a méretet.',errDamage:'Válassza ki a hibatípust.',
+    errProposal:'Válassza ki az átsorolás típusát.',errPhoto:'Töltsön fel legalább egy fotót.',
+    errName:'Adja meg az ügyfél nevét.',errPurchDate:'Adja meg a vásárlás dátumát.',errDateOrder:'A leadás dátuma nem lehet korábbi a vásárlás dátumánál.',
+    toastSent:'Kérés elküldve. A központ értesítést kap.',
+    toastApproved:'jóváhagyva',toastRejected:'elutasítva',toastSuspended:'felfüggesztve',
+    toastNotified:'· Üzlet értesítve',toastExportReady:'Export kész: ',
+    toastExportPrep:'Export előkészítése...',toastNoData:'Nincs exportálható adat',
+    panelRespNote:'Válasz megjegyzés (üzlet számára látható)',panelRespPlaceholder:'Megjegyzés hozzáadása...',
+    panelApprove:'Jóváhagyás',panelReject:'Elutasítás',panelSuspend:'Felfüggesztés',panelClose:'Bezárás',
+    panelPhotos:'Csatolt fotók',panelNoPhotos:'Nincs csatolt fotó',
+    panelHqReply:'Központ válasza',panelStatus:'Állapot',
+    fStore:'Üzlet',fProv2:'Forrás',fCust:'Ügyfél',fCustEmail:'Ügyfél email',
+    fCardLabel:'Privilege Card',fPurchLabel:'Vásárlás dátuma',fDropLabel:'Leadás dátuma',
+    fUsedLabel:'Cikk használt',fWearLabel:'Kopás foka',fArticleLabel:'Cikkszám',
+    fSizeLabel:'Méret',fDamageLabel:'Hibatípus',fProposalLabel:'Javaslat',fNoteLabel:'Üzlet megjegyzései',
+    usedYes:'Igen',usedNo:'Nem',
+    notifTitle:'új válasz a központtól',notifTitlePlural:'új válasz a központtól',notifDismiss:'×',
+    statTotal:'Összes kérés',statPending:'Függőben',statApprRate:'Jóváhagyási arány',
+    statRejRate:'Elutasítási arány',statApproved:'Jóváhagyott',statRejected:'Elutasított',
+    statSuspended:'Felfüggesztett',statAvgDays:'Átl. válaszidő',statDays:'nap',statOn:'/',statValutated:'értékelt',
+    statDistrib:'Állapot megoszlás',statByProv:'Kérések forrás szerint',
+    statTopStores:'Legtöbb kéréssel rendelkező üzletek',statStoreRate:'Jóváhagyási arány üzletenként',
+    statDamages:'Leggyakoribb hibatípusok',statProposal:'Javasolt átsorolás',
+    statWear:'Kopás foka',statArticles:'Leggyakrabban kért cikkek (BO)',statByMonth:'Kérések havonta',
+    statNoData:'Nincs adat',statNoStats:'Nincs elérhető kérés a statisztikákhoz.',
+    prov_customer:'Ügyfél',prov_store:'Üzlet',prov_supplier:'Szállító',prov_ecommerce:'Ecommerce',
+    damage_fabric:'Sérült szövet / bőr',damage_stitching:'Varrási probléma',damage_shoes:'Cipőprobléma',
+    damage_color:'Színprobléma',damage_pilling:'Pilling',damage_accessories:'Kiegészítő probléma',
+    damage_thread:'Kihúzott szál',damage_washing:'Mosási probléma',damage_zip:'Cipzárprobléma',
+    damage_tailoring:'Szabászati hiba',damage_padding:'Bélés probléma',
+    wear1:'1 – Új',wear2:'2',wear3:'3',wear4:'4',wear5:'5 – Erősen kopott',
+    errConn:'Supabase kapcsolati hiba: ',errLoad:'Betöltési hiba: ',errSend:'Küldési hiba: ',errOpen:'Hiba a megnyitásnál',errDecide:'Hiba: ',
+    langLabel:'Nyelv'
+  },
+  sv:{
+    appTitle:'Felaktiga artiklar',appSub:'Boggi Milano',
+    loginTitle:'Felaktiga artiklar',loginSub:'Välj ditt konto',
+    hqLabel:'Huvudkontor',storesLabel:'Butiker',
+    hqItaName:'Huvudkontor Italien',hqItaRole:'Godkännanden ITA-butiker',
+    hqIntName:'Internationellt HK',hqIntRole:'Godkännanden INT-butiker',
+    storeRole:'Butik',pwPlaceholder:'Lösenord...',loginBtn:'Logga in',pwError:'Fel lösenord.',
+    navPending:'Väntande',navAll:'Alla ärenden',navNew:'Nytt ärende',
+    navPendingSede:'Att godkänna',navAllSede:'Ärendehistorik',navStats:'Statistik',
+    roleStore:'Butik',roleSede:'Huvudkontor',logout:'Logga ut',
+    titlePendingSede:'Att godkänna',titlePendingStore:'Väntande ärenden',
+    titleAll:'Ärendehistorik',titleNew:'Nytt ärende felaktig artikel',titleStats:'Statistik',
+    downloadExcel:'Ladda ner Excel',newRequest:'+ Nytt ärende',
+    metricPending:'Väntande',metricRegion:'Region',metricToday:'Idag',metricStores:'butiker',
+    colDate:'Datum',colStore:'Butik',colCustomer:'Kund',colArticle:'Artikel',
+    colDamage:'Feltyp',colProv:'Källa',colProposal:'Omkl.',colStatus:'Status',
+    filterAll:'Alla',filterRows:'rader',filterOf:'av',removeFilters:'Rensa filter',filterSearch:'Sök...',
+    statusPending:'Väntande',statusApproved:'Godkänd',statusRejected:'Avslagen',statusSuspended:'Pausad',
+    open:'Öppna',noData:'Inga ärenden att visa',noResults:'Inga resultat med nuvarande filter',loading:'Laddar...',
+    formTitle:'Nytt ärende felaktig artikel',formStore:'Butik:',
+    fProv:'Källa *',fStorePurch:'Inköpsbutik',fName:'Kundnamn',fNameReq:'Kundnamn *',
+    fEmail:'Kund-e-post',fCard:'Privilege Card',fPurchDate:'Inköpsdatum',fPurchDateReq:'Inköpsdatum *',
+    fDropoff:'Inlämningsdatum *',fUsed:'Artikel använd',fUsedReq:'Artikel använd *',
+    fWear:'Slitagegrad (1–5) *',fArticle:'Artikelkod (BO) *',fSize:'Storlek *',
+    fDamage:'Feltyp *',fProposal:'Föreslagen omklassificering *',fNote:'Felanteckningar',
+    fPhotos:'Artikelfoton *',fPhotosHint:'(minst 1 krävs)',fPhotosSelected:'foton valda',
+    fPhotoUpload:'Tryck för att ta eller välja foton · JPG, PNG – max 5',
+    fSubmit:'Skicka ärende',fCancel:'Avbryt',fSending:'Skickar...',
+    errProv:'Välj källa.',errDropoff:'Ange inlämningsdatum.',
+    errWear:'Välj slitagegrad.',errArticle:'Ange artikelkod.',
+    errSize:'Ange storlek.',errDamage:'Välj feltyp.',
+    errProposal:'Välj omklassificeringstyp.',errPhoto:'Ladda upp minst ett foto.',
+    errName:'Ange kundnamn.',errPurchDate:'Ange inköpsdatum.',errDateOrder:'Inlämningsdatum kan inte vara tidigare än inköpsdatum.',
+    toastSent:'Ärende skickat. Huvudkontoret meddelas.',
+    toastApproved:'godkänd',toastRejected:'avslagen',toastSuspended:'pausad',
+    toastNotified:'· Butik meddelad',toastExportReady:'Export klar: ',
+    toastExportPrep:'Förbereder export...',toastNoData:'Ingen data att exportera',
+    panelRespNote:'Svarsnot (synlig för butiken)',panelRespPlaceholder:'Lägg till en not...',
+    panelApprove:'Godkänn',panelReject:'Avslå',panelSuspend:'Pausa',panelClose:'Stäng',
+    panelPhotos:'Bifogade foton',panelNoPhotos:'Inga foton bifogade',
+    panelHqReply:'Svar från HK',panelStatus:'Status',
+    fStore:'Butik',fProv2:'Källa',fCust:'Kund',fCustEmail:'Kund-e-post',
+    fCardLabel:'Privilege Card',fPurchLabel:'Inköpsdatum',fDropLabel:'Inlämningsdatum',
+    fUsedLabel:'Artikel använd',fWearLabel:'Slitagegrad',fArticleLabel:'Artikelkod',
+    fSizeLabel:'Storlek',fDamageLabel:'Feltyp',fProposalLabel:'Förslag',fNoteLabel:'Butiksanteckningar',
+    usedYes:'Ja',usedNo:'Nej',
+    notifTitle:'nytt svar från HK',notifTitlePlural:'nya svar från HK',notifDismiss:'×',
+    statTotal:'Totalt ärenden',statPending:'Väntande',statApprRate:'Godkännandegrad',
+    statRejRate:'Avslagsgrad',statApproved:'Godkända',statRejected:'Avslagna',
+    statSuspended:'Pausade',statAvgDays:'Genomsn. svarstid',statDays:'dagar',statOn:'av',statValutated:'utvärderade',
+    statDistrib:'Statusfördelning',statByProv:'Ärenden per källa',
+    statTopStores:'Butiker med flest ärenden',statStoreRate:'Godkännandegrad per butik',
+    statDamages:'Vanligaste feltyper',statProposal:'Föreslagen omklassificering',
+    statWear:'Slitagegrad',statArticles:'Vanligaste artiklar (BO)',statByMonth:'Ärenden per månad',
+    statNoData:'Ingen data',statNoStats:'Inga ärenden tillgängliga för statistik.',
+    prov_customer:'Kund',prov_store:'Butik',prov_supplier:'Leverantör',prov_ecommerce:'Ecommerce',
+    damage_fabric:'Skadat tyg / läder',damage_stitching:'Sömnadsproblem',damage_shoes:'Skoproblem',
+    damage_color:'Färgproblem',damage_pilling:'Pilling',damage_accessories:'Tillbehörsproblem',
+    damage_thread:'Dragen tråd',damage_washing:'Tvättningsproblem',damage_zip:'Dragkedja problem',
+    damage_tailoring:'Skrädderifel',damage_padding:'Vadderingsproblem',
+    wear1:'1 – Ny',wear2:'2',wear3:'3',wear4:'4',wear5:'5 – Mycket sliten',
+    errConn:'Supabase anslutningsfel: ',errLoad:'Laddningsfel: ',errSend:'Sändningsfel: ',errOpen:'Fel vid öppning',errDecide:'Fel: ',
+    langLabel:'Språk'
+  },
+  el:{
+    appTitle:'Ελαττωματικά Είδη',appSub:'Boggi Milano',
+    loginTitle:'Ελαττωματικά Είδη',loginSub:'Επιλέξτε τον λογαριασμό σας',
+    hqLabel:'Κεντρικά',storesLabel:'Καταστήματα',
+    hqItaName:'Κεντρικά Ιταλία',hqItaRole:'Εγκρίσεις ITA καταστημάτων',
+    hqIntName:'Διεθνή Κεντρικά',hqIntRole:'Εγκρίσεις INT καταστημάτων',
+    storeRole:'Κατάστημα',pwPlaceholder:'Κωδικός...',loginBtn:'Σύνδεση',pwError:'Λάθος κωδικός.',
+    navPending:'Σε αναμονή',navAll:'Όλα τα αιτήματα',navNew:'Νέο αίτημα',
+    navPendingSede:'Προς έγκριση',navAllSede:'Ιστορικό',navStats:'Στατιστικά',
+    roleStore:'Κατάστημα',roleSede:'Κεντρικά',logout:'Αποσύνδεση',
+    titlePendingSede:'Προς έγκριση',titlePendingStore:'Αναμένοντα αιτήματα',
+    titleAll:'Ιστορικό αιτημάτων',titleNew:'Νέο αίτημα ελαττωματικού',titleStats:'Στατιστικά',
+    downloadExcel:'Λήψη Excel',newRequest:'+ Νέο αίτημα',
+    metricPending:'Σε αναμονή',metricRegion:'Περιοχή',metricToday:'Σήμερα',metricStores:'καταστήματα',
+    colDate:'Ημερομηνία',colStore:'Κατάστημα',colCustomer:'Πελάτης',colArticle:'Είδος',
+    colDamage:'Τύπος βλάβης',colProv:'Προέλευση',colProposal:'Επαν.',colStatus:'Κατάσταση',
+    filterAll:'Όλα',filterRows:'γραμμές',filterOf:'από',removeFilters:'Εκκαθάριση φίλτρων',filterSearch:'Αναζήτηση...',
+    statusPending:'Σε αναμονή',statusApproved:'Εγκρίθηκε',statusRejected:'Απορρίφθηκε',statusSuspended:'Ανεστάλη',
+    open:'Άνοιγμα',noData:'Δεν υπάρχουν αιτήματα',noResults:'Κανένα αποτέλεσμα με τα φίλτρα',loading:'Φόρτωση...',
+    formTitle:'Νέο αίτημα ελαττωματικού',formStore:'Κατάστημα:',
+    fProv:'Προέλευση *',fStorePurch:'Κατάστημα αγοράς',fName:'Όνομα πελάτη',fNameReq:'Όνομα πελάτη *',
+    fEmail:'Email πελάτη',fCard:'Privilege Card',fPurchDate:'Ημ. αγοράς',fPurchDateReq:'Ημ. αγοράς *',
+    fDropoff:'Ημ. παράδοσης *',fUsed:'Είδος χρησιμοποιημένο',fUsedReq:'Είδος χρησιμοποιημένο *',
+    fWear:'Βαθμός φθοράς (1–5) *',fArticle:'Κωδικός (BO) *',fSize:'Μέγεθος *',
+    fDamage:'Τύπος βλάβης *',fProposal:'Προτεινόμενη επαναταξινόμηση *',fNote:'Σημειώσεις βλάβης',
+    fPhotos:'Φωτογραφίες *',fPhotosHint:'(τουλάχιστον 1 απαιτείται)',fPhotosSelected:'φωτογραφίες επιλέχθηκαν',
+    fPhotoUpload:'Πατήστε για λήψη ή επιλογή φωτογραφιών · JPG, PNG – max 5',
+    fSubmit:'Αποστολή αιτήματος',fCancel:'Ακύρωση',fSending:'Αποστολή...',
+    errProv:'Επιλέξτε προέλευση.',errDropoff:'Εισάγετε ημ. παράδοσης.',
+    errWear:'Επιλέξτε βαθμό φθοράς.',errArticle:'Εισάγετε κωδικό είδους.',
+    errSize:'Εισάγετε μέγεθος.',errDamage:'Επιλέξτε τύπο βλάβης.',
+    errProposal:'Επιλέξτε τύπο επαναταξινόμησης.',errPhoto:'Ανεβάστε τουλάχιστον μία φωτογραφία.',
+    errName:'Εισάγετε όνομα πελάτη.',errPurchDate:'Εισάγετε ημ. αγοράς.',errDateOrder:'Η ημερομηνία παράδοσης δεν μπορεί να είναι πριν από την ημερομηνία αγοράς.',
+    toastSent:'Το αίτημα εστάλη. Τα κεντρικά θα ενημερωθούν.',
+    toastApproved:'εγκρίθηκε',toastRejected:'απορρίφθηκε',toastSuspended:'ανεστάλη',
+    toastNotified:'· Κατάστημα ενημερώθηκε',toastExportReady:'Export ολοκληρώθηκε: ',
+    toastExportPrep:'Προετοιμασία export...',toastNoData:'Δεν υπάρχουν δεδομένα',
+    panelRespNote:'Σημείωση απάντησης (ορατή στο κατάστημα)',panelRespPlaceholder:'Προσθήκη σημείωσης...',
+    panelApprove:'Έγκριση',panelReject:'Απόρριψη',panelSuspend:'Αναστολή',panelClose:'Κλείσιμο',
+    panelPhotos:'Συνημμένες φωτογραφίες',panelNoPhotos:'Καμία φωτογραφία',
+    panelHqReply:'Απάντηση κεντρικών',panelStatus:'Κατάσταση',
+    fStore:'Κατάστημα',fProv2:'Προέλευση',fCust:'Πελάτης',fCustEmail:'Email πελάτη',
+    fCardLabel:'Privilege Card',fPurchLabel:'Ημ. αγοράς',fDropLabel:'Ημ. παράδοσης',
+    fUsedLabel:'Χρησιμοποιημένο',fWearLabel:'Βαθμός φθοράς',fArticleLabel:'Κωδικός',
+    fSizeLabel:'Μέγεθος',fDamageLabel:'Τύπος βλάβης',fProposalLabel:'Πρόταση',fNoteLabel:'Σημειώσεις',
+    usedYes:'Ναι',usedNo:'Όχι',
+    notifTitle:'νέα απάντηση από κεντρικά',notifTitlePlural:'νέες απαντήσεις από κεντρικά',notifDismiss:'×',
+    statTotal:'Σύνολο αιτημάτων',statPending:'Σε αναμονή',statApprRate:'Ποσοστό έγκρισης',
+    statRejRate:'Ποσοστό απόρριψης',statApproved:'Εγκρίθηκαν',statRejected:'Απορρίφθηκαν',
+    statSuspended:'Ανεστάλησαν',statAvgDays:'Μέσος χρόνος απόκρισης',statDays:'ημέρες',statOn:'από',statValutated:'αξιολογήθηκαν',
+    statDistrib:'Κατανομή καταστάσεων',statByProv:'Αιτήματα ανά προέλευση',
+    statTopStores:'Καταστήματα με τα περισσότερα αιτήματα',statStoreRate:'Ποσοστό έγκρισης ανά κατάστημα',
+    statDamages:'Συχνότεροι τύποι βλάβης',statProposal:'Προτεινόμενη επαναταξινόμηση',
+    statWear:'Βαθμός φθοράς',statArticles:'Συχνότερα είδη (BO)',statByMonth:'Αιτήματα ανά μήνα',
+    statNoData:'Χωρίς δεδομένα',statNoStats:'Δεν υπάρχουν αιτήματα για στατιστικά.',
+    prov_customer:'Πελάτης',prov_store:'Κατάστημα',prov_supplier:'Προμηθευτής',prov_ecommerce:'Ecommerce',
+    damage_fabric:'Κατεστραμμένο ύφασμα/δέρμα',damage_stitching:'Πρόβλημα ραφής',damage_shoes:'Πρόβλημα παπουτσιών',
+    damage_color:'Πρόβλημα χρώματος',damage_pilling:'Pilling',damage_accessories:'Πρόβλημα αξεσουάρ',
+    damage_thread:'Τραβηγμένη κλωστή',damage_washing:'Πρόβλημα πλύσης',damage_zip:'Πρόβλημα φερμουάρ',
+    damage_tailoring:'Λάθος ραφής',damage_padding:'Πρόβλημα επένδυσης',
+    wear1:'1 – Νέο',wear2:'2',wear3:'3',wear4:'4',wear5:'5 – Πολύ φθαρμένο',
+    errConn:'Σφάλμα σύνδεσης Supabase: ',errLoad:'Σφάλμα φόρτωσης: ',errSend:'Σφάλμα αποστολής: ',errOpen:'Σφάλμα ανοίγματος',errDecide:'Σφάλμα: ',
+    langLabel:'Γλώσσα'
+  },
+  pt:{
+    appTitle:'Artigos com Defeito',appSub:'Boggi Milano',
+    loginTitle:'Artigos com Defeito',loginSub:'Selecione a sua conta',
+    hqLabel:'Sede',storesLabel:'Lojas',
+    hqItaName:'Sede Itália',hqItaRole:'Aprovações lojas ITA',
+    hqIntName:'Sede Internacional',hqIntRole:'Aprovações lojas INT',
+    storeRole:'Loja',pwPlaceholder:'Palavra-passe...',loginBtn:'Entrar',pwError:'Palavra-passe incorreta.',
+    navPending:'Pendente',navAll:'Todos os pedidos',navNew:'Novo pedido',
+    navPendingSede:'Para aprovar',navAllSede:'Histórico',navStats:'Estatísticas',
+    roleStore:'Loja',roleSede:'Sede',logout:'Sair',
+    titlePendingSede:'Para aprovar',titlePendingStore:'Pedidos pendentes',
+    titleAll:'Histórico de pedidos',titleNew:'Novo pedido artigo com defeito',titleStats:'Estatísticas',
+    downloadExcel:'Transferir Excel',newRequest:'+ Novo pedido',
+    metricPending:'Pendente',metricRegion:'Região',metricToday:'Hoje',metricStores:'lojas',
+    colDate:'Data',colStore:'Loja',colCustomer:'Cliente',colArticle:'Artigo',
+    colDamage:'Tipo de defeito',colProv:'Origem',colProposal:'Reclas.',colStatus:'Estado',
+    filterAll:'Todos',filterRows:'linhas',filterOf:'de',removeFilters:'Limpar filtros',filterSearch:'Pesquisar...',
+    statusPending:'Pendente',statusApproved:'Aprovado',statusRejected:'Rejeitado',statusSuspended:'Suspenso',
+    open:'Abrir',noData:'Sem pedidos para mostrar',noResults:'Sem resultados com os filtros atuais',loading:'A carregar...',
+    formTitle:'Novo pedido artigo com defeito',formStore:'Loja:',
+    fProv:'Origem *',fStorePurch:'Loja de compra',fName:'Nome do cliente',fNameReq:'Nome do cliente *',
+    fEmail:'Email do cliente',fCard:'Privilege Card',fPurchDate:'Data de compra',fPurchDateReq:'Data de compra *',
+    fDropoff:'Data de entrega na loja *',fUsed:'Artigo usado',fUsedReq:'Artigo usado *',
+    fWear:'Nível de desgaste (1–5) *',fArticle:'Código artigo (BO) *',fSize:'Tamanho *',
+    fDamage:'Tipo de defeito *',fProposal:'Reclassificação sugerida *',fNote:'Notas sobre o defeito',
+    fPhotos:'Fotos do artigo *',fPhotosHint:'(pelo menos 1 necessária)',fPhotosSelected:'fotos selecionadas',
+    fPhotoUpload:'Toque para tirar ou selecionar fotos · JPG, PNG – máx. 5',
+    fSubmit:'Enviar pedido',fCancel:'Cancelar',fSending:'A enviar...',
+    errProv:'Selecione a origem.',errDropoff:'Introduza a data de entrega.',
+    errWear:'Selecione o nível de desgaste.',errArticle:'Introduza o código do artigo.',
+    errSize:'Introduza o tamanho.',errDamage:'Selecione o tipo de defeito.',
+    errProposal:'Selecione o tipo de reclassificação.',errPhoto:'Carregue pelo menos uma foto.',
+    errName:'Introduza o nome do cliente.',errPurchDate:'Introduza a data de compra.',errDateOrder:'A data de entrega não pode ser anterior à data de compra.',
+    toastSent:'Pedido enviado. A sede será notificada.',
+    toastApproved:'aprovado',toastRejected:'rejeitado',toastSuspended:'suspenso',
+    toastNotified:'· Loja notificada',toastExportReady:'Export concluído: ',
+    toastExportPrep:'A preparar export...',toastNoData:'Sem dados para exportar',
+    panelRespNote:'Nota de resposta (visível para a loja)',panelRespPlaceholder:'Adicionar uma nota...',
+    panelApprove:'Aprovar',panelReject:'Rejeitar',panelSuspend:'Suspender',panelClose:'Fechar',
+    panelPhotos:'Fotos anexadas',panelNoPhotos:'Sem fotos anexadas',
+    panelHqReply:'Resposta da sede',panelStatus:'Estado',
+    fStore:'Loja',fProv2:'Origem',fCust:'Cliente',fCustEmail:'Email cliente',
+    fCardLabel:'Privilege Card',fPurchLabel:'Data compra',fDropLabel:'Data entrega',
+    fUsedLabel:'Artigo usado',fWearLabel:'Nível desgaste',fArticleLabel:'Código artigo',
+    fSizeLabel:'Tamanho',fDamageLabel:'Tipo defeito',fProposalLabel:'Proposta',fNoteLabel:'Notas loja',
+    usedYes:'Sim',usedNo:'Não',
+    notifTitle:'nova resposta da sede',notifTitlePlural:'novas respostas da sede',notifDismiss:'×',
+    statTotal:'Total pedidos',statPending:'Pendente',statApprRate:'Taxa de aprovação',
+    statRejRate:'Taxa de rejeição',statApproved:'Aprovados',statRejected:'Rejeitados',
+    statSuspended:'Suspensos',statAvgDays:'Tempo médio de resposta',statDays:'dias',statOn:'de',statValutated:'avaliados',
+    statDistrib:'Distribuição de estados',statByProv:'Pedidos por origem',
+    statTopStores:'Lojas com mais pedidos',statStoreRate:'Taxa de aprovação por loja',
+    statDamages:'Tipos de defeito mais frequentes',statProposal:'Reclassificação sugerida',
+    statWear:'Nível de desgaste',statArticles:'Artigos (BO) mais frequentes',statByMonth:'Pedidos por mês',
+    statNoData:'Sem dados',statNoStats:'Sem pedidos disponíveis para estatísticas.',
+    prov_customer:'Cliente',prov_store:'Loja',prov_supplier:'Fornecedor',prov_ecommerce:'Ecommerce',
+    damage_fabric:'Tecido / couro danificado',damage_stitching:'Problema de costura',damage_shoes:'Problema calçado',
+    damage_color:'Problema de cor',damage_pilling:'Pilling',damage_accessories:'Problema acessórios',
+    damage_thread:'Fio puxado',damage_washing:'Problema lavagem',damage_zip:'Problema fecho',
+    damage_tailoring:'Erro de alfaiate',damage_padding:'Problema enchimento',
+    wear1:'1 – Novo',wear2:'2',wear3:'3',wear4:'4',wear5:'5 – Muito usado',
+    errConn:'Erro ligação Supabase: ',errLoad:'Erro carregamento: ',errSend:'Erro envio: ',errOpen:'Erro ao abrir pedido',errDecide:'Erro: ',
+    langLabel:'Idioma'
   }
-  window.goPage = goPage;
+};
 
-  /* === MAPPING === */
-  function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+// detect browser language
+function detectLang() {
+  const saved = localStorage.getItem('fallati_lang');
+  if (saved && TRANSLATIONS[saved]) return saved;
+  const bl = (navigator.language || 'it').slice(0,2).toLowerCase();
+  return TRANSLATIONS[bl] ? bl : 'it';
+}
+let currentLang = detectLang();
+function t(k) { return (TRANSLATIONS[currentLang] || TRANSLATIONS.it)[k] || TRANSLATIONS.it[k] || k; }
+function setLang(l) {
+  currentLang = l;
+  localStorage.setItem('fallati_lang', l);
+  render();
+}
 
-  function renderMapping() {
-    var q = (document.getElementById('mapSearch').value||'').toLowerCase();
-    var codes = Object.keys(MAP).sort();
-    var shown=0, empty=0, rows='';
-    codes.forEach(function(code){
-      var desc = MAP[code]||'';
-      if(q && code.toLowerCase().indexOf(q)===-1 && desc.toLowerCase().indexOf(q)===-1) return;
-      empty += desc.trim()?0:1; shown++;
-      rows += '<tr><td>'+code+'</td><td><input class="map-input'+(desc.trim()?'':' empty')+'" data-code="'+code+'" value="'+esc(desc)+'" placeholder="(nessuna traduzione)"></td><td><button class="btn-del" data-del="'+code+'">&times;</button></td></tr>';
+// Dynamic arrays using t()
+function getDamageTypes() { return DAMAGE_TYPES_KEYS.map(k => t(k)); }
+function getProvenienzaTypes() { return PROVENIENZA_KEYS.map(k => t(k)); }
+function getProvenienzaKey(label) {
+  const idx = getProvenienzaTypes().indexOf(label);
+  return idx >= 0 ? PROVENIENZA_KEYS[idx] : label;
+}
+function getDamageKey(label) {
+  const idx = getDamageTypes().indexOf(label);
+  return idx >= 0 ? DAMAGE_TYPES_KEYS[idx] : label;
+}
+
+let currentUser = null;
+let allAccounts = [];
+let currentTab = 'pending';
+let pendingLogin = null;
+let uploadedFiles = [];
+
+// ── UTILS ──────────────────────────────────────────────────
+function today() { return new Date().toLocaleDateString(currentLang+'-'+currentLang.toUpperCase()); }
+function showToast(msg, duration = 3000) {
+  const t2 = document.getElementById('toast');
+  t2.textContent = msg; t2.classList.add('show');
+  setTimeout(() => t2.classList.remove('show'), duration);
+}
+function genId() {
+  return crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2);
+}
+function statusLabel(s) {
+  return {pending:t('statusPending'),approved:t('statusApproved'),rejected:t('statusRejected'),suspended:t('statusSuspended')}[s] || s;
+}
+function statusClass(s) {
+  return {pending:'b-pending',approved:'b-approved',rejected:'b-rejected',suspended:'b-suspended'}[s] || '';
+}
+
+// ── RENDER ROOT ────────────────────────────────────────────
+function render() {
+  const root = document.getElementById('root');
+  if (!currentUser) { root.innerHTML = renderLogin(); return; }
+  root.innerHTML = renderApp();
+  loadTab(currentTab);
+}
+
+// ── LOGIN ──────────────────────────────────────────────────
+function renderLogin() {
+  const stores = allAccounts.filter(a => a.role === 'store');
+  const storeItems = stores.map(s => `
+    <button class="acc-btn" onclick="selectAccount('${s.id}')">
+      <div class="acc-name">${s.name}</div>
+      <div class="acc-role">${t('storeRole')} · ${s.region}</div>
+    </button>`).join('');
+
+  const langBtns = Object.entries(LANGS).map(([code,l]) =>
+    `<button class="lang-btn${currentLang===code?' active':''}" onclick="setLang('${code}')" title="${l.name}">${l.flag} ${l.name}</button>`
+  ).join('');
+
+  return `<div class="login-wrap"><div class="login-card">
+    <div class="lang-bar">${langBtns}</div>
+    <div class="login-title">${t('loginTitle')}</div>
+    <div class="login-sub">${t('loginSub')}</div>
+    <div style="font-size:11px;color:var(--tx2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">${t('hqLabel')}</div>
+    <button class="acc-btn sede" onclick="selectAccount('sede_ita')">
+      <div class="acc-name">${t('hqItaName')}</div><div class="acc-role">${t('hqItaRole')}</div>
+    </button>
+    <button class="acc-btn sede" onclick="selectAccount('sede_int')">
+      <div class="acc-name">${t('hqIntName')}</div><div class="acc-role">${t('hqIntRole')}</div>
+    </button>
+    <div class="sep">— ${t('storesLabel')} —</div>
+    <div class="stores-list">${storeItems}</div>
+    <div id="pw-area" style="display:none">
+      <div class="pw-row">
+        <input class="pw-input" type="password" id="pw-input" placeholder="${t('pwPlaceholder')}" onkeydown="if(event.key==='Enter')doLogin()">
+        <button class="btn btn-primary" onclick="doLogin()">${t('loginBtn')}</button>
+      </div>
+      <div class="pw-err" id="pw-err"></div>
+    </div>
+  </div></div>`;
+}
+
+function selectAccount(id) {
+  pendingLogin = id;
+  const pwArea = document.getElementById('pw-area');
+  if (pwArea) { pwArea.style.display = 'block'; document.getElementById('pw-input').focus(); }
+  document.getElementById('pw-err').textContent = '';
+}
+
+async function doLogin() {
+  const pw = document.getElementById('pw-input').value;
+  const acc = allAccounts.find(a => a.id === pendingLogin);
+  if (!acc) return;
+  if (acc.password !== pw) {
+    document.getElementById('pw-err').textContent = t('pwError');
+    return;
+  }
+  currentUser = acc;
+  currentTab = 'pending';
+  render();
+}
+
+function logout() {
+  currentUser = null;
+  pendingLogin = null;
+  render();
+}
+
+// ── APP SHELL ──────────────────────────────────────────────
+function renderApp() {
+  const isStore = currentUser.role === 'store';
+  const nav = isStore ? `
+    <button class="nav-item active" id="nav-pending" onclick="setTab('pending')"><div class="nav-dot warn"></div>${t('navPending')}<span class="nav-badge" id="nb-pending" style="display:none">0</span></button>
+    <button class="nav-item" id="nav-all" onclick="setTab('all')"><div class="nav-dot"></div>${t('navAll')}</button>
+    <button class="nav-item" id="nav-new" onclick="setTab('new')"><div class="nav-dot"></div>${t('navNew')}</button>
+  ` : `
+    <button class="nav-item active" id="nav-pending" onclick="setTab('pending')"><div class="nav-dot warn"></div>${t('navPendingSede')}<span class="nav-badge" id="nb-pending" style="display:none">0</span></button>
+    <button class="nav-item" id="nav-all" onclick="setTab('all')"><div class="nav-dot"></div>${t('navAllSede')}</button>
+    <button class="nav-item" id="nav-stats" onclick="setTab('stats')"><div class="nav-dot"></div>${t('navStats')}</button>
+  `;
+  return `
+  <div class="app">
+    <div class="sidebar">
+      <div class="logo"><div class="logo-title">${t('appTitle')}</div><div class="logo-sub">${t('appSub')}</div></div>
+      <div class="nav">${nav}</div>
+      <div class="user-area">
+        <div class="user-role">${currentUser.role === 'sede' ? t('roleSede')+' · '+currentUser.region : t('roleStore')+' · '+currentUser.region}</div>
+        <div class="user-name">${currentUser.name}</div>
+        <button class="btn-logout-full" onclick="logout()">${t('logout')}</button>
+      </div>
+    </div>
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title" id="page-title">${isStore ? t('titlePendingStore') : t('titlePendingSede')}</span>
+        <div style="display:flex;gap:8px;align-items:center">
+          ${isStore ? `<button class="btn btn-primary" onclick="setTab('new')">${t('newRequest')}</button>` : `<button class="btn-excel" onclick="exportExcel()">${t('downloadExcel')}</button>`}
+        </div>
+      </div>
+      <div class="content" id="content-area">
+        <div id="notif-banner-area"></div>
+        <div id="tab-content"><div class="loading">${t('loading')}</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobile-nav">
+    <div class="mobile-nav-inner">
+      ${isStore ? `
+        <button class="mob-nav-btn active" id="mob-pending" onclick="setTab('pending')">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span>${t('navPending')}</span><span class="mob-nav-badge" id="mob-badge" style="display:none">0</span>
+        </button>
+        <button class="mob-nav-btn" id="mob-all" onclick="setTab('all')">
+          <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          <span>${t('navAll')}</span>
+        </button>
+        <button class="mob-nav-btn" id="mob-new" onclick="setTab('new')">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          <span>${t('navNew')}</span>
+        </button>
+        <button class="mob-nav-btn" id="mob-logout" onclick="logout()">
+          <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          <span>${t('logout')}</span>
+        </button>
+      ` : `
+        <button class="mob-nav-btn active" id="mob-pending" onclick="setTab('pending')">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span>${t('navPendingSede')}</span><span class="mob-nav-badge" id="mob-badge" style="display:none">0</span>
+        </button>
+        <button class="mob-nav-btn" id="mob-all" onclick="setTab('all')">
+          <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          <span>${t('navAllSede')}</span>
+        </button>
+        <button class="mob-nav-btn" id="mob-stats" onclick="setTab('stats')">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          <span>${t('navStats')}</span>
+        </button>
+        <button class="mob-nav-btn" id="mob-logout" onclick="logout()">
+          <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          <span>${t('logout')}</span>
+        </button>
+      `}
+    </div>
+  </div>
+  <div class="overlay" id="overlay" onclick="closePanelOutside(event)">
+    <div class="panel" id="side-panel"></div>
+  </div>`;
+}
+
+// ── TABS ───────────────────────────────────────────────────
+function setTab(tab) {
+  currentTab = tab;
+  ['pending','all','new','stats'].forEach(k => {
+    const el = document.getElementById('nav-'+k);
+    if (el) el.classList.toggle('active', k === tab);
+    const mob = document.getElementById('mob-'+k);
+    if (mob) mob.classList.toggle('active', k === tab);
+  });
+  // logout button never active
+  const mobLogout = document.getElementById('mob-logout');
+  if (mobLogout) mobLogout.classList.remove('active');
+  const titles = {
+    pending: currentUser.role==='sede' ? t('titlePendingSede') : t('titlePendingStore'),
+    all: t('titleAll'), new: t('titleNew'), stats: t('titleStats')
+  };
+  const titleEl = document.getElementById('page-title');
+  if (titleEl) titleEl.textContent = titles[tab] || '';
+  closePanel();
+  loadTab(tab);
+}
+
+async function loadTab(tab) {
+  const tc = document.getElementById('tab-content');
+  if (!tc) return;
+  if (tab === 'new' && currentUser.role === 'store') {
+    uploadedFiles = [];
+    tc.innerHTML = renderNewForm();
+    return;
+  }
+  if (tab === 'stats' && currentUser.role === 'sede') {
+    tc.innerHTML = `<div class="loading">${t('loading')}</div>`;
+    const data = await fetchRequests(null);
+    renderStats(data);
+    return;
+  }
+  tc.innerHTML = `<div class="loading">${t('loading')}</div>`;
+  await loadNotifications();
+  const data = await fetchRequests(tab === 'pending' ? 'pending' : null);
+  if (tab === 'pending') { renderPendingTab(data); } else { renderAllTab(data); }
+}
+
+// ── SUPABASE FETCH ─────────────────────────────────────────
+async function fetchRequests(statusFilter) {
+  let q = sb.from('requests').select('*').order('created_at', {ascending: false});
+  if (currentUser.role === 'store') {
+    q = q.eq('store_id', currentUser.id);
+  } else {
+    const storeIds = allAccounts.filter(a => a.role === 'store' && a.region === currentUser.region).map(a => a.id);
+    q = q.in('store_id', storeIds);
+  }
+  if (statusFilter) q = q.eq('status', statusFilter);
+  const { data, error } = await q;
+  if (error) { showToast(t('errLoad')+error.message); return []; }
+  return data || [];
+}
+
+async function loadNotifications() {
+  if (currentUser.role !== 'store') return;
+  const { data } = await sb.from('notifications')
+    .select('*').eq('store_id', currentUser.id).eq('read', false)
+    .order('created_at', {ascending: false});
+  const area = document.getElementById('notif-banner-area');
+  if (!area) return;
+  if (!data || !data.length) { area.innerHTML = ''; return; }
+
+  const approvedKw = ['APPROVED','APPROVATA','APPROBÉ','GENEHMIGT','APROBADO','GODKÄND','JÓVÁHAGYVA','ΕΓΚΡΊΘΗΚΕ','APROVADO'];
+  const rejectedKw  = ['REJECTED','NEGATA','REFUSÉ','ABGELEHNT','RECHAZADO','AVSLAGEN','ELUTASÍTVA','ΑΠΟΡΡΊΦΘΗΚΕ','REJEITADO'];
+  const suspendedKw = ['SUSPENDED','SOSPESA','SUSPENDU','AUSGESETZT','SUSPENDIDO','PAUSAD','FELFÜGGESZTVE','ΑΝΕΣΤΆΛΗ','SUSPENSO'];
+
+  const banners = data.map(n => {
+    const msg = n.message || '';
+    let bg='var(--amber-bg)',tx='var(--amber-tx)',br='0.5px solid var(--amber-br)';
+    if (approvedKw.some(k=>msg.includes(k)))  { bg='var(--green-bg)'; tx='var(--green-tx)'; br='0.5px solid var(--green-br)'; }
+    if (rejectedKw.some(k=>msg.includes(k)))  { bg='var(--red-bg)';   tx='var(--red-tx)';   br='0.5px solid var(--red-br)';   }
+    if (suspendedKw.some(k=>msg.includes(k))) { bg='var(--blue-bg)';  tx='var(--blue-tx)';  br='0.5px solid var(--blue-br)';  }
+    return `<div style="background:${bg};border:${br};border-radius:var(--r);padding:11px 14px;margin-bottom:6px;font-size:13px;color:${tx};line-height:1.4">${msg}</div>`;
+  }).join('');
+
+  const title = data.length === 1 ? `1 ${t('notifTitle')}` : `${data.length} ${t('notifTitlePlural')}`;
+  area.innerHTML = `<div style="margin-bottom:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <span style="font-size:13px;font-weight:500;color:var(--tx)">${title}</span>
+      <button class="notif-close" style="color:var(--tx2);background:none;border:none;cursor:pointer;font-size:18px;padding:0 4px" onclick="dismissNotifs()">${t('notifDismiss')}</button>
+    </div>
+    ${banners}
+  </div>`;
+}
+
+async function dismissNotifs() {
+  await sb.from('notifications').update({read: true}).eq('store_id', currentUser.id).eq('read', false);
+  const area = document.getElementById('notif-banner-area');
+  if (area) area.innerHTML = '';
+}
+
+// ── RENDER TABS ────────────────────────────────────────────
+function renderPendingTab(data) {
+  const tc = document.getElementById('tab-content');
+  if (!tc) return;
+  const nb = document.getElementById('nb-pending');
+  if (nb) { nb.textContent = data.length; nb.style.display = data.length ? 'inline' : 'none'; }
+  const mob = document.getElementById('mob-badge');
+  if (mob) { mob.textContent = data.length; mob.style.display = data.length ? 'inline' : 'none'; }
+
+  let html = '';
+  if (currentUser.role === 'sede') {
+    html += `<div class="metrics">
+      <div class="metric-card"><div class="metric-label">${t('metricPending')}</div><div class="metric-value" style="color:var(--amber-tx)">${data.length}</div></div>
+      <div class="metric-card"><div class="metric-label">${t('metricRegion')}</div><div class="metric-value" style="font-size:16px">${currentUser.region}</div></div>
+      <div class="metric-card"><div class="metric-label">${t('metricToday')}</div><div class="metric-value">${data.filter(r=>r.date===today()).length}</div></div>
+      <div class="metric-card"><div class="metric-label">Account</div><div class="metric-value" style="font-size:16px">${allAccounts.filter(a=>a.role==='store'&&a.region===currentUser.region).length} ${t('metricStores')}</div></div>
+    </div>`;
+    html += renderTableWrap(data, true, true);
+  } else {
+    html += renderTableWrap(data, false, false);
+  }
+  tc.innerHTML = html;
+  renderTableRows(data, currentUser.role === 'sede');
+}
+
+function renderAllTab(data) {
+  const tc = document.getElementById('tab-content');
+  if (!tc) return;
+  tc.innerHTML = renderTableWrap(data, currentUser.role === 'sede', false);
+  renderTableRows(data, currentUser.role === 'sede');
+}
+
+// ── TABLE WITH COLUMN FILTERS ──────────────────────────────
+let tableData = [];
+let tableFilters = {};
+let tableSortCol = null;
+let tableSortDir = 1;
+
+function renderTableWrap(data, showStore, showFilters) {
+  tableData = data;
+  tableFilters = {};
+  tableSortCol = null;
+  tableSortDir = 1;
+  if (!data.length) return `<div class="table-wrap"><div class="empty">${t('noData')}</div></div>`;
+
+  const cols = getTableCols(showStore);
+  return `<div class="table-wrap">
+    <div class="table-head">
+      <span style="font-weight:500;font-size:13px">${t('navAll')}</span>
+      <span class="filter-count" id="filter-count">${data.length} ${t('filterRows')}</span>
+      <button class="btn" style="font-size:11px;padding:4px 10px" onclick="clearAllFilters()">${t('removeFilters')}</button>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr id="th-row">${cols.map(c=>renderTh(c)).join('')}<th></th></tr>
+        </thead>
+        <tbody id="table-rows"></tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+function getTableCols(showStore) {
+  const base = [
+    {key:'date', label:t('colDate'), type:'text'},
+    ...(showStore ? [{key:'store_name', label:t('colStore'), type:'select'}] : []),
+    {key:'customer_name', label:t('colCustomer'), type:'text'},
+    {key:'article_code', label:t('colArticle'), type:'text'},
+    {key:'damage_type', label:t('colDamage'), type:'select'},
+    {key:'provenienza', label:t('colProv'), type:'select'},
+    {key:'proposal', label:t('colProposal'), type:'select'},
+    {key:'status', label:t('colStatus'), type:'select'},
+  ];
+  return base;
+}
+
+function renderTh(col) {
+  const sortInd = tableSortCol === col.key ? (tableSortDir===1 ? ' ▲' : ' ▼') : '';
+  return `<th style="min-width:${col.type==='text'?'110px':'120px'}">
+    <div class="th-filter">
+      <div class="th-label">
+        <span style="cursor:pointer" onclick="sortTable('${col.key}')">${col.label}${sortInd}</span>
+      </div>
+      ${col.type==='text'
+        ? `<input class="col-filter" id="cf-${col.key}" placeholder="${t('filterSearch')}" oninput="applyFilters()" onkeydown="if(event.key==='Escape'){this.value='';applyFilters()}">`
+        : `<select class="col-filter" id="cf-${col.key}" onchange="applyFilters()">
+            <option value="">${t('filterAll')}</option>
+            ${getSelectOptions(col.key)}
+           </select>`}
+    </div>
+  </th>`;
+}
+
+function getSelectOptions(key) {
+  const vals = [...new Set(tableData.map(r => getRowVal(r, key)).filter(Boolean))].sort();
+  return vals.map(v => `<option value="${v}">${key==='status'?statusLabel(v):v}</option>`).join('');
+}
+
+function getRowVal(r, key) {
+  if (key === 'store_name') { const s = allAccounts.find(a=>a.id===r.store_id); return s?.name||r.store_id; }
+  if (key === 'status') return r.status;
+  return r[key] || '';
+}
+
+function applyFilters() {
+  const cols = getTableCols(document.getElementById('cf-store_name') !== null);
+  const filters = {};
+  cols.forEach(c => {
+    const el = document.getElementById('cf-'+c.key);
+    if (el && el.value) { filters[c.key] = el.value.toLowerCase(); el.classList.add('filter-active'); }
+    else if (el) el.classList.remove('filter-active');
+  });
+
+  let filtered = tableData.filter(r =>
+    Object.entries(filters).every(([key, val]) => {
+      const rv = getRowVal(r, key).toLowerCase();
+      return rv.includes(val);
+    })
+  );
+
+  if (tableSortCol) {
+    filtered = filtered.slice().sort((a,b)=>{
+      const av = getRowVal(a, tableSortCol).toLowerCase();
+      const bv = getRowVal(b, tableSortCol).toLowerCase();
+      return av < bv ? -tableSortDir : av > bv ? tableSortDir : 0;
     });
-    if(!rows) rows='<tr><td colspan="3" style="padding:.75rem;color:var(--tx3);font-size:.75rem;text-align:center">Nessun risultato</td></tr>';
-    document.getElementById('mapBody').innerHTML = rows;
-    document.getElementById('mapCounter').textContent = shown+' codici'+(empty?' — '+empty+' senza descrizione':' — tutti definiti');
-    // wire inputs
-    document.querySelectorAll('.map-input').forEach(function(el){
-      el.addEventListener('input', function(){ MAP[this.getAttribute('data-code')]=this.value; this.classList.toggle('empty',!this.value.trim()); this.classList.add('changed'); });
-      el.addEventListener('blur', function(){ MAP[this.getAttribute('data-code')]=this.value.trim(); });
-    });
-    document.querySelectorAll('.btn-del').forEach(function(el){
-      el.addEventListener('click', function(){
-        var code=this.getAttribute('data-del');
-        if(confirm('Eliminare "'+code+'"?')){ delete MAP[code]; renderMapping(); }
-      });
-    });
   }
 
-  function xlateRole(code){ if(!code)return''; var t=MAP[code.trim()]; return t!==undefined?t:code; }
+  renderTableRows(filtered, document.getElementById('cf-store_name') !== null);
+  const cnt = document.getElementById('filter-count');
+  if (cnt) cnt.textContent = `${filtered.length} ${t('filterOf')} ${tableData.length} ${t('filterRows')}`;
+}
 
-  /* === FEEDBACK === */
-  function setFb(sid, cls, icon, nm, detail){
-    var el=document.getElementById('fb'+sid);
-    el.className='fb '+cls;
-    document.getElementById('fb'+sid+'i').textContent=icon;
-    document.getElementById('fb'+sid+'n').textContent=nm;
-    document.getElementById('fb'+sid+'r').textContent=detail;
+function sortTable(key) {
+  if (tableSortCol === key) { tableSortDir *= -1; }
+  else { tableSortCol = key; tableSortDir = 1; }
+  // Re-render headers with sort indicator
+  const showStore = document.getElementById('cf-store_name') !== null;
+  const cols = getTableCols(showStore);
+  const thRow = document.getElementById('th-row');
+  if (thRow) thRow.innerHTML = cols.map(c=>renderTh(c)).join('') + '<th></th>';
+  // Restore filter values
+  Object.entries(tableFilters).forEach(([k,v])=>{
+    const el = document.getElementById('cf-'+k);
+    if (el) el.value = v;
+  });
+  applyFilters();
+}
+
+function clearAllFilters() {
+  document.querySelectorAll('.col-filter').forEach(el => { el.value = ''; el.classList.remove('filter-active'); });
+  tableSortCol = null; tableSortDir = 1;
+  applyFilters();
+}
+
+function renderTableRows(data, showStore) {
+  const tbody = document.getElementById('table-rows');
+  if (!tbody) return;
+  if (!data.length) { tbody.innerHTML = `<tr><td colspan="20" class="empty">${t('noResults')}</td></tr>`; return; }
+  tbody.innerHTML = data.map(r => {
+    const store = allAccounts.find(a => a.id === r.store_id);
+    const storeCols = showStore ? `<td title="${store?.name||r.store_id}" style="font-size:12px;max-width:130px">${store?.name||r.store_id}</td>` : '';
+    return `<tr class="clickable" data-id="${r.id}" onclick="openPanel('${r.id}')">
+      <td style="color:var(--tx2);font-size:12px;white-space:nowrap">${r.date||''}</td>
+      ${storeCols}
+      <td><div style="font-weight:500;overflow:hidden;text-overflow:ellipsis">${r.customer_name||''}</div><div style="font-size:11px;color:var(--tx2)">${r.customer_email||''}</div></td>
+      <td style="font-size:12px;font-family:var(--mono)">${r.article_code||''}</td>
+      <td style="font-size:12px">${r.damage_type||''}</td>
+      <td style="font-size:12px">${r.provenienza||''}</td>
+      <td style="font-size:12px">${r.proposal||''}</td>
+      <td><span class="badge ${statusClass(r.status)}">${statusLabel(r.status)}</span></td>
+      <td><button class="btn" style="font-size:11px;padding:4px 10px;white-space:nowrap" onclick="event.stopPropagation();openPanel('${r.id}')">Apri</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function applyFilter() {} // legacy stub, kept for safety
+
+// ── DETAIL PANEL ───────────────────────────────────────────
+async function openPanel(id) {
+  const { data: r, error } = await sb.from('requests').select('*').eq('id', id).single();
+  if (error || !r) { showToast(t('errOpen')); return; }
+  const store = allAccounts.find(a => a.id === r.store_id);
+  const canDecide = currentUser.role === 'sede' && r.status === 'pending';
+
+  const fields = [
+    [t('fStore'), store?.name || r.store_id],
+    [t('fProv2'), r.provenienza || '—'],
+    [t('fCust'), r.customer_name],
+    [t('fCustEmail'), r.customer_email || '—'],
+    [t('fCardLabel'), r.card || '—'],
+    [t('fPurchLabel'), r.purchase_date || '—'],
+    [t('fDropLabel'), r.dropoff_date || '—'],
+    [t('fUsedLabel'), r.used === 'SI' ? t('usedYes') : (r.used === 'NO' ? t('usedNo') : '—')],
+    [t('fWearLabel'), r.wear ? r.wear+'/5' : '—'],
+    [t('fArticleLabel'), r.article_code],
+    [t('fSizeLabel'), r.size || '—'],
+  ];
+
+  const photosHtml = (r.photo_urls && r.photo_urls.length)
+    ? `<div class="photo-grid">${r.photo_urls.map(url=>`
+        <div class="photo-thumb"><a href="${url}" target="_blank"><img src="${url}" alt="foto" onerror="this.parentElement.parentElement.innerHTML='Foto non disponibile'"></a></div>`).join('')}</div>`
+    : `<div style="font-size:12px;color:var(--tx2)">${t('panelNoPhotos')}</div>`;
+
+  const panel = document.getElementById('side-panel');
+  panel.innerHTML = `
+    <div class="panel-hdr">
+      <div>
+        <div style="font-weight:500;font-size:14px">${r.customer_name}</div>
+        <div style="font-size:12px;color:var(--tx2)">${store?.name||r.store_id} · ${r.date}</div>
+      </div>
+      <button class="close-x" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-body">
+      <div style="margin-bottom:12px"><span class="badge ${statusClass(r.status)}" style="font-size:12px;padding:3px 10px">${statusLabel(r.status)}</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+        ${fields.map(([l,v])=>`<div class="fg"><div class="fl">${l}</div><div class="fv">${v}</div></div>`).join('')}
+      </div>
+      <div class="fg"><div class="fl">${t('fDamageLabel')}</div><div class="fv" style="font-weight:500">${r.damage_type||'—'}</div></div>
+      <div class="fg"><div class="fl">${t('fProposalLabel')}</div><div class="fv">${r.proposal||'—'}</div></div>
+      ${r.note ? `<div class="fg"><div class="fl">${t('fNoteLabel')}</div><div class="field-note">${r.note}</div></div>` : ''}
+      <div class="divider"></div>
+      <div class="fl" style="margin-bottom:6px">${t('panelPhotos')}</div>
+      ${photosHtml}
+      ${r.approval_note ? `<div class="divider"></div><div class="fl">${t('panelHqReply')}</div><div class="field-note" style="margin-top:6px">${r.approval_note}</div><div style="font-size:11px;color:var(--tx2);margin-top:4px">— ${r.decided_by||t('roleSede')}</div>` : ''}
+      ${canDecide ? `<div class="divider"></div><div class="fl" style="margin-bottom:6px">${t('panelRespNote')}</div><textarea class="note-ta" id="resp-note" placeholder="${t('panelRespPlaceholder')}"></textarea>` : ''}
+    </div>
+    <div class="panel-foot">
+      ${canDecide ? `
+        <button class="btn btn-approve" style="flex:1" onclick="decide('${r.id}','${r.store_id}','approved')">${t('panelApprove')}</button>
+        <button class="btn btn-reject" style="flex:1" onclick="decide('${r.id}','${r.store_id}','rejected')">${t('panelReject')}</button>
+        <button class="btn btn-suspend" onclick="decide('${r.id}','${r.store_id}','suspended')">${t('panelSuspend')}</button>
+      ` : `<button class="btn" style="flex:1" onclick="closePanel()">${t('panelClose')}</button>`}
+    </div>`;
+  document.getElementById('overlay').classList.add('open');
+}
+
+async function decide(requestId, storeId, status) {
+  const note = document.getElementById('resp-note')?.value || '';
+  const btn = event.target;
+  btn.disabled = true;
+
+  const { error } = await sb.from('requests').update({
+    status, approval_note: note, decided_by: currentUser.name, decided_at: new Date().toISOString()
+  }).eq('id', requestId);
+
+  if (error) { showToast(t('errDecide')+error.message); btn.disabled = false; return; }
+
+  // Create store notification
+  const labels = {approved:t('statusApproved').toUpperCase(),rejected:t('statusRejected').toUpperCase(),suspended:t('statusSuspended').toUpperCase()};
+  const { data: req } = await sb.from('requests').select('article_code,damage_type').eq('id', requestId).single();
+  const msg = `Richiesta ${req?.article_code||''} (${req?.damage_type||''}) — ${labels[status]}${note ? ' · '+note : ''}`;
+  await sb.from('notifications').insert({id: genId(), store_id: storeId, request_id: requestId, message: msg});
+
+  closePanel();
+  showToast(`${statusLabel(status)} ${t('toastNotified')}`);
+  loadTab('pending');
+}
+
+function closePanel() { document.getElementById('overlay')?.classList.remove('open'); }
+function closePanelOutside(e) { if (e.target === document.getElementById('overlay')) closePanel(); }
+
+// ── NEW REQUEST FORM ───────────────────────────────────────
+function renderNewForm() {
+  const storeOptions = allAccounts.filter(a => a.role === 'store')
+    .map(a => `<option value="${a.id}"${a.id===currentUser.id?' selected':''}>${a.name}</option>`).join('');
+  return `<div class="form-card">
+    <div style="font-weight:500;font-size:15px;margin-bottom:4px">${t('formTitle')}</div>
+    <div style="font-size:12px;color:var(--tx2);margin-bottom:20px">${t('formStore')} ${currentUser.name}</div>
+    <div class="form-grid">
+      <div class="ff"><label>${t('fProv')}</label>
+        <select id="f-prov" onchange="onProvenienzaChange()">
+          ${getProvenienzaTypes().map(p=>`<option>${p}</option>`).join('')}
+        </select>
+      </div>
+      <div class="ff"><label>${t('fStorePurch')}</label>
+        <select id="f-storepurch">${storeOptions}</select></div>
+
+      <div class="ff" id="row-name"><label>${t('fNameReq')}</label>
+        <input id="f-name" type="text" placeholder=""></div>
+      <div class="ff"><label>${t('fEmail')}</label>
+        <input id="f-email" type="email" placeholder="email@example.com"></div>
+      <div class="ff"><label>${t('fCard')}</label>
+        <input id="f-card" type="text" placeholder="400000XXXXX"></div>
+
+      <div class="ff" id="row-pdate"><label>${t('fPurchDateReq')}</label>
+        <input id="f-pdate" type="date"></div>
+      <div class="ff"><label>${t('fDropoff')}</label>
+        <input id="f-ddate" type="date"></div>
+
+      <div class="ff" id="row-used"><label>${t('fUsedReq')}</label>
+        <select id="f-used"><option value="SI">${t('usedYes')}</option><option value="NO">${t('usedNo')}</option></select></div>
+      <div class="ff"><label>${t('fWear')}</label>
+        <select id="f-wear"><option value="1">${t('wear1')}</option><option value="2">${t('wear2')}</option><option value="3">${t('wear3')}</option><option value="4">${t('wear4')}</option><option value="5">${t('wear5')}</option></select></div>
+
+      <div class="ff"><label>${t('fArticle')}</label>
+        <input id="f-article" type="text" placeholder="BO25P000000"></div>
+      <div class="ff"><label>${t('fSize')}</label>
+        <input id="f-size" type="text" placeholder="M, 42, XL..."></div>
+
+      <div class="ff"><label>${t('fDamage')}</label>
+        <select id="f-damage">${getDamageTypes().map(d=>`<option>${d}</option>`).join('')}</select></div>
+      <div class="ff"><label>${t('fProposal')}</label>
+        <select id="f-proposal">${PROPOSAL_TYPES.map(p=>`<option>${p}</option>`).join('')}</select></div>
+
+      <div class="ff full"><label>${t('fNote')}</label>
+        <textarea id="f-note" placeholder=""></textarea></div>
+      <div class="ff full">
+        <label>${t('fPhotos')} <span id="photo-count-label" style="font-weight:400;color:var(--tx2)">${t('fPhotosHint')}</span></label>
+        <div class="upload-area">
+          <input type="file" id="f-photos" accept="image/*" multiple onchange="previewPhotos(this)">
+          ${t('fPhotoUpload')}
+        </div>
+        <div class="photo-preview" id="photo-preview"></div>
+      </div>
+    </div>
+    <div id="form-err" style="color:var(--red-tx);font-size:12px;margin-top:12px;display:none"></div>
+    <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-primary" id="submit-btn" onclick="submitRequest()">${t('fSubmit')}</button>
+      <button class="btn" onclick="setTab('pending')">${t('fCancel')}</button>
+    </div>
+  </div>`;
+}
+
+function onProvenienzaChange() {
+  const prov = document.getElementById('f-prov')?.value;
+  const isCliente = prov === t('prov_customer');
+  const rowName = document.getElementById('row-name');
+  const rowPdate = document.getElementById('row-pdate');
+  const rowUsed = document.getElementById('row-used');
+  if (rowName) {
+    rowName.querySelector('label').textContent = isCliente ? t('fNameReq') : t('fName');
   }
-  function checkReady(){
-    var ok=DZ!==null&&DC!==null;
-    document.getElementById('btnAnalyze').disabled=!ok;
-    document.getElementById('readyPill').className='ready-pill'+(ok?' show':'');
+  if (rowPdate) {
+    rowPdate.querySelector('label').textContent = isCliente ? t('fPurchDateReq') : t('fPurchDate');
+  }
+  if (rowUsed) {
+    rowUsed.querySelector('label').textContent = isCliente ? t('fUsedReq') : t('fUsed');
+  }
+}
+
+function showFormErr(msg) {
+  const el = document.getElementById('form-err');
+  if (el) { el.textContent = msg; el.style.display = msg ? 'block' : 'none'; }
+}
+
+function previewPhotos(input) {
+  uploadedFiles = Array.from(input.files).slice(0, 5);
+  const preview = document.getElementById('photo-preview');
+  const countLabel = document.getElementById('photo-count-label');
+  if (countLabel) countLabel.textContent = uploadedFiles.length ? `(${uploadedFiles.length} ${t('fPhotosSelected')})` : t('fPhotosHint');
+  if (!preview) return;
+  preview.innerHTML = uploadedFiles.map((f, i) => {
+    const url = URL.createObjectURL(f);
+    return `<div class="photo-preview-item">
+      <img src="${url}" alt="foto ${i+1}">
+      <button class="rm" onclick="removePhoto(${i})">×</button>
+    </div>`;
+  }).join('');
+}
+
+function removePhoto(idx) {
+  uploadedFiles.splice(idx, 1);
+  const dt = new DataTransfer();
+  uploadedFiles.forEach(f => dt.items.add(f));
+  const input = document.getElementById('f-photos');
+  if (input) input.files = dt.files;
+  previewPhotos({ files: dt.files });
+}
+
+async function submitRequest() {
+  showFormErr('');
+  const prov = document.getElementById('f-prov')?.value;
+  const isCliente = prov === 'Cliente';
+  const article = document.getElementById('f-article')?.value?.trim();
+  const size = document.getElementById('f-size')?.value?.trim();
+  const ddate = document.getElementById('f-ddate')?.value;
+  const wear = document.getElementById('f-wear')?.value;
+  const damage = document.getElementById('f-damage')?.value;
+  const proposal = document.getElementById('f-proposal')?.value;
+  const name = document.getElementById('f-name')?.value?.trim();
+  const pdate = document.getElementById('f-pdate')?.value;
+
+  // Campi sempre obbligatori
+  if (!prov) return showFormErr(t('errProv'));
+  if (!ddate) return showFormErr(t('errDropoff'));
+  if (!wear) return showFormErr(t('errWear'));
+  if (!article) return showFormErr(t('errArticle'));
+  if (!size) return showFormErr(t('errSize'));
+  if (!damage) return showFormErr(t('errDamage'));
+  if (!proposal) return showFormErr(t('errProposal'));
+  if (!uploadedFiles.length) return showFormErr(t('errPhoto'));
+
+  // Campi obbligatori solo per Cliente
+  if (isCliente) {
+    if (!name) return showFormErr(t('errName'));
+    if (!pdate) return showFormErr(t('errPurchDate'));
+    // La data di consegna non può essere antecedente alla data di acquisto
+    if (ddate && pdate && ddate < pdate) return showFormErr(t('errDateOrder'));
   }
 
-  /* === FILE READING === */
-  function readZ(file){
-    document.getElementById('fnZ').textContent=file.name;
-    DZ=null; checkReady();
-    setFb('Z','ok','⏳',file.name,'Lettura in corso...');
-    var r=new FileReader();
-    r.onload=function(e){
-      try{
-        var wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'});
-        var data=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''});
-        if(!data||!data.length) throw new Error('Nessuna riga trovata');
-        DZ=data;
-        setFb('Z','ok','✓',file.name,data.length+' dipendenti caricati');
-        checkReady();
-      }catch(ex){ setFb('Z','err','✗',file.name,'Errore: '+ex.message); DZ=null; checkReady(); }
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = t('fSending');
+
+  // Upload foto
+  const photoUrls = [];
+  for (const file of uploadedFiles) {
+    const ext = file.name.split('.').pop();
+    const path = `${currentUser.id}/${genId()}.${ext}`;
+    const { data: upData, error: upErr } = await sb.storage.from('fallati-photos').upload(path, file);
+    if (!upErr && upData) {
+      const { data: urlData } = sb.storage.from('fallati-photos').getPublicUrl(path);
+      if (urlData?.publicUrl) photoUrls.push(urlData.publicUrl);
+    }
+  }
+
+  const req = {
+    id: genId(),
+    store_id: currentUser.id,
+    date: today(),
+    provenienza: prov,
+    store_purchase: document.getElementById('f-storepurch').value,
+    customer_name: name || '—',
+    customer_email: document.getElementById('f-email').value,
+    card: document.getElementById('f-card').value,
+    purchase_date: pdate || null,
+    dropoff_date: ddate,
+    used: document.getElementById('f-used').value,
+    wear,
+    article_code: article,
+    size,
+    damage_type: damage,
+    proposal,
+    note: document.getElementById('f-note').value,
+    photo_urls: photoUrls,
+    status: 'pending'
+  };
+
+  const { error } = await sb.from('requests').insert(req);
+  if (error) {
+    showFormErr(t('errSend')+error.message);
+    btn.disabled = false; btn.textContent = t('fSubmit');
+    return;
+  }
+
+  showToast(t('toastSent'));
+  setTab('pending');
+}
+
+// ── STATISTICS ─────────────────────────────────────────────
+function countBy(arr, key) {
+  return arr.reduce((acc, r) => {
+    const k = r[key] || 'N/D';
+    acc[k] = (acc[k] || 0) + 1;
+    return acc;
+  }, {});
+}
+function topN(obj, n) {
+  return Object.entries(obj).sort((a,b)=>b[1]-a[1]).slice(0,n);
+}
+function pct(n, total) { return total ? Math.round(n/total*100) : 0; }
+
+function barChart(entries, total, color) {
+  if (!entries.length) return `<div style="font-size:12px;color:var(--tx2)">${t('statNoData')}</div>`;
+  const max = entries[0][1];
+  return entries.map(([label, val]) => `
+    <div class="bar-row">
+      <div class="bar-label" title="${label}">${label}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(val/max*100)}%;background:${color}"></div></div>
+      <div class="bar-val">${val}${total ? ' ('+pct(val,total)+'%)' : ''}</div>
+    </div>`).join('');
+}
+
+function donutSvg(segments, size=80) {
+  const total = segments.reduce((s,x)=>s+x.val,0);
+  if (!total) return '';
+  const r = 28, cx = size/2, cy = size/2, stroke = 14;
+  let offset = 0;
+  const circ = 2 * Math.PI * r;
+  const paths = segments.map(s => {
+    const dash = (s.val/total)*circ;
+    const gap = circ - dash;
+    const el = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${s.color}" stroke-width="${stroke}" stroke-dasharray="${dash.toFixed(1)} ${gap.toFixed(1)}" stroke-dashoffset="${(-offset).toFixed(1)}" transform="rotate(-90 ${cx} ${cy})"/>`;
+    offset += dash;
+    return el;
+  }).join('');
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${paths}</svg>`;
+}
+
+function renderStats(data) {
+  const tc = document.getElementById('tab-content');
+  if (!tc) return;
+  const total = data.length;
+  if (!total) { tc.innerHTML = `<div class="empty">${t('statNoStats')}</div>`; return; }
+
+  const approved = data.filter(r=>r.status==='approved').length;
+  const rejected = data.filter(r=>r.status==='rejected').length;
+  const suspended = data.filter(r=>r.status==='suspended').length;
+  const pending = data.filter(r=>r.status==='pending').length;
+  const decided = approved + rejected + suspended;
+  const approvalRate = pct(approved, decided);
+  const rejectionRate = pct(rejected, decided);
+
+  // Avg response time
+  const decided_reqs = data.filter(r=>r.decided_at && r.created_at);
+  const avgDays = decided_reqs.length
+    ? (decided_reqs.reduce((s,r)=>s+(new Date(r.decided_at)-new Date(r.created_at)),0) / decided_reqs.length / 86400000).toFixed(1)
+    : '—';
+
+  // Conteggi per dimensioni
+  const byStore = countBy(data, 'store_id');
+  const byStoreNamed = Object.fromEntries(Object.entries(byStore).map(([id,v])=>[allAccounts.find(a=>a.id===id)?.name||id, v]));
+  const byDamage = countBy(data, 'damage_type');
+  const byProposal = countBy(data, 'proposal');
+  const byProvenienza = countBy(data, 'provenienza');
+  const byUsura = countBy(data, 'wear');
+  const byArticle = countBy(data, 'article_code');
+  const byMonth = countBy(data.map(r=>({month: r.date ? r.date.slice(-7) : 'N/D'})), 'month');
+
+  // Negozio con tasso approvazione più alto
+  const storeStats = {};
+  allAccounts.filter(a=>a.role==='store'&&a.region===currentUser.region).forEach(s=>{
+    const sr = data.filter(r=>r.store_id===s.id);
+    const sdec = sr.filter(r=>r.status!=='pending');
+    storeStats[s.name] = {
+      total: sr.length,
+      approved: sr.filter(r=>r.status==='approved').length,
+      rate: sdec.length ? pct(sr.filter(r=>r.status==='approved').length, sdec.length) : null
     };
-    r.onerror=function(){ setFb('Z','err','✗',file.name,'Errore lettura'); DZ=null; checkReady(); };
-    r.readAsArrayBuffer(file);
-  }
+  });
 
-  function readC(file){
-    document.getElementById('fnC').textContent=file.name;
-    DC=null; checkReady();
-    setFb('C','ok','⏳',file.name,'Lettura in corso...');
-    var r=new FileReader();
-    r.onload=function(e){
-      try{
-        var data=parseCSV(e.target.result);
-        if(!data||!data.length) throw new Error('Nessuna riga trovata');
-        DC=data;
-        setFb('C','ok','✓',file.name,data.length+' record caricati');
-        checkReady();
-      }catch(ex){ setFb('C','err','✗',file.name,'Errore: '+ex.message); DC=null; checkReady(); }
-    };
-    r.onerror=function(){ setFb('C','err','✗',file.name,'Errore lettura'); DC=null; checkReady(); };
-    r.readAsText(file,'utf-8');
-  }
+  const statusColors = {'approved':'#3B6D11','rejected':'#A32D2D','pending':'#854F0B','suspended':'#0C447C'};
+  const donutSegs = [
+    {val:approved, color:'#3B6D11', label:t('statApproved')},
+    {val:rejected, color:'#A32D2D', label:t('statRejected')},
+    {val:suspended, color:'#0C447C', label:t('statSuspended')},
+    {val:pending, color:'#BA7517', label:t('statPending')},
+  ].filter(s=>s.val>0);
 
-  /* === CSV === */
-  function parseCSV(text){
-    var lines=[],cur='',i,ch;
-    for(i=0;i<text.length;i++){ch=text[i];if(ch==='')continue;if(ch==='
-'){lines.push(cur);cur='';}else cur+=ch;}
-    if(cur)lines.push(cur);
-    if(lines.length<2)return[];
-    var headers=parseLine(lines[0]),rows=[],j,obj,vals;
-    for(i=1;i<lines.length;i++){
-      if(!lines[i].trim())continue;
-      vals=parseLine(lines[i]);obj={};
-      for(j=0;j<headers.length;j++)obj[headers[j]]=vals[j]!==undefined?vals[j].trim():'';
-      rows.push(obj);
+  tc.innerHTML = `
+  <div class="kpi-row">
+    <div class="kpi-card"><div class="kpi-label">${t('statTotal')}</div><div class="kpi-value">${total}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${t('statPending')}</div><div class="kpi-value" style="color:var(--amber-tx)">${pending}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${t('statApprRate')}</div><div class="kpi-value" style="color:var(--green-tx)">${approvalRate}%</div><div class="kpi-sub">${t('statOn')} ${decided} ${t('statValutated')}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${t('statRejRate')}</div><div class="kpi-value" style="color:var(--red-tx)">${rejectionRate}%</div><div class="kpi-sub">su ${decided} valutate</div></div>
+    <div class="kpi-card"><div class="kpi-label">${t('statApproved')}</div><div class="kpi-value" style="color:var(--green-tx)">${approved}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${t('statRejected')}</div><div class="kpi-value" style="color:var(--red-tx)">${rejected}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${t('statSuspended')}</div><div class="kpi-value" style="color:var(--blue-tx)">${suspended}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${t('statAvgDays')}</div><div class="kpi-value">${avgDays}</div><div class="kpi-sub">${t('statDays')}</div></div>
+  </div>
+
+  <div class="stats-2col">
+    <div class="stat-card">
+      <div class="stat-card-title">${t('statDistrib')}</div>
+      <div class="donut-wrap">
+        ${donutSvg(donutSegs, 90)}
+        <div class="donut-legend">
+          ${donutSegs.map(s=>`<div class="legend-row"><div class="legend-dot" style="background:${s.color}"></div><span>${s.label}</span><span style="margin-left:auto;font-weight:500">${pct(s.val,total)}%</span></div>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-title">${t('statByProv')}</div>
+      ${barChart(topN(byProvenienza,6), total, '#378ADD')}
+    </div>
+  </div>
+
+  <div class="stats-2col">
+    <div class="stat-card">
+      <div class="stat-card-title">${t('statTopStores')}</div>
+      ${barChart(topN(byStoreNamed,8), total, '#1D9E75')}
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-title">${t('statStoreRate')}</div>
+      ${Object.entries(storeStats).filter(([,v])=>v.total>0).sort((a,b)=>(b[1].rate||0)-(a[1].rate||0)).map(([name,v])=>`
+        <div class="bar-row">
+          <div class="bar-label" title="${name}">${name}</div>
+          <div class="bar-track"><div class="bar-fill" style="width:${v.rate||0}%;background:#3B6D11"></div></div>
+          <div class="bar-val">${v.rate!==null?v.rate+'%':'—'} <span style="color:var(--tx2)">(${v.total})</span></div>
+        </div>`).join('')}
+    </div>
+  </div>
+
+  <div class="stats-2col">
+    <div class="stat-card">
+      <div class="stat-card-title">${t('statDamages')}</div>
+      ${barChart(topN(byDamage,8), total, '#D85A30')}
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-title">${t('statProposal')}</div>
+      ${barChart(topN(byProposal,5), total, '#7F77DD')}
+      <div style="margin-top:14px">
+        <div class="stat-card-title" style="margin-bottom:8px">${t('statWear')}</div>
+        ${barChart(Object.entries(byUsura).sort((a,b)=>a[0]-b[0]), total, '#888780')}
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-2col">
+    <div class="stat-card">
+      <div class="stat-card-title">${t('statArticles')}</div>
+      ${barChart(topN(byArticle,8), null, '#BA7517')}
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-title">${t('statByMonth')}</div>
+      ${barChart(Object.entries(byMonth).sort((a,b)=>a[0]>b[0]?1:-1).slice(-12), null, '#185FA5')}
+    </div>
+  </div>`;
+}
+
+// ── EXCEL EXPORT ───────────────────────────────────────────
+async function exportExcel() {
+  showToast(t('toastExportPrep'));
+  const data = await fetchRequests(null);
+  if (!data.length) { showToast(t('toastNoData')); return; }
+
+  const MAX_PHOTOS = 5;
+
+  // Build header row
+  const photoHeaders = Array.from({length: MAX_PHOTOS}, (_,i) => `Photo ${i+1}`);
+  const headers = [
+    t('colDate'), t('colStore'), t('fProv2'), t('fCust'), t('fCustEmail'),
+    t('fCardLabel'), t('fPurchLabel'), t('fDropLabel'), t('fUsedLabel'),
+    t('fWearLabel'), t('fArticleLabel'), t('fSizeLabel'), t('fDamageLabel'),
+    t('fProposalLabel'), t('fNoteLabel'), t('colStatus'), t('panelHqReply'),
+    t('panelApprove').charAt(0).toUpperCase()+t('panelApprove').slice(1).toLowerCase().split('/')[0].trim()+' by',
+    t('colDate')+' decision', 'n. photos',
+    ...photoHeaders
+  ];
+
+  const ws = XLSX.utils.aoa_to_sheet([headers]);
+
+  data.forEach((r, rowIdx) => {
+    const store = allAccounts.find(a => a.id === r.store_id);
+    const photos = r.photo_urls || [];
+    const baseRow = [
+      r.date || '',
+      store?.name || r.store_id,
+      r.provenienza || '',
+      r.customer_name || '',
+      r.customer_email || '',
+      r.card || '',
+      r.purchase_date || '',
+      r.dropoff_date || '',
+      r.used === 'SI' ? 'Sì' : (r.used === 'NO' ? 'No' : ''),
+      r.wear || '',
+      r.article_code || '',
+      r.size || '',
+      r.damage_type || '',
+      r.proposal || '',
+      r.note || '',
+      statusLabel(r.status),
+      r.approval_note || '',
+      r.decided_by || '',
+      r.decided_at ? new Date(r.decided_at).toLocaleDateString('it-IT') : '',
+      photos.length,
+    ];
+
+    // Add photo values (as plain text first)
+    for (let i = 0; i < MAX_PHOTOS; i++) {
+      baseRow.push(photos[i] || '');
     }
-    return rows;
-  }
-  function parseLine(line){
-    var res=[],cur='',inQ=false,i,c;
-    for(i=0;i<line.length;i++){c=line[i];if(c==='"'){inQ=!inQ;}else if(c===','&&!inQ){res.push(cur.trim());cur='';}else cur+=c;}
-    res.push(cur.trim());return res;
-  }
 
-  /* === HELPERS === */
-  function z7(s){var str=String(s==null?'':s).trim();if(!str)return'';while(str.length<7)str='0'+str;return str.slice(-7);}
-  function storeCode(wl){var s=String(wl||''),d='',i;for(i=0;i<s.length;i++){if(s[i]>='0'&&s[i]<='9')d+=s[i];else break;}return d;}
-  function isNum(s){if(!s||!s.length)return false;for(var i=0;i<s.length;i++)if(s[i]<'0'||s[i]>'9')return false;return true;}
-  function norm(s){return String(s||'').trim().toUpperCase();}
+    XLSX.utils.sheet_add_aoa(ws, [baseRow], {origin: rowIdx + 1});
 
-  /* === ANALYSIS === */
-  function doAnalyze(){
-    var i,k,mZ={},mC={},row,key;
-    for(i=0;i<DZ.length;i++){
-      row=DZ[i];key=z7(row['dipendente']||row['matricola_per_paghe']||'');if(!key)continue;
-      var cdc=String(row['centro_di_costo']||'').trim();
-      var rc=String(row['ENTE_PROMOTORE']||'').trim();
-      mZ[key]={key:key,cog:String(row['cognome']||'').trim(),nom:String(row['nome']||'').trim(),
-        sz:isNum(cdc)?cdc:'',sdz:String(row['centro_di_costo_descrizione']||'').trim(),
-        rz_code:rc,rz:xlateRole(rc),bz:String(row['Badge1']||row['Badge2']||row['Badge3']||'').trim()};
-    }
-    for(i=0;i<DC.length;i++){
-      row=DC[i];key=z7(row['External ID']||'');if(!key)continue;
-      var wl=row['Work Location']||'';
-      var br=String(row['Assigned Badge']||'');var di=br.indexOf('.');if(di>-1)br=br.slice(0,di);
-      mC[key]={key:key,cog:String(row['Last Name']||'').trim(),nom:String(row['First Name']||'').trim(),
-        sc:storeCode(wl),sdc:wl,rc:String(row['Role']||'').trim(),bc:br.trim()};
-    }
-    var all={};for(k in mZ)all[k]=1;for(k in mC)all[k]=1;
-    merged=[];
-    for(k in all){
-      var z=mZ[k],c=mC[k],r;
-      if(z&&c){
-        var sm=!!(z.sz&&c.sc&&z.sz===c.sc),rm=norm(z.rz)===norm(c.rc);
-        var bze=!z.bz,bce=!c.bc,bm=!bze&&!bce&&z.bz===c.bc;
-        var bs=bze?'no_z':(bce?'no_c':(bm?'ok':'diff'));
-        r={key:k,st:'both',cog:z.cog||c.cog,nom:z.nom||c.nom,sz:z.sz,sdz:z.sdz,rz_code:z.rz_code,rz:z.rz,bz:z.bz,sc:c.sc,sdc:c.sdc,rc:c.rc,bc:c.bc,sm:sm,rm:rm,bm:bm,bs:bs};
-      }else if(z){
-        r={key:k,st:'only_z',cog:z.cog,nom:z.nom,sz:z.sz,sdz:z.sdz,rz_code:z.rz_code,rz:z.rz,bz:z.bz,sc:'',sdc:'',rc:'',bc:'',sm:false,rm:false,bm:false,bs:'no_c'};
-      }else{
-        r={key:k,st:'only_c',cog:c.cog,nom:c.nom,sz:'',sdz:'',rz_code:'',rz:'',bz:'',sc:c.sc,sdc:c.sdc,rc:c.rc,bc:c.bc,sm:false,rm:false,bm:false,bs:'no_z'};
-      }
-      merged.push(r);
-    }
-    var both=merged.filter(function(r){return r.st==='both';});
-    var notes=[];
-    var bnz=both.filter(function(r){return r.bs==='no_z';}).length;
-    if(bnz>0)notes.push('Badge ID non disponibile in Zucchetti per '+bnz+' dipendenti.');
-    var uc={};both.forEach(function(r){if(r.rz_code&&r.rz===r.rz_code)uc[r.rz_code]=1;});
-    var ukeys=Object.keys(uc);
-    if(ukeys.length)notes.push('Codici senza mapping: '+ukeys.sort().join(', ')+'.');
-    var nb=document.getElementById('noteBar');
-    nb.style.display=notes.length?'block':'none';
-    if(notes.length)nb.innerHTML='<strong>Avvisi:</strong> '+notes.join(' &bull; ');
-    renderStats();filtered=merged.slice();pg=0;renderTable();
-    document.getElementById('statsSection').style.display='block';
-    document.getElementById('emptyState').style.display='none';
-    document.getElementById('btnExport').disabled=false;
-    document.getElementById('btnAnalyze').disabled=false;
-    document.getElementById('loadingMsg').textContent='';
-  }
-
-  function renderStats(){
-    var bt=merged.filter(function(r){return r.st==='both';});
-    var oz=merged.filter(function(r){return r.st==='only_z';});
-    var oc=merged.filter(function(r){return r.st==='only_c';});
-    var sok=bt.filter(function(r){return r.sm;}).length;
-    var rok=bt.filter(function(r){return r.rm;}).length;
-    var fok=bt.filter(function(r){return r.sm&&r.rm&&(r.bm||r.bs==='no_z');}).length;
-    function sc(c,l,v,s){return'<div class="stat '+c+'"><div class="lbl">'+l+'</div><div class="val">'+v+'</div><div class="sub">'+s+'</div></div>';}
-    function pct(n,t){return t?Math.round(n/t*100)+'%':'—';}
-    document.getElementById('statsGrid').innerHTML=
-      sc('st-bd','Matricole abbinate',bt.length,'su '+merged.length+' totali')+
-      sc('st-gn','Pienamente allineati',fok,pct(fok,bt.length)+' dei match')+
-      sc('st-rd','Store diversi',bt.length-sok,'su '+bt.length+' abbinati')+
-      sc('st-am','Job Title diversi',bt.length-rok,'su '+bt.length+' abbinati')+
-      sc('st-bl','Solo in Hekanize',oc.length,'non trovati in Zucchetti');
-  }
-
-  function applyFilters(){
-    var s=document.getElementById('fSt').value,f=document.getElementById('fFi').value,q=document.getElementById('fSe').value.toLowerCase();
-    filtered=[];
-    merged.forEach(function(r){
-      if(s==='diff'&&r.st!=='both')return;
-      if(s==='diff'&&r.sm&&r.rm&&(r.bm||r.bs==='no_z'))return;
-      if(s==='aligned'&&(r.st!=='both'||!r.sm||!r.rm))return;
-      if(s==='only_z'&&r.st!=='only_z')return;
-      if(s==='only_c'&&r.st!=='only_c')return;
-      if(f==='store'&&(r.st!=='both'||r.sm))return;
-      if(f==='role'&&(r.st!=='both'||r.rm))return;
-      if(f==='badge'&&(r.st!=='both'||r.bs!=='diff'))return;
-      if(q&&(r.key+' '+r.cog+' '+r.nom).toLowerCase().indexOf(q)===-1)return;
-      filtered.push(r);
+    // Convert photo cells to hyperlinks
+    photos.forEach((url, pIdx) => {
+      if (!url) return;
+      const colIdx = headers.length - MAX_PHOTOS + pIdx; // column index of this photo
+      const cellAddr = XLSX.utils.encode_cell({r: rowIdx + 1, c: colIdx});
+      ws[cellAddr] = {
+        v: `${t("fPhotos").replace(" *","")} ${pIdx + 1}`,
+        t: 's',
+        l: { Target: url, Tooltip: url }
+      };
     });
-    pg=0;
+  });
+
+  // Column widths
+  const colWidths = [10,22,12,20,24,16,12,12,10,8,16,8,24,10,30,12,30,18,14,8, ...Array(MAX_PHOTOS).fill(14)];
+  ws['!cols'] = colWidths.map(w => ({wch: w}));
+
+  // Style header row bold (basic)
+  ws['!rows'] = [{hpt: 16}]; // header row height
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Fallati');
+
+  const region = currentUser.region;
+  const fname = `fallati_${region.toLowerCase()}_${new Date().toISOString().slice(0,10)}.xlsx`;
+  XLSX.writeFile(wb, fname);
+  showToast(t('toastExportReady') + fname);
+}
+
+// ── INIT ───────────────────────────────────────────────────
+async function init() {
+  const { data, error } = await sb.from('accounts').select('*').eq('active', true);
+  if (error) {
+    document.getElementById('root').innerHTML = `<div style="padding:40px;text-align:center;color:red">${t('errConn')}${error.message}</div>`;
+    return;
   }
+  allAccounts = data || [];
+  render();
+}
 
-  function renderTable(){
-    applyFilters();
-    var start=pg*PGS,page=filtered.slice(start,start+PGS);
-    document.getElementById('filterCount').textContent=filtered.length+' risultati';
-    var tb=document.getElementById('tBody');
-    if(!page.length){tb.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--tx3);padding:2rem;font-size:.75rem">Nessun risultato</td></tr>';updPag();return;}
-    var rows='';
-    page.forEach(function(r){
-      var sd=r.st==='both'&&!r.sm,rd=r.st==='both'&&!r.rm,bd=r.st==='both'&&r.bs==='diff';
-      var sb;
-      if(r.st==='only_z')sb='<span class="bdg b-warn">Solo Zucchetti</span>';
-      else if(r.st==='only_c')sb='<span class="bdg b-info">Solo Hekanize</span>';
-      else if(!sd&&!rd&&!bd)sb='<span class="bdg b-ok">Allineato</span>';
-      else sb='<span class="bdg b-diff">Differenze</span>';
-      var szd=r.sdz?'<span class="sn">'+r.sdz+'</span>':'';
-      var scd=r.sdc?'<span class="sn">'+r.sdc+'</span>':'';
-      var bzd=r.bz||'<span style="color:var(--tx3);font-size:.7rem">n/d</span>';
-      var rzDisp=r.rz||(r.rz_code?'<span style="color:var(--am);font-style:italic;font-size:.74rem">'+r.rz_code+' (no map)</span>':'—');
-      var rzCode=(r.rz_code&&r.rz&&r.rz!==r.rz_code)?'<span class="sn">cod: '+r.rz_code+'</span>':'';
-      rows+='<tr>'+
-        '<td style="font-family:monospace;font-size:.74rem">'+r.key+'</td>'+
-        '<td>'+r.cog+' <span style="color:var(--tx3)">'+r.nom+'</span></td>'+
-        '<td class="'+(sd?'dc':'')+'"><span class="'+(sd?'dv':'')+'">'+( r.sz||'—')+'</span>'+szd+'</td>'+
-        '<td class="'+(sd?'dc':'')+'"><span class="'+(sd?'dv':'')+'">'+( r.sc||'—')+'</span>'+scd+'</td>'+
-        '<td class="'+(rd?'dc':'')+'" style="font-size:.76rem"><span class="'+(rd?'dv':'')+'">'+rzDisp+'</span>'+rzCode+'</td>'+
-        '<td class="'+(rd?'dc':'')+'" style="font-size:.76rem"><span class="'+(rd?'dv':'')+'">'+( r.rc||'—')+'</span></td>'+
-        '<td class="'+(bd?'dc':'')+'">'+bzd+'</td>'+
-        '<td class="'+(bd?'dc':'')+'">'+( r.bc||'—')+'</td>'+
-        '<td>'+sb+'</td></tr>';
-    });
-    tb.innerHTML=rows;updPag();
-  }
-
-  function updPag(){
-    var t=filtered.length,tp=Math.max(1,Math.ceil(t/PGS));
-    document.getElementById('pagInfo').textContent='Pag. '+(pg+1)+' / '+tp+' — '+t+' record';
-    document.getElementById('bPrev').disabled=pg===0;
-    document.getElementById('bNext').disabled=pg>=tp-1;
-  }
-
-  function exportExcel(){
-    var diffs=merged.filter(function(r){return r.st!=='both'||!r.sm||!r.rm||r.bs==='diff';});
-    var rows=diffs.map(function(r){return{
-      'Matricola':r.key,'Cognome':r.cog,'Nome':r.nom,
-      'Presenza':r.st==='only_z'?'Solo Zucchetti':r.st==='only_c'?'Solo Hekanize':'Entrambi',
-      'Store ID - Zucchetti':r.sz||'','Store Descr - Zucchetti':r.sdz||'',
-      'Store ID - Hekanize':r.sc||'','Store Descr - Hekanize':r.sdc||'',
-      'Store match':r.st==='both'?(r.sm?'SI':'NO'):'N/A',
-      'Job Title Codice Zucchetti':r.rz_code||'','Job Title Tradotto Zucchetti':r.rz||'','Job Title Hekanize':r.rc||'',
-      'Job Title match':r.st==='both'?(r.rm?'SI':'NO'):'N/A',
-      'Badge Zucchetti':r.bz||'n/d','Badge Hekanize':r.bc||'',
-      'Badge match':r.st==='both'?(r.bs==='ok'?'SI':r.bs==='no_z'?'N/D Zucchetti':'NO'):'N/A'
-    };});
-    var ws=XLSX.utils.json_to_sheet(rows),wb=XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb,ws,'Differenze HR');
-    XLSX.writeFile(wb,'HR_HEKANIZE_Differenze_'+new Date().toISOString().slice(0,10)+'.xlsx');
-  }
-
-  /* === INIT — wire all buttons after DOM+XLSX are ready === */
-  document.getElementById('tab-pgMain').addEventListener('click', function(){ goPage('pgMain'); });
-  document.getElementById('tab-pgMap').addEventListener('click', function(){ goPage('pgMap'); });
-
-  document.getElementById('btnPickZ').addEventListener('click', function(){ document.getElementById('inputZ').click(); });
-  document.getElementById('btnPickC').addEventListener('click', function(){ document.getElementById('inputC').click(); });
-
-  document.getElementById('inputZ').addEventListener('change', function(){
-    if(this.files && this.files.length) readZ(this.files[0]);
-  });
-  document.getElementById('inputC').addEventListener('change', function(){
-    if(this.files && this.files.length) readC(this.files[0]);
-  });
-
-  document.getElementById('btnAnalyze').addEventListener('click', function(){
-    document.getElementById('loadingMsg').textContent='Analisi in corso…';
-    document.getElementById('btnAnalyze').disabled=true;
-    setTimeout(doAnalyze, 80);
-  });
-  document.getElementById('btnExport').addEventListener('click', exportExcel);
-  document.getElementById('bPrev').addEventListener('click', function(){ var tp=Math.ceil(filtered.length/PGS);pg=Math.max(0,pg-1);renderTable(); });
-  document.getElementById('bNext').addEventListener('click', function(){ var tp=Math.ceil(filtered.length/PGS);pg=Math.min(tp-1,pg+1);renderTable(); });
-  document.getElementById('fSt').addEventListener('change', renderTable);
-  document.getElementById('fFi').addEventListener('change', renderTable);
-  document.getElementById('fSe').addEventListener('input', renderTable);
-  document.getElementById('mapSearch').addEventListener('input', renderMapping);
-  document.getElementById('btnShowAdd').addEventListener('click', function(){ document.getElementById('addBar').style.display='flex'; document.getElementById('newCode').focus(); });
-  document.getElementById('btnCancelAdd').addEventListener('click', function(){ document.getElementById('addBar').style.display='none'; document.getElementById('newCode').value=''; document.getElementById('newDesc').value=''; });
-  document.getElementById('btnConfirmAdd').addEventListener('click', function(){
-    var code=document.getElementById('newCode').value.trim().toUpperCase();
-    var desc=document.getElementById('newDesc').value.trim();
-    if(!code){alert('Inserisci un codice.');return;}
-    MAP[code]=desc; document.getElementById('addBar').style.display='none'; document.getElementById('newCode').value=''; document.getElementById('newDesc').value=''; renderMapping();
-  });
-  document.getElementById('btnResetMap').addEventListener('click', function(){
-    if(confirm('Ripristinare il mapping predefinito?')){ MAP=JSON.parse(JSON.stringify(DEFAULT_MAP)); renderMapping(); }
-  });
-
-})();
+init();
 </script>
 </body>
 </html>
